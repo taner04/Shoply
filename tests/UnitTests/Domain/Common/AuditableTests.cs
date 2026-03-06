@@ -5,11 +5,6 @@ namespace UnitTests.Domain.Common;
 
 public sealed class AuditableTests
 {
-    private class AuditableTestEntity : Auditable
-    {
-        // Test implementation of abstract Auditable class
-    }
-
     [Fact]
     public void SetCreated_WithoutUserParameter_ShouldSetCreatedByToSystem()
     {
@@ -108,9 +103,9 @@ public sealed class AuditableTests
         auditable.SetCreated("creator");
         auditable.SetUpdated("updater1");
         var firstUpdateTime = auditable.UpdatedAt;
-        
+
         // Add delay to ensure different timestamps
-        System.Threading.Thread.Sleep(10);
+        Thread.Sleep(10);
 
         auditable.SetUpdated("updater2");
 
@@ -190,5 +185,10 @@ public sealed class AuditableTests
         Assert.NotEqual(default, product.CreatedAt);
         Assert.Null(product.UpdatedAt);
         Assert.Null(product.UpdatedBy);
+    }
+
+    private class AuditableTestEntity : Auditable
+    {
+        // Test implementation of abstract Auditable class
     }
 }

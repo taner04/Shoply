@@ -5,11 +5,11 @@ namespace UnitTests.Domain.Products;
 
 public sealed class ProductTests
 {
-    private static readonly string ValidName = new string('a', ProductRules.MinNameLength);
     private const decimal ValidPrice = 12.99m;
-    private static readonly string ValidDescription = new string('b', ProductRules.MinDescriptionLength);
     private const int ValidStock = 10;
     private const string ValidImageUrl = "https://example.com/image.jpg";
+    private static readonly string ValidName = new('a', ProductRules.MinNameLength);
+    private static readonly string ValidDescription = new('b', ProductRules.MinDescriptionLength);
 
     [Fact]
     public void Create_WithValidValues_ShouldReturnProduct()

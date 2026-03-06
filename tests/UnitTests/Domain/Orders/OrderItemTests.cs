@@ -6,12 +6,14 @@ namespace UnitTests.Domain.Orders;
 public sealed class OrderItemTests
 {
     private static Product CreateProduct(string name = "Coffee Beans", decimal price = 12.99m)
-        => Product.Create(
-            name: name,
-            price: price,
-            description: "Fresh roasted beans",
-            stock: 10,
-            imageUrl: "https://example.com/image.jpg");
+    {
+        return Product.Create(
+            name,
+            price,
+            "Fresh roasted beans",
+            10,
+            "https://example.com/image.jpg");
+    }
 
     [Fact]
     public void TotalPrice_ShouldCalculateUnitPriceTimesQuantity()

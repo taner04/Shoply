@@ -1,4 +1,3 @@
-using Api.Common.Domain.Baskets.Exceptions;
 using Api.Common.Domain.Products;
 using Api.Common.Domain.Users;
 using Api.Common.Shared.Exceptions;
@@ -6,14 +5,16 @@ using Vogen;
 
 namespace Api.Common.Domain.Baskets;
 
-[ValueObject]
+[ValueObject<Guid>]
 public readonly partial struct BasketId;
 
 public sealed class Basket : AggregateRoot<BasketId>
 {
     private readonly List<BasketItem> _basketItems = [];
 
-    private Basket() { } // For EF Core
+    private Basket()
+    {
+    } // For EF Core
 
     private Basket(UserId userId)
     {
@@ -21,15 +22,15 @@ public sealed class Basket : AggregateRoot<BasketId>
         UserId = userId;
     }
 
+    public UserId UserId { get; private set; }
+    public IReadOnlyCollection<BasketItem> BasketItems => _basketItems.AsReadOnly();
+    public User User { get; private set; } = null!;
+
     public static Basket CreateEmpty(UserId userId)
     {
         return new Basket(userId);
     }
 
-    public UserId UserId { get; private set; }
-    public IReadOnlyCollection<BasketItem> BasketItems => _basketItems.AsReadOnly();
-    public User User { get; private set; } = null!;
-    
     public void AddProduct(BasketItem basketItem)
     {
         var existing = _basketItems.FirstOrDefault(p => p.ProductId == basketItem.ProductId);

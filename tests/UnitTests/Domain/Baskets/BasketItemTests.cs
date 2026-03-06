@@ -7,12 +7,14 @@ namespace UnitTests.Domain.Baskets;
 public sealed class BasketItemTests
 {
     private static Product CreateProduct(string name = "Coffee Beans")
-        => Product.Create(
-            name: name,
-            price: 12.99m,
-            description: "Fresh roasted beans",
-            stock: 10,
-            imageUrl: "https://example.com/image.jpg");
+    {
+        return Product.Create(
+            name,
+            12.99m,
+            "Fresh roasted beans",
+            10,
+            "https://example.com/image.jpg");
+    }
 
     [Fact]
     public void From_ShouldCreateBasketItemFromProduct()

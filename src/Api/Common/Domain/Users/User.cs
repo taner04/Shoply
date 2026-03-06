@@ -18,14 +18,14 @@ public sealed class User : AggregateRoot<UserId>
         Email = email;
         Auth0Id = auth0Id;
 
-        Basket = Basket.CreateEmpty(Id); 
+        Basket = Basket.CreateEmpty(Id);
     }
 
     public string Email { get; private set; }
     public string Auth0Id { get; private set; }
 
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
-    public Basket Basket { get; private set; } 
+    public Basket Basket { get; private set; }
 
     public static User Create(string email, string auth0Id)
     {

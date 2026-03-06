@@ -4,7 +4,7 @@ using Vogen;
 
 namespace Api.Common.Domain.Baskets;
 
-[ValueObject]
+[ValueObject<Guid>]
 public readonly partial struct BasketItemId;
 
 public sealed class BasketItem : Entity<BasketItemId>
@@ -20,8 +20,11 @@ public sealed class BasketItem : Entity<BasketItemId>
     public int Quantity { get; private set; }
 
     public Product Product { get; private set; } = null!;
-    
-    public static BasketItem From(Product product) => new(product.Id);
+
+    public static BasketItem From(Product product)
+    {
+        return new BasketItem(product.Id);
+    }
 
     public void IncreaseQuantity()
     {

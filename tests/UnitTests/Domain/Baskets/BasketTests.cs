@@ -1,5 +1,4 @@
 using Api.Common.Domain.Baskets;
-using Api.Common.Domain.Baskets.Exceptions;
 using Api.Common.Domain.Products;
 using Api.Common.Domain.Users;
 using Api.Common.Shared.Exceptions;
@@ -9,15 +8,19 @@ namespace UnitTests.Domain.Baskets;
 public sealed class BasketTests
 {
     private static Product CreateProduct(string name = "Coffee Beans", decimal price = 12.99m)
-        => Product.Create(
-            name: name,
-            price: price,
-            description: "Fresh roasted beans",
-            stock: 10,
-            imageUrl: "https://example.com/image.jpg");
+    {
+        return Product.Create(
+            name,
+            price,
+            "Fresh roasted beans",
+            10,
+            "https://example.com/image.jpg");
+    }
 
     private static User CreateUser()
-        => User.Create("test@example.com", "auth0|123");
+    {
+        return User.Create("test@example.com", "auth0|123");
+    }
 
     [Fact]
     public void CreateEmpty_ShouldCreateBasketWithoutItems()
@@ -63,7 +66,7 @@ public sealed class BasketTests
     {
         var user = CreateUser();
         var basket = Basket.CreateEmpty(user.Id);
-        var product1 = CreateProduct("Coffee", 12.99m);
+        var product1 = CreateProduct("Coffee");
         var product2 = CreateProduct("Tea", 8.99m);
 
         basket.AddProduct(BasketItem.From(product1));
@@ -109,7 +112,7 @@ public sealed class BasketTests
         var product = CreateProduct();
 
         basket.AddProduct(BasketItem.From(product)); // qty = 1
-        basket.RemoveProduct(product.Id);            // removes it
+        basket.RemoveProduct(product.Id); // removes it
 
         Assert.Empty(basket.BasketItems);
     }

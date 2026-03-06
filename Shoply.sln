@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "tools\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{55F4B7F6-2A23-48E1-8BAC-F0E4B336A406}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{7978E4EA-B0A9-4147-81CC-80C06AED529B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,7 @@ Global
 		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0} = {3379491B-F7B2-4944-B273-D710E7FF414D}
 		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE} = {3379491B-F7B2-4944-B273-D710E7FF414D}
 		{55F4B7F6-2A23-48E1-8BAC-F0E4B336A406} = {B289F8BB-D671-4C06-9542-2DF90C62C4AE}
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B} = {B289F8BB-D671-4C06-9542-2DF90C62C4AE}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -49,5 +52,9 @@ Global
 		{55F4B7F6-2A23-48E1-8BAC-F0E4B336A406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F4B7F6-2A23-48E1-8BAC-F0E4B336A406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F4B7F6-2A23-48E1-8BAC-F0E4B336A406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

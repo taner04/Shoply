@@ -3,11 +3,13 @@ using Vogen;
 
 namespace Api.Common.Domain.Products;
 
-[ValueObject]
+[ValueObject<Guid>]
 public readonly partial struct ProductId;
 
 public sealed class Product : AggregateRoot<ProductId>
 {
+    public const string DefaultContainer = "product-images";
+    
     private Product()
     {
     } // EF
@@ -46,7 +48,7 @@ public sealed class Product : AggregateRoot<ProductId>
         var nUrl = NormalizeRequired(imageUrl);
 
         Validate(nName, price, nDesc, stock, nUrl);
-        
+
         Price = price;
         Quantity = stock;
         Name = nName;

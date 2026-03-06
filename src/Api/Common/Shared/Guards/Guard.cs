@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using Api.Common.Shared.Exceptions;
 
@@ -100,13 +101,13 @@ public static class Guard
                 "InvalidNonNegative",
                 $"{prop} must be >= 0. Actual: {value}.");
         }
-        
+
         public static void InvalidEmail<TOwner>(
             string value,
             [CallerArgumentExpression(nameof(value))]
             string? paramName = null)
         {
-            if (System.Net.Mail.MailAddress.TryCreate(value, out _))
+            if (MailAddress.TryCreate(value, out _))
             {
                 return;
             }

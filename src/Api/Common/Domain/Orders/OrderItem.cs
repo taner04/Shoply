@@ -3,12 +3,14 @@ using Vogen;
 
 namespace Api.Common.Domain.Orders;
 
-[ValueObject]
+[ValueObject<Guid>]
 public readonly partial struct OrderItemId;
 
 public sealed class OrderItem : Entity<OrderItemId>
 {
-    private OrderItem() {} // For EF Core
+    private OrderItem()
+    {
+    } // For EF Core
 
     public OrderItem(ProductId productId, string productName, decimal unitPrice, int quantity)
     {
@@ -23,13 +25,13 @@ public sealed class OrderItem : Entity<OrderItemId>
 
     public string ProductName { get; private set; } = null!;
 
-    public decimal UnitPrice { get; private init; }
+    public decimal UnitPrice { get; }
 
-    public int Quantity { get; private set; }
+    public int Quantity { get; }
 
     public decimal TotalPrice => UnitPrice * Quantity;
-    
-    
+
+
     public static OrderItem From(Product product, int quantity)
     {
         return new OrderItem(product.Id, product.Name, product.Price, quantity);

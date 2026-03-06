@@ -9,12 +9,14 @@ namespace UnitTests.Domain.Users;
 public sealed class UserTests
 {
     private static Product CreateProduct(string name = "Coffee Beans")
-        => Product.Create(
-            name: name,
-            price: 12.99m,
-            description: "Fresh roasted beans",
-            stock: 10,
-            imageUrl: "https://example.com/image.jpg");
+    {
+        return Product.Create(
+            name,
+            12.99m,
+            "Fresh roasted beans",
+            10,
+            "https://example.com/image.jpg");
+    }
 
     [Fact]
     public void Create_WithValidEmail_ShouldCreateUser()
@@ -128,7 +130,7 @@ public sealed class UserTests
     public void AddOrder_ShouldAddOrderToUserOrders()
     {
         var user = User.Create("test@example.com", "auth0|123");
-        
+
         // Create an empty order for testing (doesn't require loaded products)
         var order = Order.FromBasket(user.Basket);
         user.AddOrder(order);

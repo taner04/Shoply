@@ -8,15 +8,19 @@ namespace UnitTests.Domain.Orders;
 public sealed class OrderTests
 {
     private static Product CreateProduct(string name = "Coffee Beans", decimal price = 12.99m)
-        => Product.Create(
-            name: name,
-            price: price,
-            description: "Fresh roasted beans",
-            stock: 10,
-            imageUrl: "https://example.com/image.jpg");
+    {
+        return Product.Create(
+            name,
+            price,
+            "Fresh roasted beans",
+            10,
+            "https://example.com/image.jpg");
+    }
 
     private static User CreateUser()
-        => User.Create("test@example.com", "auth0|123");
+    {
+        return User.Create("test@example.com", "auth0|123");
+    }
 
     [Fact]
     public void FromBasket_WithEmptyBasket_ShouldCreateOrderWithoutItems()

@@ -1,8 +1,26 @@
+using Api.Common.Composition.Configs;
+using Api.Common.Composition.Configs.OpenApi;
+using Api.Common.Composition.Extensions;
+using Api.Common.Composition.Options;
+using ServiceDefaults;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddOpenApi();
+builder.Services.AddOptions<Auth0Config>()
+    .BindConfiguration(nameof(Auth0Config))
+    .ValidateDataAnnotations();
+
+builder.Services.AddOpenApi(OpenApiConfig.Config);
+
+builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
+
+builder.Services.AddInfrastructure(builder);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
@@ -11,8 +29,18 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalar();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
+app.MapEndpoints();
 
 app.Run();
+
+namespace Api
+{
+    public  partial class Program; // for integration testing purposes
+}

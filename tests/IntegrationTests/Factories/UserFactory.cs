@@ -1,5 +1,3 @@
-using Api.Common.Domain.Users;
-
 namespace IntegrationTests.Factories;
 
 internal static class UserFactory

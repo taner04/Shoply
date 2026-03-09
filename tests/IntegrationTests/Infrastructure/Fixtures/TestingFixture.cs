@@ -1,14 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Api;
-using Api.Common.Domain.Users;
-using IntegrationTests.Factories;
-using IntegrationTests.Infrastructure.Mocks;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
-using Microsoft.Extensions.DependencyInjection;
 using Refit;
 
 namespace IntegrationTests.Infrastructure.Fixtures;

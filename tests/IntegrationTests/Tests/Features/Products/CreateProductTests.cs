@@ -1,19 +1,15 @@
-using System.Net;
 using Api.Features.Products.Endpoints;
-using IntegrationTests.Infrastructure;
-using IntegrationTests.Infrastructure.Fixtures;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests.Tests.Features.Products;
 
 public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static CreateProductCommand ValidCommand => new(
-        Name: "Valid Product",
-        Price: 19.99m,
-        Description: "This is a valid product description.",
-        Stock: 10,
-        ImageUrl: "https://example.com/product.jpg"
+        "Valid Product",
+        19.99m,
+        "This is a valid product description.",
+        10,
+        "https://example.com/product.jpg"
     );
 
     [Fact]
@@ -36,11 +32,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "New Product",
-            Price: 29.99m,
-            Description: "A brand new product.",
-            Stock: 25,
-            ImageUrl: "https://example.com/new-product.jpg"
+            "New Product",
+            29.99m,
+            "A brand new product.",
+            25,
+            "https://example.com/new-product.jpg"
         );
 
         // Act
@@ -69,11 +65,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "ExistingProduct",
-            Price: 9.99m,
-            Description: "Existing product description here.",
-            Stock: 5,
-            ImageUrl: "https://example.com/existing.jpg"
+            "ExistingProduct",
+            9.99m,
+            "Existing product description here.",
+            5,
+            "https://example.com/existing.jpg"
         );
 
         // Create the first product
@@ -94,11 +90,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "AB", // Less than MinNameLength = 3
-            Price: 9.99m,
-            Description: "Valid description for testing.",
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "AB", // Less than MinNameLength = 3
+            9.99m,
+            "Valid description for testing.",
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -117,11 +113,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var tooLongName = new string('x', 101); // NameMaxLength = 100
 
         var command = new CreateProductCommand(
-            Name: tooLongName,
-            Price: 9.99m,
-            Description: "Valid description for testing.",
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            tooLongName,
+            9.99m,
+            "Valid description for testing.",
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -138,11 +134,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "Product",
-            Price: 0m, // Must be > 0
-            Description: "Valid description for testing.",
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "Product",
+            0m, // Must be > 0
+            "Valid description for testing.",
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -159,11 +155,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "Product",
-            Price: -9.99m,
-            Description: "Valid description for testing.",
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "Product",
+            -9.99m,
+            "Valid description for testing.",
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -180,11 +176,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "Product",
-            Price: 9.99m,
-            Description: "Valid description for testing.",
-            Stock: -5, // Must be >= 0
-            ImageUrl: "https://example.com/product.jpg"
+            "Product",
+            9.99m,
+            "Valid description for testing.",
+            -5, // Must be >= 0
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -203,11 +199,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var tooLongDescription = new string('x', 501); // MaxDescriptionMaxLength = 500
 
         var command = new CreateProductCommand(
-            Name: "Product",
-            Price: 9.99m,
-            Description: tooLongDescription,
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "Product",
+            9.99m,
+            tooLongDescription,
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -224,11 +220,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "Product Without Description",
-            Price: 9.99m,
-            Description: "", // Empty description is allowed by validator
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "Product Without Description",
+            9.99m,
+            "", // Empty description is allowed by validator
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act
@@ -245,11 +241,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "Product",
-            Price: 9.99m,
-            Description: "Valid description for testing.",
-            Stock: 10,
-            ImageUrl: "invalid-url" // Not a valid HTTP URL
+            "Product",
+            9.99m,
+            "Valid description for testing.",
+            10,
+            "invalid-url" // Not a valid HTTP URL
         );
 
         // Act
@@ -266,11 +262,11 @@ public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fix
         var client = CreateAuthenticatedUserClient();
 
         var command = new CreateProductCommand(
-            Name: "ProductWithNullDescription",
-            Price: 9.99m,
-            Description: null, // Description is optional
-            Stock: 10,
-            ImageUrl: "https://example.com/product.jpg"
+            "ProductWithNullDescription",
+            9.99m,
+            null, // Description is optional
+            10,
+            "https://example.com/product.jpg"
         );
 
         // Act

@@ -1,12 +1,10 @@
 using Api.Common.Abstractions;
 using Api.Common.Composition.Extensions;
-using Api.Common.Domain.Products;
 using Api.Common.Infrastructure.Persistence;
 using Api.Features.Products.Exceptions;
 using FluentValidation;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Products.Endpoints;
 
@@ -22,14 +20,14 @@ public class CreateProductEndpoint : IEndpoint
     public void MapEndpoint(WebApplication app)
     {
         app.MapPost("/products", async ([FromBody] CreateProductCommand command, [FromServices] IMediator mediator) =>
-        {
-            await mediator.Send(command);
-            return Results.Ok();
-        })
-        .WithName("CreateProduct")
-        .WithTags("Products")
-        .Produces(StatusCodes.Status201Created)
-        .ProducesApiProblemDetails();
+            {
+                await mediator.Send(command);
+                return Results.Ok();
+            })
+            .WithName("CreateProduct")
+            .WithTags("Products")
+            .Produces(StatusCodes.Status201Created)
+            .ProducesApiProblemDetails();
     }
 }
 

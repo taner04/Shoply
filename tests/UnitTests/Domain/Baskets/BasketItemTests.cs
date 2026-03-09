@@ -1,6 +1,4 @@
-using Api.Common.Domain.Baskets;
 using Api.Common.Domain.Baskets.Exceptions;
-using Api.Common.Domain.Products;
 
 namespace UnitTests.Domain.Baskets;
 

@@ -1,9 +1,6 @@
 using Api.Common.Domain.Baskets;
 using Api.Common.Domain.Orders;
-using Api.Common.Domain.Products;
-using Api.Common.Domain.Users;
 using Api.Common.Infrastructure.Persistence.Configurations;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Common.Infrastructure.Persistence;
 

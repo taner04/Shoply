@@ -1,6 +1,3 @@
-using Api.Common.Domain.Products;
-using Api.Common.Shared.Exceptions;
-
 namespace UnitTests.Domain.Products;
 
 public sealed class ProductTests

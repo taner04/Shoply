@@ -1,10 +1,3 @@
-using System.Net;
-using Api.Common.Domain.Products;
-using Api.Features.Products.Endpoints;
-using IntegrationTests.Infrastructure;
-using IntegrationTests.Infrastructure.Fixtures;
-using Microsoft.EntityFrameworkCore;
-
 namespace IntegrationTests.Tests.Features.Products;
 
 public sealed class DeleteProductTests(TestingFixture fixture) : TestingBase(fixture)

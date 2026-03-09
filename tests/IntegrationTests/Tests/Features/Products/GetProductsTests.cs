@@ -1,10 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using Api.Common.Domain.Products;
-using Api.Common.Shared.Pagination;
-using IntegrationTests.Infrastructure;
-using IntegrationTests.Infrastructure.Fixtures;
 using System.Text.Json;
+using Api.Common.Shared.Pagination;
 
 namespace IntegrationTests.Tests.Features.Products;
 
@@ -60,7 +56,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 5 products
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             var product = Product.Create(
                 $"Product {i:D2}",
@@ -71,6 +67,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Get first page with 2 items per page
@@ -109,6 +106,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
@@ -132,7 +130,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 150 products
-        for (int i = 1; i <= 150; i++)
+        for (var i = 1; i <= 150; i++)
         {
             var product = Product.Create(
                 $"Product {i:D3}",
@@ -143,6 +141,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Request page size of 200 (should be clamped to 100)
@@ -168,7 +167,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 25 products
-        for (int i = 1; i <= 25; i++)
+        for (var i = 1; i <= 25; i++)
         {
             var product = Product.Create(
                 $"Product {i:D2}",
@@ -179,6 +178,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
@@ -203,7 +203,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 15 products
-        for (int i = 1; i <= 15; i++)
+        for (var i = 1; i <= 15; i++)
         {
             var product = Product.Create(
                 $"Product {i:D2}",
@@ -214,6 +214,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Get last page (page 3 with 5 items per page)
@@ -240,7 +241,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 10 products
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             var product = Product.Create(
                 $"Product {i:D2}",
@@ -251,6 +252,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Get page 2 with 3 items per page
@@ -275,7 +277,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
         var dbContext = GetDbContext();
 
         // Create 15 products
-        for (int i = 1; i <= 15; i++)
+        for (var i = 1; i <= 15; i++)
         {
             var product = Product.Create(
                 $"Product {i:D2}",
@@ -286,6 +288,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Don't specify pageSize (should default to 10)
@@ -321,6 +324,7 @@ public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixtu
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act - Request pageIndex -5 (should be clamped to 1)

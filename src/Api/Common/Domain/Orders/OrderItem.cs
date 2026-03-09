@@ -1,6 +1,3 @@
-using Api.Common.Domain.Products;
-using Vogen;
-
 namespace Api.Common.Domain.Orders;
 
 [ValueObject<Guid>]

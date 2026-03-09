@@ -19,8 +19,8 @@ var blobStorage = builder.AddContainer(AppHostConstants.Azure, "mcr.microsoft.co
         "--tableHost", "0.0.0.0",
         "--loose",
         "--skipApiVersionCheck")
-    .WithHttpEndpoint(10000, 10000, "blob")   // Blob service 
-    .WithHttpEndpoint(10001, 10001, "queue")  // Queue service
+    .WithHttpEndpoint(10000, 10000, "blob") // Blob service 
+    .WithHttpEndpoint(10001, 10001, "queue") // Queue service
     .WithHttpEndpoint(10002, 10002, "table"); // Table service
 
 

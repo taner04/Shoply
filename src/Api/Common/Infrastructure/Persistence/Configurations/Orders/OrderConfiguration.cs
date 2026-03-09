@@ -1,6 +1,5 @@
 using Api.Common.Domain.Orders;
 using Api.Common.Infrastructure.Persistence.Configurations.Common;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations.Orders;

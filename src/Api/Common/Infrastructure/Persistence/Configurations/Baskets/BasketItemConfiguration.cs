@@ -1,5 +1,4 @@
 using Api.Common.Domain.Baskets;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations.Baskets;

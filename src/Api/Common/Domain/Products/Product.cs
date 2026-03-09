@@ -1,5 +1,4 @@
 using Api.Common.Shared.Guards;
-using Vogen;
 
 namespace Api.Common.Domain.Products;
 
@@ -9,7 +8,7 @@ public readonly partial struct ProductId;
 public sealed class Product : AggregateRoot<ProductId>
 {
     public const string DefaultContainer = "product-images";
-    
+
     private Product()
     {
     } // EF

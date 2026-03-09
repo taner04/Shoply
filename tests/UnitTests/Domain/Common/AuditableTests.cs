@@ -1,5 +1,4 @@
 using Api.Common.Domain;
-using Api.Common.Domain.Products;
 
 namespace UnitTests.Domain.Common;
 

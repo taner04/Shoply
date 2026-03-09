@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Api.Common.Domain.Users;
 
 namespace Api.Common.Infrastructure.Services;
 

@@ -1,6 +1,3 @@
-using System.Data.Common;
-using Api;
-using IntegrationTests.Infrastructure.Mocks;
 using IntegrationTests.Infrastructure.Mocks.Database;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
 using Microsoft.AspNetCore.Hosting;

@@ -1,6 +1,4 @@
 using Api.Common.Domain.Baskets.Exceptions;
-using Api.Common.Domain.Products;
-using Vogen;
 
 namespace Api.Common.Domain.Baskets;
 

@@ -1,6 +1,3 @@
-using Api.Common.Domain.Orders;
-using Api.Common.Domain.Products;
-
 namespace UnitTests.Domain.Orders;
 
 public sealed class OrderItemTests

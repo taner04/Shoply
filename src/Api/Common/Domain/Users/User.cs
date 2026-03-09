@@ -1,7 +1,6 @@
 using Api.Common.Domain.Baskets;
 using Api.Common.Domain.Orders;
 using Api.Common.Shared.Guards;
-using Vogen;
 
 namespace Api.Common.Domain.Users;
 

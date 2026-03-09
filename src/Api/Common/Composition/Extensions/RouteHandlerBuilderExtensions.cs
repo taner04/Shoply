@@ -8,7 +8,7 @@ public static class RouteHandlerBuilderExtensions
         StatusCodes.Status401Unauthorized,
         StatusCodes.Status403Forbidden
     ];
-    
+
     extension(RouteHandlerBuilder builder)
     {
         public RouteHandlerBuilder ProducesApiProblemDetails(params int[] additionalStatusCodes)

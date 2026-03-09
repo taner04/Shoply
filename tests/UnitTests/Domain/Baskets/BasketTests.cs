@@ -1,8 +1,3 @@
-using Api.Common.Domain.Baskets;
-using Api.Common.Domain.Products;
-using Api.Common.Domain.Users;
-using Api.Common.Shared.Exceptions;
-
 namespace UnitTests.Domain.Baskets;
 
 public sealed class BasketTests

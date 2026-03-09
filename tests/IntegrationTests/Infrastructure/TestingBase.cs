@@ -1,10 +1,3 @@
-using Api;
-using Api.Common.Domain.Users;
-using Api.Common.Infrastructure.Persistence;
-using IntegrationTests.Infrastructure.Fixtures;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace IntegrationTests.Infrastructure;
 
 [Collection("TestingFixtureCollection")]

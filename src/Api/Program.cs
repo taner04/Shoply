@@ -42,5 +42,5 @@ app.Run();
 
 namespace Api
 {
-    public  partial class Program; // for integration testing purposes
+    public class Program; // for integration testing purposes
 }

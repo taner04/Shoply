@@ -1,8 +1,5 @@
 using Api.Common.Domain.Baskets;
 using Api.Common.Domain.Orders;
-using Api.Common.Domain.Products;
-using Api.Common.Domain.Users;
-using Vogen;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations;
 

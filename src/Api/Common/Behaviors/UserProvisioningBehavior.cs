@@ -1,9 +1,7 @@
 using System.Security.Claims;
-using Api.Common.Domain.Users;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Services;
 using Mediator;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Common.Behaviors;
 

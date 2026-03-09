@@ -1,13 +1,11 @@
 using Api.Common.Behaviors;
 using Api.Common.Behaviors.Logger;
 using Api.Common.Composition.Options;
-using Api.Common.Domain.Users;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
 using Api.Common.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using ServiceDefaults;
@@ -24,7 +22,7 @@ public static class ServiceCollectionExtensions
         {
             var auth0Config = configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
             ArgumentNullException.ThrowIfNull(auth0Config);
-            
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,7 +46,7 @@ public static class ServiceCollectionExtensions
 
             return services;
         }
-        
+
         public IServiceCollection AddInfrastructure(WebApplicationBuilder builder)
         {
             services.AddScoped<CurrentUserService>();
@@ -68,7 +66,7 @@ public static class ServiceCollectionExtensions
 
                 opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
             });
-            
+
             return services;
         }
 

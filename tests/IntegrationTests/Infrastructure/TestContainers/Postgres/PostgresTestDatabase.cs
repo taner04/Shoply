@@ -1,8 +1,3 @@
-using System.Data.Common;
-using Api.Common.Domain.Users;
-using Api.Common.Infrastructure.Persistence;
-using IntegrationTests.Factories;
-using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
@@ -37,13 +32,13 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
 
-        const string sql = $"""
-                            DELETE FROM "OrderItems";
-                            DELETE FROM "Orders";
-                            DELETE FROM "Products";
-                            DELETE FROM "Baskets";
-                            DELETE FROM "Users";
-                            """;
+        const string sql = """
+                           DELETE FROM "OrderItems";
+                           DELETE FROM "Orders";
+                           DELETE FROM "Products";
+                           DELETE FROM "Baskets";
+                           DELETE FROM "Users";
+                           """;
 
         await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
 

@@ -1,5 +1,4 @@
 using Api.Common.Domain;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace IntegrationTests.Infrastructure.Mocks.Database;

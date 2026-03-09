@@ -1,8 +1,3 @@
-using Api.Common.Domain.Baskets;
-using Api.Common.Domain.Orders;
-using Api.Common.Domain.Products;
-using Api.Common.Domain.Users;
-
 namespace UnitTests.Domain.Orders;
 
 public sealed class OrderTests

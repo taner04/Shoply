@@ -4,14 +4,14 @@ namespace IntegrationTests.Infrastructure.TestContainers;
 
 public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContainer
 {
+    private const int MaxRetryAttempts = 5;
     protected T Container = null!;
 
-    private const int MaxRetryAttempts = 5;
     public async ValueTask InitializeAsync()
     {
         Container = BuildContainer();
-        
-        
+
+
         var attempts = 0;
         while (true)
         {

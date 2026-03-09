@@ -43,7 +43,7 @@ public static class WebApplicationExtensions
 
             return app;
         }
-        
+
         public WebApplication MapEndpoints()
         {
             var endpoints = typeof(Program).Assembly.GetTypes()

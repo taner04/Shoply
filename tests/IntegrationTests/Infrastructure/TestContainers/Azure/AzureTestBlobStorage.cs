@@ -1,5 +1,3 @@
-using System.Net.Mail;
-using Api.Common.Domain.Products;
 using Azure.Storage.Blobs;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Azure;

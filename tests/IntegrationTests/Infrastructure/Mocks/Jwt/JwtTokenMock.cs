@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using IntegrationTests.Factories;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IntegrationTests.Infrastructure.Mocks.Jwt;

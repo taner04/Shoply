@@ -38,8 +38,10 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await using var context = new ApplicationDbContext(_dbContextOptions);
 
         const string sql = $"""
-                            DELETE FROM "Orders";
                             DELETE FROM "OrderItems";
+                            DELETE FROM "Orders";
+                            DELETE FROM "Products";
+                            DELETE FROM "Baskets";
                             DELETE FROM "Users";
                             """;
 

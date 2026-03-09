@@ -16,7 +16,7 @@ public class GetProductsEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/products", async ([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10, IMediator mediator = null!) =>
+        app.MapGet("/products", async ([FromServices] IMediator mediator, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10) =>
         {
             var query = new GetProductsQuery(pageIndex, pageSize);
             return await mediator.Send(query);

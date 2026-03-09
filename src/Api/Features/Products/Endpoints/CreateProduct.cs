@@ -21,7 +21,7 @@ public class CreateProductEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/products", async (CreateProductCommand command, IMediator mediator) =>
+        app.MapPost("/products", async ([FromBody] CreateProductCommand command, [FromServices] IMediator mediator) =>
         {
             await mediator.Send(command);
             return Results.Ok();

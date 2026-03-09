@@ -7,8 +7,10 @@ namespace IntegrationTests.Infrastructure.Mocks.Jwt;
 
 public static class JwtTokenMock
 {
-    private const string Audience = "https://taskly-api";
-    public const string Issuer = "https://mock-auth0/";
+    private const string Audience = "https://shoply-api.com";
+    public const string Issuer = "https://dev-fdj2u7ky31tzfytr.eu.auth0.com/";
+    private const string ClientId = "fnmvYdim43pToNYAA1fmUZkGQIcmdovm";
+    private const string RolesClaim = "https://shoply-api/roles";
 
     private static readonly JwtSecurityTokenHandler TokenHandler = new();
 
@@ -31,7 +33,9 @@ public static class JwtTokenMock
         {
             new Claim("email", UserFactory.Email),
             new Claim("sub", sub),
-            new Claim($"{Audience}/roles", role),
+            new Claim(RolesClaim, role),
+            new Claim("scope", "openid profile email"),
+            new Claim("azp", ClientId),
             new Claim("iat", iatUnix.ToString(), ClaimValueTypes.Integer64),
             new Claim("exp", expUnix.ToString(), ClaimValueTypes.Integer64),
             new Claim("aud", Audience),

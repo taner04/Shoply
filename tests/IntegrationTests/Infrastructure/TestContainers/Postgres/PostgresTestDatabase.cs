@@ -54,6 +54,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         var user = User.Create("otheruser@mail.com", "auth0|otheruserid123");
         user.SetCreated("auth0|otheruserid123");
+        user.Basket.SetCreated("auth0|otheruserid123");
 
         context.Users.Add(user);
         await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);
@@ -66,6 +67,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     {
         var user = UserFactory.Create();
         user.SetCreated(UserFactory.Sub);
+        user.Basket.SetCreated(UserFactory.Sub);
 
         context.Users.Add(user);
         await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);

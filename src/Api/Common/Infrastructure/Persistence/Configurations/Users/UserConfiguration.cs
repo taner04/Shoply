@@ -26,19 +26,5 @@ public sealed class UserConfiguration : AggregateConfiguration<User, UserId>
 
         builder.HasIndex(u => u.Auth0Id)
             .IsUnique();
-
-        // Basket - 1:1 Relationship
-        builder.HasOne(u => u.Basket)
-            .WithOne()
-            .HasForeignKey<Basket>(b => b.UserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // Orders - 1:* Relationship
-        builder.HasMany<Order>()
-            .WithOne(o => o.User)
-            .HasForeignKey(o => o.UserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

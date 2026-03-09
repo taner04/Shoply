@@ -5,11 +5,12 @@ using Api.Common.Infrastructure.Persistence;
 using Api.Features.Products.Exceptions;
 using FluentValidation;
 using Mediator;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Products.Endpoints;
 
-public readonly record struct CreateProductCommand(
+public record CreateProductCommand(
     string Name,
     decimal Price,
     string? Description,
@@ -37,7 +38,7 @@ public sealed class CreateProductCommandHandler(ApplicationDbContext context) : 
     public async ValueTask<Unit> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
         var doesSameNameExists = await context.Products
-            .AnyAsync(p => p.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase), cancellationToken);
+            .AnyAsync(p => p.Name.ToLower() == command.Name.ToLower(), cancellationToken);
 
         if (doesSameNameExists)
         {

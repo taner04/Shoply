@@ -57,7 +57,7 @@ public static class ProblemDetailsConfig
             httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
             problemDetails.Instance = httpContext.Request.Path;
-            problemDetails.Type = $"https://bookly.com/{GetRoutePattern(httpContext)}";
+            problemDetails.Type = $"https://shoply.com/{GetRoutePattern(httpContext)}";
 
             problemDetails.Extensions["method"] = httpContext.Request.Method;
             problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;

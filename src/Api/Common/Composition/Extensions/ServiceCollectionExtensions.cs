@@ -1,5 +1,6 @@
 using Api.Common.Behaviors;
 using Api.Common.Behaviors.Logger;
+using Api.Common.Composition.Options;
 using Api.Common.Domain.Users;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
@@ -21,20 +22,23 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddAuthenticationAndAuthorization(
             IConfiguration configuration)
         {
+            var auth0Config = configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
+            ArgumentNullException.ThrowIfNull(auth0Config);
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Authority = $"https://{configuration["Auth0:Domain"]}";
-                options.Audience = configuration["Auth0:Audience"];
+                options.Authority = $"https://{auth0Config.Domain}";
+                options.Audience = auth0Config.Audience;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = configuration["Auth0:Audience"],
-                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}/",
-                    RoleClaimType = $"{configuration["Auth0:Audience"]}/roles"
+                    ValidAudience = auth0Config.Audience,
+                    ValidIssuer = $"https://{auth0Config.Domain}/",
+                    RoleClaimType = $"{auth0Config.Audience}/roles"
                 };
             });
 

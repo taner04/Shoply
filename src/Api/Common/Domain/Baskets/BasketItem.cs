@@ -20,7 +20,7 @@ public sealed class BasketItem : Entity<BasketItemId>
     public int Quantity { get; private set; }
 
     public Product Product { get; private set; } = null!;
-    
+
     public void IncreaseQuantity()
     {
         Quantity++;

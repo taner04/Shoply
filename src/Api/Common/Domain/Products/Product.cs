@@ -55,7 +55,7 @@ public sealed class Product : AggregateRoot<ProductId>
         Description = nDesc;
         ImageUrl = nUrl;
     }
-    
+
     public BasketItem ToBasketItem(BasketId basketId)
     {
         return new BasketItem(Id, basketId);

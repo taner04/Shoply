@@ -8,7 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Products.Endpoints;
 
-public sealed record UpdateProductCommand(Guid ProductId, string Name, decimal Price, string? Description, int Stock, string ImageUrl) : ICommand;
+public sealed record UpdateProductCommand(
+    Guid ProductId,
+    string Name,
+    decimal Price,
+    string? Description,
+    int Stock,
+    string ImageUrl) : ICommand;
 
 public sealed class UpdateProductEndpoint : IEndpoint
 {
@@ -32,13 +38,15 @@ public sealed class UpdateProductHandler(ApplicationDbContext context) : IComman
 {
     public async ValueTask<Unit> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId), cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
-        
+        var product =
+            await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
+                cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
+
         product.Update(command.Name, command.Price, command.Description, command.Stock, command.ImageUrl);
-        
+
         context.Update(product);
         await context.SaveChangesAsync(cancellationToken);
-        
+
         return Unit.Value;
     }
 }
@@ -74,4 +82,3 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
                (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }
-

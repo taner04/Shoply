@@ -26,13 +26,16 @@ public sealed class GetBasketEndpoint : IEndpoint
     }
 }
 
-public sealed class GetBasketQueryHandler(ApplicationDbContext context, CurrentUserService userService) : IQueryHandler<GetBasketQuery, BasketDto>
+public sealed class GetBasketQueryHandler(ApplicationDbContext context, CurrentUserService userService)
+    : IQueryHandler<GetBasketQuery, BasketDto>
 {
     public async ValueTask<BasketDto> Handle(GetBasketQuery _, CancellationToken cancellationToken)
     {
         var userId = userService.GetCurrentUserId();
-        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems).ThenInclude(bi => bi.Product).FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException<User>(userId);
-        
+        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems)
+                       .ThenInclude(bi => bi.Product).FirstOrDefaultAsync(cancellationToken) ??
+                   throw new EntityNotFoundException<User>(userId);
+
         var basket = user.Basket;
         var basketItems = basket.BasketItems.Select(bi => new BasketItemDto(
             bi.ProductId.Value,
@@ -40,7 +43,7 @@ public sealed class GetBasketQueryHandler(ApplicationDbContext context, CurrentU
             bi.Product.Price,
             bi.Quantity,
             bi.Product.ImageUrl)).ToList();
-        
+
         return new BasketDto(basket.Id.Value, basketItems);
     }
 }
@@ -49,4 +52,5 @@ public sealed record BasketDto(Guid Id, List<BasketItemDto> Items)
 {
     public decimal TotalPrice => Items.Sum(i => i.Price * i.Quantity);
 }
+
 public sealed record BasketItemDto(Guid ProductId, string ProductName, decimal Price, int Quantity, string ImageUrl);

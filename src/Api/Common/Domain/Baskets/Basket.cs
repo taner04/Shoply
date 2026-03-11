@@ -44,7 +44,8 @@ public sealed class Basket : AggregateRoot<BasketId>
 
     public void RemoveProduct(ProductId productId)
     {
-        var existing = _basketItems.FirstOrDefault(p => p.ProductId == productId) ?? throw new EntityNotFoundException<BasketItem>(productId);
+        var existing = _basketItems.FirstOrDefault(p => p.ProductId == productId) ??
+                       throw new EntityNotFoundException<BasketItem>(productId);
 
         if (existing.Quantity == 1)
         {

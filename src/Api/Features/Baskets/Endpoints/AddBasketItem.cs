@@ -16,11 +16,12 @@ public sealed class AddBasketItemEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/baskets/items", async ([FromBody] AddBasketItemCommand command, [FromServices] IMediator mediator) =>
-            {
-                await mediator.Send(command);
-                return Results.NoContent();
-            })
+        app.MapPost("/baskets/items",
+                async ([FromBody] AddBasketItemCommand command, [FromServices] IMediator mediator) =>
+                {
+                    await mediator.Send(command);
+                    return Results.NoContent();
+                })
             .WithName("AddBasketItem")
             .WithTags("Baskets")
             .Produces(StatusCodes.Status204NoContent)
@@ -33,16 +34,19 @@ public sealed class AddBasketItemCommandHandler(ApplicationDbContext context, Cu
 {
     public async ValueTask<Unit> Handle(AddBasketItemCommand command, CancellationToken cancellationToken)
     {
-        var product = await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId), cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
+        var product =
+            await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
+                cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
         ProductOutOfStockException.ThrowIfOutOfStock(product);
-        
+
         var userId = userService.GetCurrentUserId();
-        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems).FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException<User>(userId);
-        
+        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems)
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException<User>(userId);
+
         user.Basket.AddProduct(product);
         context.Update(user);
         await context.SaveChangesAsync(cancellationToken);
-        
+
         return Unit.Value;
     }
 }

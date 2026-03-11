@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Api.Features.Baskets.Endpoints;
-using Api.Common.Domain.Products;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 
@@ -92,7 +91,7 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
 
         Assert.NotNull(basketDto);
         Assert.Equal(2, basketDto.Items.Count);
-        
+
         // Verify first product
         var item1 = basketDto.Items.First(i => i.ProductName == "Test Product 1");
         Assert.Equal(product1.Id.Value, item1.ProductId);

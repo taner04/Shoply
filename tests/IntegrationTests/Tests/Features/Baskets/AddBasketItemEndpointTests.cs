@@ -35,7 +35,7 @@ public sealed class AddBasketItemEndpointTests(TestingFixture fixture) : Testing
         var dbContext = GetDbContext();
 
         // Create a product first
-        var product = Api.Common.Domain.Products.Product.Create(
+        var product = Product.Create(
             "Test Product",
             19.99m,
             "Test description",
@@ -73,7 +73,7 @@ public sealed class AddBasketItemEndpointTests(TestingFixture fixture) : Testing
         var dbContext = GetDbContext();
 
         // Create an out-of-stock product
-        var outOfStockProduct = Api.Common.Domain.Products.Product.Create(
+        var outOfStockProduct = Product.Create(
             "Out of Stock Product",
             29.99m,
             "Out of stock",
@@ -123,7 +123,7 @@ public sealed class AddBasketItemEndpointTests(TestingFixture fixture) : Testing
         var client = CreateAuthenticatedUserClient();
         var dbContext = GetDbContext();
 
-        var product = Api.Common.Domain.Products.Product.Create(
+        var product = Product.Create(
             "Test Product",
             19.99m,
             "Test description",

@@ -1,5 +1,4 @@
 using Api.Features.Baskets.Endpoints;
-using Api.Features.Products.Endpoints;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 
@@ -36,7 +35,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
         );
         dbContext.Products.Add(product);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
-        
+
         var productFromDb = await dbContext.Products
             .AsNoTracking()
             .FirstAsync(p => p.Id == product.Id, CurrentCancellationToken);

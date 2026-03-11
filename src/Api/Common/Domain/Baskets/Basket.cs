@@ -28,11 +28,12 @@ public sealed class Basket : AggregateRoot<BasketId>
         return new Basket(userId);
     }
 
-    public void AddProduct(BasketItem basketItem)
+    public void AddProduct(Product product)
     {
-        var existing = _basketItems.FirstOrDefault(p => p.ProductId == basketItem.ProductId);
+        var existing = _basketItems.FirstOrDefault(p => p.ProductId == product.Id);
         if (existing is null)
         {
+            var basketItem = product.ToBasketItem(Id);
             _basketItems.Add(basketItem);
         }
         else
@@ -43,11 +44,7 @@ public sealed class Basket : AggregateRoot<BasketId>
 
     public void RemoveProduct(ProductId productId)
     {
-        var existing = _basketItems.FirstOrDefault(p => p.ProductId == productId);
-        if (existing is null)
-        {
-            throw new EntityNotFoundException<BasketItem>(productId);
-        }
+        var existing = _basketItems.FirstOrDefault(p => p.ProductId == productId) ?? throw new EntityNotFoundException<BasketItem>(productId);
 
         if (existing.Quantity == 1)
         {

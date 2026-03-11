@@ -5,7 +5,7 @@ using Mediator;
 
 namespace Api.Common.Behaviors;
 
-public sealed class UserProvisioningBehavior<TMessage, TResponse>(
+public sealed partial class UserProvisioningBehavior<TMessage, TResponse>(
     ILogger<UserProvisioningBehavior<TMessage, TResponse>> logger,
     CurrentUserService currentUserService,
     ApplicationDbContext context,
@@ -26,6 +26,8 @@ public sealed class UserProvisioningBehavior<TMessage, TResponse>(
 
         if (user is null)
         {
+            LogUserNotFound(auth0Id);
+
             user = User.Create(
                 currentUserService.GetClaimValue<string>(ClaimTypes.Email),
                 auth0Id
@@ -33,10 +35,25 @@ public sealed class UserProvisioningBehavior<TMessage, TResponse>(
 
             context.Users.Add(user);
             await context.SaveChangesAsync(cancellationToken);
+
+            LogUserCreated(auth0Id);
+        }
+        else
+        {
+            LogUserFound(auth0Id);
         }
 
         accessor.HttpContext!.Items["UserId"] = user.Id;
 
         return await next(message, cancellationToken);
     }
+
+    [LoggerMessage(0, LogLevel.Warning, "User with Auth0Id '{Auth0Id}' not found.")]
+    private partial void LogUserNotFound(string auth0Id);
+
+    [LoggerMessage(1, LogLevel.Information, "User with Auth0Id '{Auth0Id}' created.")]
+    private partial void LogUserCreated(string auth0Id);
+
+    [LoggerMessage(2, LogLevel.Information, "User with Auth0Id '{Auth0Id}' was found.")]
+    private partial void LogUserFound(string auth0Id);
 }

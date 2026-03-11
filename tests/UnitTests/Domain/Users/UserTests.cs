@@ -184,7 +184,7 @@ public sealed class UserTests
         var user2 = User.Create("user2@example.com", "auth0|2");
 
         var product = CreateProduct();
-        user1.Basket.AddProduct(BasketItem.From(product));
+        user1.Basket.AddProduct(product);
 
         Assert.Single(user1.Basket.BasketItems);
         Assert.Empty(user2.Basket.BasketItems);

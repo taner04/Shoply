@@ -14,7 +14,7 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
         return GetClaimValue<string>(ClaimTypes.NameIdentifier);
     }
 
-    public UserId GetUserId()
+    public UserId GetCurrentUserId()
     {
         if (httpContextAccessor.HttpContext!.Items.TryGetValue("UserId", out var id)
             && id is UserId userId)

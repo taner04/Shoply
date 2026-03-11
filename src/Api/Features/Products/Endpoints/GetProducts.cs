@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Products.Endpoints;
 
-public record GetProductsQuery(int PageIndex, int PageSize)
+public sealed record GetProductsQuery(int PageIndex, int PageSize)
     : PaginationQuery(PageIndex, PageSize), IQuery<PaginationResponse<Product>>;
 
-public class GetProductsEndpoint : IEndpoint
+public sealed class GetProductsEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {

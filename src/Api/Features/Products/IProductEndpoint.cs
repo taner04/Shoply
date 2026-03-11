@@ -15,4 +15,8 @@ public interface IProductEndpoint
     [Get("/products")]
     Task<HttpResponseMessage> GetProductsAsync([Query] int pageIndex = 1, [Query] int pageSize = 10,
         CancellationToken cancellationToken = default);
+    
+    [Put("/products/{productId}")]
+    Task<HttpResponseMessage> UpdateProductAsync(Guid productId, [Body] UpdateProductCommand command,
+        CancellationToken cancellationToken);
 }

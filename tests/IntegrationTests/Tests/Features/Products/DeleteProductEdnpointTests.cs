@@ -1,6 +1,6 @@
 namespace IntegrationTests.Tests.Features.Products;
 
-public sealed class DeleteProductTests(TestingFixture fixture) : TestingBase(fixture)
+public sealed class DeleteProductEdnpointTests(TestingFixture fixture) : TestingBase(fixture)
 {
     [Fact]
     public async Task DeleteProduct_Should_Return401_When_Unauthenticated()

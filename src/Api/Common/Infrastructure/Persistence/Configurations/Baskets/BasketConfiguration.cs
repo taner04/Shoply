@@ -18,7 +18,7 @@ public sealed class BasketConfiguration : AggregateConfiguration<Basket, BasketI
         // BasketItems - 1:* Relationship
         builder.HasMany<BasketItem>()
             .WithOne()
-            .HasForeignKey("BasketId")
+            .HasForeignKey(bi => bi.BasketId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 

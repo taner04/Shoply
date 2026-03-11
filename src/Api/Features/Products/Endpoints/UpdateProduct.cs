@@ -1,65 +1,51 @@
 using Api.Common.Abstractions;
 using Api.Common.Composition.Extensions;
 using Api.Common.Infrastructure.Persistence;
-using Api.Features.Products.Exceptions;
+using Api.Common.Shared.Exceptions;
 using FluentValidation;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Products.Endpoints;
 
-public sealed record CreateProductCommand(
-    string Name,
-    decimal Price,
-    string? Description,
-    int Stock,
-    string ImageUrl) : ICommand;
+public sealed record UpdateProductCommand(Guid ProductId, string Name, decimal Price, string? Description, int Stock, string ImageUrl) : ICommand;
 
-public sealed class CreateProductEndpoint : IEndpoint
+public sealed class UpdateProductEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/products", async ([FromBody] CreateProductCommand command, [FromServices] IMediator mediator) =>
+        app.MapPut("/products/{productId:guid}", async (Guid productId, [FromBody] UpdateProductCommand command,
+                [FromServices] IMediator mediator) =>
             {
+                command = command with { ProductId = productId };
                 await mediator.Send(command);
                 return Results.Ok();
             })
-            .WithName("CreateProduct")
+            .WithName("UpdateProduct")
             .WithTags("Products")
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .ProducesApiProblemDetails();
     }
 }
 
-public sealed class CreateProductCommandHandler(ApplicationDbContext context) : ICommandHandler<CreateProductCommand>
+public sealed class UpdateProductHandler(ApplicationDbContext context) : ICommandHandler<UpdateProductCommand>
 {
-    public async ValueTask<Unit> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+    public async ValueTask<Unit> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        var doesSameNameExists = await context.Products
-            .AnyAsync(p => p.Name.ToLower() == command.Name.ToLower(), cancellationToken);
-
-        if (doesSameNameExists)
-        {
-            throw new ProductNameAlreadyExistsException(command.Name);
-        }
-
-        var product = Product.Create(
-            command.Name,
-            command.Price,
-            command.Description,
-            command.Stock,
-            command.ImageUrl);
-
-        context.Products.Add(product);
+        var product = await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId), cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
+        
+        product.Update(command.Name, command.Price, command.Description, command.Stock, command.ImageUrl);
+        
+        context.Update(product);
         await context.SaveChangesAsync(cancellationToken);
-
+        
         return Unit.Value;
     }
 }
 
-public sealed class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {
-    public CreateProductCommandValidator()
+    public UpdateProductCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotNull()
@@ -88,3 +74,4 @@ public sealed class CreateProductCommandValidator : AbstractValidator<CreateProd
                (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }
+

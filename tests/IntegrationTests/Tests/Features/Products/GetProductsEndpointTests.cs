@@ -4,7 +4,7 @@ using Api.Common.Shared.Pagination;
 
 namespace IntegrationTests.Tests.Features.Products;
 
-public sealed class GetProductsTests(TestingFixture fixture) : TestingBase(fixture)
+public sealed class GetProductsEndpointTests(TestingFixture fixture) : TestingBase(fixture)
 {
     [SuppressMessage("Performance", "CA1869:Cache and reuse \'JsonSerializerOptions\' instances")]
     private static PaginationResponse<JsonElement> DeserializePaginationResponse(string json)

@@ -2,7 +2,7 @@ using Api.Features.Products.Endpoints;
 
 namespace IntegrationTests.Tests.Features.Products;
 
-public sealed class CreateProductTests(TestingFixture fixture) : TestingBase(fixture)
+public sealed class CreateProductEndpointTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static CreateProductCommand ValidCommand => new(
         "Valid Product",

@@ -1,3 +1,4 @@
+using Api.Common.Domain.Baskets;
 using Api.Common.Shared.Guards;
 
 namespace Api.Common.Domain.Products;
@@ -53,6 +54,11 @@ public sealed class Product : AggregateRoot<ProductId>
         Name = nName;
         Description = nDesc;
         ImageUrl = nUrl;
+    }
+    
+    public BasketItem ToBasketItem(BasketId basketId)
+    {
+        return new BasketItem(Id, basketId);
     }
 
     private static void Validate(string name, decimal price, string? description, int stock, string imageUrl)

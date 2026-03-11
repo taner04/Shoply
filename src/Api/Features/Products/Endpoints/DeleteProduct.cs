@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Products.Endpoints;
 
-public record DeleteProductCommand(Guid ProductId) : ICommand;
+public sealed record DeleteProductCommand(Guid ProductId) : ICommand;
 
-public class DeleteProductEndpoint : IEndpoint
+public sealed class DeleteProductEndpoint : IEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
@@ -32,11 +32,7 @@ public sealed class DeleteProductCommandHandler(ApplicationDbContext context) : 
     {
         var product =
             await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
-                cancellationToken);
-        if (product is null)
-        {
-            throw new EntityNotFoundException<Product>(command.ProductId);
-        }
+                cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
 
         context.Products.Remove(product);
         await context.SaveChangesAsync(cancellationToken);

@@ -34,7 +34,7 @@ public sealed class BasketTests
         var basket = Basket.CreateEmpty(user.Id);
         var product = CreateProduct();
 
-        basket.AddProduct(BasketItem.From(product));
+        basket.AddProduct(product);
 
         var item = Assert.Single(basket.BasketItems);
         Assert.Equal(product.Id, item.ProductId);
@@ -48,8 +48,8 @@ public sealed class BasketTests
         var basket = Basket.CreateEmpty(user.Id);
         var product = CreateProduct();
 
-        basket.AddProduct(BasketItem.From(product));
-        basket.AddProduct(BasketItem.From(product));
+        basket.AddProduct(product);
+        basket.AddProduct(product);
 
         var item = Assert.Single(basket.BasketItems);
         Assert.Equal(product.Id, item.ProductId);
@@ -64,8 +64,8 @@ public sealed class BasketTests
         var product1 = CreateProduct("Coffee");
         var product2 = CreateProduct("Tea", 8.99m);
 
-        basket.AddProduct(BasketItem.From(product1));
-        basket.AddProduct(BasketItem.From(product2));
+        basket.AddProduct(product1);
+        basket.AddProduct(product2);
 
         Assert.Equal(2, basket.BasketItems.Count);
         Assert.Single(basket.BasketItems, x => x.ProductId == product1.Id);
@@ -90,8 +90,8 @@ public sealed class BasketTests
         var basket = Basket.CreateEmpty(user.Id);
         var product = CreateProduct();
 
-        basket.AddProduct(BasketItem.From(product));
-        basket.AddProduct(BasketItem.From(product)); // qty = 2
+        basket.AddProduct(product);
+        basket.AddProduct(product); // qty = 2
 
         basket.RemoveProduct(product.Id);
 
@@ -106,7 +106,7 @@ public sealed class BasketTests
         var basket = Basket.CreateEmpty(user.Id);
         var product = CreateProduct();
 
-        basket.AddProduct(BasketItem.From(product)); // qty = 1
+        basket.AddProduct(product); // qty = 1
         basket.RemoveProduct(product.Id); // removes it
 
         Assert.Empty(basket.BasketItems);
@@ -119,7 +119,7 @@ public sealed class BasketTests
         var basket = Basket.CreateEmpty(user.Id);
         var product = CreateProduct();
 
-        basket.AddProduct(BasketItem.From(product));
+        basket.AddProduct(product);
         basket.RemoveProduct(product.Id);
 
         Assert.Throws<EntityNotFoundException<BasketItem>>(() =>

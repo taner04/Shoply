@@ -11,6 +11,10 @@ public sealed class BasketItemConfiguration : IEntityTypeConfiguration<BasketIte
 
         builder.HasKey(bi => bi.Id);
 
+        // Foreign Key to Basket
+        builder.Property(bi => bi.BasketId)
+            .IsRequired();
+
         // Foreign Key to Product
 
         // Quantity

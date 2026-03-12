@@ -7,10 +7,10 @@ namespace IntegrationTests.Tests.Features.Products;
 public sealed class GetProductsEndpointTests(TestingFixture fixture) : TestingBase(fixture)
 {
     [SuppressMessage("Performance", "CA1869:Cache and reuse \'JsonSerializerOptions\' instances")]
-    private static PaginationResponse<JsonElement> DeserializePaginationResponse(string json)
+    private static PaginationResult<JsonElement> DeserializePaginationResponse(string json)
     {
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        return JsonSerializer.Deserialize<PaginationResponse<JsonElement>>(json, options)!;
+        return JsonSerializer.Deserialize<PaginationResult<JsonElement>>(json, options)!;
     }
 
     [Fact]

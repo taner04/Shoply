@@ -20,18 +20,16 @@ public sealed class BasketTests
     [Fact]
     public void CreateEmpty_ShouldCreateBasketWithoutItems()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
 
         Assert.Empty(basket.BasketItems);
-        Assert.Equal(user.Id, basket.UserId);
+        Assert.NotNull(basket.Id);
     }
 
     [Fact]
     public void AddProduct_FirstTime_ShouldAddBasketItemWithQuantityOne()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         basket.AddProduct(product);
@@ -44,8 +42,7 @@ public sealed class BasketTests
     [Fact]
     public void AddProduct_SameProductTwice_ShouldIncreaseQuantity()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         basket.AddProduct(product);
@@ -59,8 +56,7 @@ public sealed class BasketTests
     [Fact]
     public void AddProduct_DifferentProducts_ShouldAddBothItems()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product1 = CreateProduct("Coffee");
         var product2 = CreateProduct("Tea", 8.99m);
 
@@ -75,8 +71,7 @@ public sealed class BasketTests
     [Fact]
     public void RemoveProduct_ProductNotInBasket_ShouldThrowEntityNotFound()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         Assert.Throws<EntityNotFoundException<BasketItem>>(() =>
@@ -86,8 +81,7 @@ public sealed class BasketTests
     [Fact]
     public void RemoveProduct_WhenQuantityIsTwo_ShouldDecreaseToOne()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         basket.AddProduct(product);
@@ -102,8 +96,7 @@ public sealed class BasketTests
     [Fact]
     public void RemoveProduct_WhenQuantityIsOne_ShouldRemoveItemFromBasket()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         basket.AddProduct(product); // qty = 1
@@ -115,8 +108,7 @@ public sealed class BasketTests
     [Fact]
     public void RemoveProduct_WhenQuantityIsOneAndCalledTwice_ShouldThrowEntityNotFound()
     {
-        var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var basket = Basket.CreateEmpty();
         var product = CreateProduct();
 
         basket.AddProduct(product);

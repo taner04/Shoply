@@ -5,7 +5,7 @@ namespace Api.Common.Domain.Baskets;
 [ValueObject<Guid>]
 public readonly partial struct BasketId;
 
-public sealed class Basket : AggregateRoot<BasketId>
+public sealed class Basket : Entity<BasketId>
 {
     private readonly List<BasketItem> _basketItems = [];
 
@@ -13,49 +13,53 @@ public sealed class Basket : AggregateRoot<BasketId>
     {
     } // For EF Core
 
-    private Basket(UserId userId)
-    {
-        Id = BasketId.From(Guid.CreateVersion7());
-        UserId = userId;
-    }
-
-    public UserId UserId { get; private set; }
     public IReadOnlyCollection<BasketItem> BasketItems => _basketItems.AsReadOnly();
-    public User User { get; private set; } = null!;
 
-    public static Basket CreateEmpty(UserId userId)
+    public static Basket CreateEmpty()
     {
-        return new Basket(userId);
+        return new Basket { Id = BasketId.From(Guid.CreateVersion7()) };
     }
 
     public void AddProduct(Product product)
     {
-        var existing = _basketItems.FirstOrDefault(p => p.ProductId == product.Id);
-        if (existing is null)
+        var existingIndex = _basketItems.FindIndex(p => p.ProductId == product.Id);
+        if (existingIndex == -1)
         {
-            var basketItem = product.ToBasketItem(Id);
-            _basketItems.Add(basketItem);
+            _basketItems.Add(product.ToBasketItem());
         }
         else
         {
-            existing.IncreaseQuantity();
+            var existing = _basketItems[existingIndex];
+            _basketItems[existingIndex] = existing.IncreaseQuantity();
         }
     }
 
     public void RemoveProduct(ProductId productId)
     {
-        var existing = _basketItems.FirstOrDefault(p => p.ProductId == productId) ??
-                       throw new EntityNotFoundException<BasketItem>(productId);
+        var existingIndex = _basketItems.FindIndex(p => p.ProductId == productId);
+        if (existingIndex == -1)
+        {
+            throw new EntityNotFoundException<BasketItem>(productId);
+        }
 
+        var existing = _basketItems[existingIndex];
         if (existing.Quantity == 1)
         {
-            // Remove item entirely when quantity reaches minimum
-            _basketItems.Remove(existing);
+            _basketItems.RemoveAt(existingIndex);
         }
         else
         {
-            // Decrease quantity when there's more than one
-            existing.DecreaseQuantity();
+            _basketItems[existingIndex] = existing.DecreaseQuantity();
         }
+    }
+
+    public void EmptyBasket()
+    {
+        _basketItems.Clear();
+    }
+
+    public bool IsEmpty()
+    {
+        return _basketItems.Count == 0;
     }
 }

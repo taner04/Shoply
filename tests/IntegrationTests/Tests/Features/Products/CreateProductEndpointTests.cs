@@ -1,4 +1,4 @@
-using Api.Features.Products.Endpoints;
+using Api.Features.Products.Endpoints.CreateProduct;
 
 namespace IntegrationTests.Tests.Features.Products;
 

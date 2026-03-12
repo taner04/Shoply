@@ -82,14 +82,4 @@ public sealed class OrderItemTests
 
         Assert.Equal(1990.00m, orderItem.TotalPrice);
     }
-
-    [Fact]
-    public void OrderItemId_ShouldBeUnique()
-    {
-        var productId = ProductId.From(Guid.NewGuid());
-        var item1 = new OrderItem(productId, "Test", 10.00m, 1);
-        var item2 = new OrderItem(productId, "Test", 10.00m, 1);
-
-        Assert.NotEqual(item1.Id, item2.Id);
-    }
 }

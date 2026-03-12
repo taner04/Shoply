@@ -1,4 +1,6 @@
-using Api.Features.Baskets.Endpoints;
+using Api.Features.Baskets.Endpoints.AddBasketItem;
+using Api.Features.Baskets.Endpoints.DeleteBasketItem;
+using Api.Features.Baskets.Endpoints.GetBasket;
 using Refit;
 
 namespace Api.Features.Baskets;
@@ -13,6 +15,6 @@ public interface IBasketEndpoint
         CancellationToken cancellationToken);
 
     [Delete("/baskets/items")]
-    Task<HttpResponseMessage> DeleteBasketItemAsync([Body] DeleteBasketItem command,
+    Task<HttpResponseMessage> DeleteBasketItemAsync([Body] DeleteBasketItemCommand command,
         CancellationToken cancellationToken);
 }

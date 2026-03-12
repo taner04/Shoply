@@ -1,5 +1,5 @@
-using Api.Features.Baskets.Endpoints;
-using Api.Features.Products.Endpoints;
+using Api.Features.Baskets.Endpoints.AddBasketItem;
+using Api.Features.Products.Endpoints.CreateProduct;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 

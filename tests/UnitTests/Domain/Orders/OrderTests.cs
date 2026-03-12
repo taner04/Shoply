@@ -18,52 +18,55 @@ public sealed class OrderTests
     }
 
     [Fact]
-    public void FromBasket_WithEmptyBasket_ShouldCreateOrderWithoutItems()
+    public void Create_WithEmptyOrderItems_ShouldThrow()
     {
         var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
 
-        var order = Order.FromBasket(basket);
+        // Order.Create() now requires at least one item
+        var ex = Assert.Throws<GuardException>(() =>
+            Order.Create(user.Id, []));
 
-        Assert.Empty(order.OrderItems);
-        Assert.Equal(basket.UserId, order.UserId);
+        Assert.Contains("OrderItems collection cannot be null or empty.", ex.Message);
     }
 
     [Fact]
-    public void FromBasket_ShouldHaveSameUserIdAsBasket()
+    public void Create_ShouldHaveSameUserId()
     {
         var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
 
-        var order = Order.FromBasket(basket);
+        var order = Order.Create(user.Id, [orderItem]);
 
-        Assert.Equal(basket.UserId, order.UserId);
+        Assert.Equal(user.Id, order.UserId);
     }
 
     [Fact]
     public void OrderId_ShouldBeUnique()
     {
         var user = CreateUser();
-        var basket1 = Basket.CreateEmpty(user.Id);
-        var basket2 = Basket.CreateEmpty(user.Id);
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
 
-        var order1 = Order.FromBasket(basket1);
-        var order2 = Order.FromBasket(basket2);
+        var order1 = Order.Create(user.Id, [orderItem]);
+        var order2 = Order.Create(user.Id, [orderItem]);
 
         Assert.NotEqual(order1.Id, order2.Id);
     }
 
     [Fact]
-    public void FromBasket_ShouldCreateValidOrderStructure()
+    public void Create_ShouldCreateValidOrderStructure()
     {
         var user = CreateUser();
-        var basket = Basket.CreateEmpty(user.Id);
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
 
-        var order = Order.FromBasket(basket);
+        var order = Order.Create(user.Id, [orderItem]);
 
         // Validate order structure
         Assert.NotNull(order);
         Assert.NotEqual(Guid.Empty, order.Id.Value);
         Assert.Equal(user.Id, order.UserId);
+        Assert.Single(order.OrderItems);
     }
 }

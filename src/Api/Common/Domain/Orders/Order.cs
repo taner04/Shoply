@@ -1,11 +1,11 @@
-using Api.Common.Domain.Baskets;
+using Api.Common.Shared.Guards;
 
 namespace Api.Common.Domain.Orders;
 
 [ValueObject<Guid>]
 public readonly partial struct OrderId;
 
-public sealed class Order : AggregateRoot<OrderId>
+public sealed class Order : Aggregate<OrderId>
 {
     private readonly List<OrderItem> _orderItems = [];
 
@@ -24,16 +24,9 @@ public sealed class Order : AggregateRoot<OrderId>
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
     public User User { get; private set; } = null!;
 
-    public static Order FromBasket(Basket basket)
+    public static Order Create(UserId userId, List<OrderItem> orderItems)
     {
-        var orderItems = basket.BasketItems
-            .Select(bi =>
-                bi.Product is null
-                    ? throw new InvalidOperationException(
-                        "BasketItem Product must be eagerly loaded before creating order.")
-                    : OrderItem.From(bi.Product, bi.Quantity))
-            .ToList();
-
-        return new Order(basket.UserId, orderItems);
+        Guard.Against.EmptyCollection(orderItems);
+        return new Order(userId, orderItems);
     }
 }

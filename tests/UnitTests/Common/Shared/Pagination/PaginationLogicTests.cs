@@ -21,7 +21,7 @@ public sealed class PaginationLogicTests
         var items = new List<Product>();
 
         // Act
-        var response = new PaginationResponse<Product>(items, pageIndex, expectedTotalPages, totalCount);
+        var response = new PaginationResult<Product>(items, pageIndex, expectedTotalPages, totalCount);
 
         // Assert
         Assert.Equal(pageIndex, response.PageIndex);
@@ -80,7 +80,7 @@ public sealed class PaginationLogicTests
         var totalCount = 0;
 
         // Act
-        var response = new PaginationResponse<Product>(items, pageIndex, totalPages, totalCount);
+        var response = new PaginationResult<Product>(items, pageIndex, totalPages, totalCount);
 
         // Assert
         Assert.Empty(response.Items);

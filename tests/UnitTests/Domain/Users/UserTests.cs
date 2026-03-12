@@ -105,11 +105,13 @@ public sealed class UserTests
     }
 
     [Fact]
-    public void Create_ShouldInitializeBasketWithUserIdAssignedCorrectly()
+    public void Create_ShouldInitializeBasketAsOwned()
     {
         var user = User.Create("test@example.com", "auth0|123");
 
-        Assert.Equal(user.Id, user.Basket.UserId);
+        // Basket is owned by User, so it should exist but won't have separate FK
+        Assert.NotNull(user.Basket);
+        Assert.Empty(user.Basket.BasketItems);
     }
 
     [Fact]
@@ -124,9 +126,10 @@ public sealed class UserTests
     public void AddOrder_ShouldAddOrderToUserOrders()
     {
         var user = User.Create("test@example.com", "auth0|123");
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
 
-        // Create an empty order for testing (doesn't require loaded products)
-        var order = Order.FromBasket(user.Basket);
+        var order = Order.Create(user.Id, [orderItem]);
         user.AddOrder(order);
 
         var addedOrder = Assert.Single(user.Orders);
@@ -137,10 +140,12 @@ public sealed class UserTests
     public void AddOrder_MultipleOrders_ShouldAddAllOrders()
     {
         var user = User.Create("test@example.com", "auth0|123");
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
 
-        var order1 = Order.FromBasket(Basket.CreateEmpty(user.Id));
-        var order2 = Order.FromBasket(Basket.CreateEmpty(user.Id));
-        var order3 = Order.FromBasket(Basket.CreateEmpty(user.Id));
+        var order1 = Order.Create(user.Id, [orderItem]);
+        var order2 = Order.Create(user.Id, [orderItem]);
+        var order3 = Order.Create(user.Id, [orderItem]);
 
         user.AddOrder(order1);
         user.AddOrder(order2);

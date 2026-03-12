@@ -1,4 +1,4 @@
-using Api.Features.Products.Endpoints;
+using Api.Features.Products.Endpoints.UpdateProduct;
 
 namespace IntegrationTests.Tests.Features.Products;
 

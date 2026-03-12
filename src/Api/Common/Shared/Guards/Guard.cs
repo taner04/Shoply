@@ -139,5 +139,24 @@ public static class Guard
                     $"{prop} must be a valid absolute http/https URI.");
             }
         }
+
+        // ---- List ----
+        public static void EmptyCollection<TOwner>(
+            IEnumerable<TOwner>? value,
+            [CallerArgumentExpression(nameof(value))]
+            string? paramName = null)
+        {
+            if (value is not null && value.Any())
+            {
+                return;
+            }
+
+            var prop = Prop(paramName);
+            GuardException.Throw(
+                Owner<TOwner>(),
+                prop,
+                "InvalidEmptyCollection",
+                $"{prop} collection cannot be null or empty.");
+        }
     }
 }

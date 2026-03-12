@@ -1,4 +1,5 @@
-using Api.Features.Baskets.Endpoints;
+using Api.Features.Baskets.Endpoints.AddBasketItem;
+using Api.Features.Baskets.Endpoints.DeleteBasketItem;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 
@@ -9,7 +10,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
     {
         // Arrange
         var unauthenticated = CreateUnauthenticatedClient();
-        var command = new DeleteBasketItem(Guid.NewGuid());
+        var command = new DeleteBasketItemCommand(Guid.NewGuid());
 
         // Act
         var response = await unauthenticated.DeleteBasketItemAsync(command, CurrentCancellationToken);
@@ -45,7 +46,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
         var addResponse = await client.AddBasketItemAsync(addCommand, CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NoContent, addResponse.StatusCode);
 
-        var deleteCommand = new DeleteBasketItem(product.Id.Value);
+        var deleteCommand = new DeleteBasketItemCommand(product.Id.Value);
 
         // Act
         var response = await client.DeleteBasketItemAsync(deleteCommand, CurrentCancellationToken);
@@ -69,7 +70,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
         // Arrange
         var client = CreateAuthenticatedUserClient();
         var nonExistentProductId = Guid.NewGuid();
-        var command = new DeleteBasketItem(nonExistentProductId);
+        var command = new DeleteBasketItemCommand(nonExistentProductId);
 
         // Act
         var response = await client.DeleteBasketItemAsync(command, CurrentCancellationToken);
@@ -100,7 +101,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
         await client.AddBasketItemAsync(addCommand, CurrentCancellationToken);
         await client.AddBasketItemAsync(addCommand, CurrentCancellationToken);
 
-        var deleteCommand = new DeleteBasketItem(product.Id.Value);
+        var deleteCommand = new DeleteBasketItemCommand(product.Id.Value);
 
         // Act
         var response = await client.DeleteBasketItemAsync(deleteCommand, CurrentCancellationToken);
@@ -141,7 +142,7 @@ public sealed class DeleteBasketItemEndpointTests(TestingFixture fixture) : Test
         var addCommand = new AddBasketItemCommand(product.Id.Value);
         await client.AddBasketItemAsync(addCommand, CurrentCancellationToken);
 
-        var deleteCommand = new DeleteBasketItem(product.Id.Value);
+        var deleteCommand = new DeleteBasketItemCommand(product.Id.Value);
 
         // Act
         var response = await client.DeleteBasketItemAsync(deleteCommand, CurrentCancellationToken);

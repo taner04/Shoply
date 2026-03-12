@@ -3,6 +3,7 @@
 global using System.Data.Common;
 global using System.Net;
 global using Api;
+global using Api.Common.Domain.Orders;
 global using Api.Common.Domain.Products;
 global using Api.Common.Domain.Users;
 global using Api.Common.Infrastructure.Persistence;

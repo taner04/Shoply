@@ -1,4 +1,5 @@
-using Api.Features.Products.Endpoints;
+using Api.Features.Products.Endpoints.CreateProduct;
+using Api.Features.Products.Endpoints.UpdateProduct;
 using Refit;
 
 namespace Api.Features.Products;

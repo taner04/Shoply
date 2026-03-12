@@ -1,3 +1,4 @@
+using Api.Common.Attributes;
 using Api.Common.Behaviors;
 using Api.Common.Behaviors.Logger;
 using Api.Common.Composition.Options;
@@ -14,11 +15,9 @@ namespace Api.Common.Composition.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    extension(
-        IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        public IServiceCollection AddAuthenticationAndAuthorization(
-            IConfiguration configuration)
+        public IServiceCollection AddAuthenticationAndAuthorization(IConfiguration configuration)
         {
             var auth0Config = configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
             ArgumentNullException.ThrowIfNull(auth0Config);
@@ -46,8 +45,32 @@ public static class ServiceCollectionExtensions
 
             return services;
         }
+        
+        private IServiceCollection RegisterAutoServices()
+        {
+            var assembly = typeof(Program).Assembly;
 
-        public IServiceCollection AddInfrastructure(WebApplicationBuilder builder)
+            foreach (var type in assembly.GetTypes())
+            {
+                var attr = type.GetCustomAttributes(false)
+                    .OfType<ServiceInjectionAttribute>()
+                    .FirstOrDefault();
+
+                if (attr is null) continue;
+
+                var lifetime = (ServiceLifetime)(int)attr.ServiceLifetime;
+                var serviceType = attr.GetType() == typeof(ServiceInjectionAttribute)
+                    ? type
+                    : attr.GetType().GetGenericArguments()[1];
+
+                services.Add(new ServiceDescriptor(serviceType, type, lifetime));
+            }
+
+            return services;
+        }
+
+        public IServiceCollection RegisterServices(
+            WebApplicationBuilder builder)
         {
             services.AddScoped<CurrentUserService>();
             services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
@@ -66,12 +89,7 @@ public static class ServiceCollectionExtensions
 
                 opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
             });
-
-            return services;
-        }
-
-        public IServiceCollection AddApplication()
-        {
+            
             services.AddMediator(options =>
             {
                 options.ServiceLifetime = ServiceLifetime.Scoped;
@@ -85,6 +103,8 @@ public static class ServiceCollectionExtensions
             });
 
             services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+            services.RegisterAutoServices();
 
             return services;
         }

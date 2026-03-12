@@ -19,8 +19,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
-builder.Services.AddInfrastructure(builder);
-builder.Services.AddApplication();
+builder.Services.RegisterServices(builder);
 
 var app = builder.Build();
 

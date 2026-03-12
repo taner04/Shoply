@@ -7,7 +7,7 @@ namespace Api.Common.Domain.Users;
 [ValueObject<Guid>]
 public readonly partial struct UserId;
 
-public sealed class User : AggregateRoot<UserId>
+public sealed class User : Aggregate<UserId>
 {
     private readonly List<Order> _orders = [];
 
@@ -16,21 +16,18 @@ public sealed class User : AggregateRoot<UserId>
         Id = UserId.From(Guid.CreateVersion7());
         Email = email;
         Auth0Id = auth0Id;
-
-        Basket = Basket.CreateEmpty(Id);
+        Basket = Basket.CreateEmpty();
     }
 
     public string Email { get; private set; }
     public string Auth0Id { get; private set; }
-
+    public Basket Basket { get; private set; } = null!;
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
-    public Basket Basket { get; private set; }
 
     public static User Create(string email, string auth0Id)
     {
         email = email.Trim().ToLowerInvariant();
         Guard.Against.InvalidEmail<User>(email);
-
         Guard.Against.NullOrEmpty<User>(auth0Id);
 
         return new User(email, auth0Id);

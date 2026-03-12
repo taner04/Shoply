@@ -1,4 +1,5 @@
 using Api.Common.Domain.Baskets;
+using Api.Common.Domain.Products.Exceptions;
 using Api.Common.Shared.Guards;
 
 namespace Api.Common.Domain.Products;
@@ -6,7 +7,7 @@ namespace Api.Common.Domain.Products;
 [ValueObject<Guid>]
 public readonly partial struct ProductId;
 
-public sealed class Product : AggregateRoot<ProductId>
+public sealed class Product : Aggregate<ProductId>
 {
     public const string DefaultContainer = "product-images";
 
@@ -56,9 +57,21 @@ public sealed class Product : AggregateRoot<ProductId>
         ImageUrl = nUrl;
     }
 
-    public BasketItem ToBasketItem(BasketId basketId)
+    public BasketItem ToBasketItem()
     {
-        return new BasketItem(Id, basketId);
+        return new BasketItem(Id);
+    }
+
+    public void DecreaseQuantity(int basketQuantity)
+    {
+        Guard.Against.NegativeOrZero<Product>(basketQuantity);
+
+        if (basketQuantity > Quantity)
+        {
+            throw new ProductInsufficientStockException(Id, Quantity, basketQuantity);
+        }
+
+        Quantity -= basketQuantity;
     }
 
     private static void Validate(string name, decimal price, string? description, int stock, string imageUrl)

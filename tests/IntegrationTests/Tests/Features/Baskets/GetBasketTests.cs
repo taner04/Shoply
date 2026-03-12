@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Api.Features.Baskets.Endpoints;
+using Api.Features.Baskets.Endpoints.GetBasket;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 
@@ -34,7 +34,7 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
 
         var content = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var basketDto = JsonSerializer.Deserialize<BasketDto>(content, options);
+        var basketDto = JsonSerializer.Deserialize<BasketResponse>(content, options);
 
         Assert.NotNull(basketDto);
         Assert.Empty(basketDto.Items);
@@ -72,9 +72,9 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
             .Include(u => u.Basket)
             .FirstAsync(u => u.Id == CurrentUserId, CurrentCancellationToken);
 
-        user.Basket.AddProduct(product1);
-        user.Basket.AddProduct(product1); // Add second time to get quantity of 2
-        user.Basket.AddProduct(product2);
+        user.Basket!.AddProduct(product1);
+        user.Basket!.AddProduct(product1); // Add second time to get quantity of 2
+        user.Basket!.AddProduct(product2);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var query = new GetBasketQuery();
@@ -87,7 +87,7 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
 
         var content = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var basketDto = JsonSerializer.Deserialize<BasketDto>(content, options);
+        var basketDto = JsonSerializer.Deserialize<BasketResponse>(content, options);
 
         Assert.NotNull(basketDto);
         Assert.Equal(2, basketDto.Items.Count);
@@ -134,9 +134,9 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
             .Include(u => u.Basket)
             .FirstAsync(u => u.Id == userId, CurrentCancellationToken);
 
-        user.Basket.AddProduct(product);
-        user.Basket.AddProduct(product);
-        user.Basket.AddProduct(product); // Add three times to get quantity of 3
+        user.Basket!.AddProduct(product);
+        user.Basket!.AddProduct(product);
+        user.Basket!.AddProduct(product); // Add three times to get quantity of 3
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Create another user and add product to their basket
@@ -156,7 +156,7 @@ public sealed class GetBasketTests(TestingFixture fixture) : TestingBase(fixture
 
         var content = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var basketDto = JsonSerializer.Deserialize<BasketDto>(content, options);
+        var basketDto = JsonSerializer.Deserialize<BasketResponse>(content, options);
 
         Assert.NotNull(basketDto);
         Assert.Single(basketDto.Items);

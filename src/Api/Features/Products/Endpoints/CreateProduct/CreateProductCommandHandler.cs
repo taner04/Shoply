@@ -1,5 +1,6 @@
 using Api.Common.Infrastructure.Persistence;
 using Api.Features.Products.Exceptions;
+using Api.Features.Products.Models;
 using Mediator;
 
 namespace Api.Features.Products.Endpoints.CreateProduct;
@@ -9,7 +10,8 @@ public sealed class CreateProductCommandHandler(ApplicationDbContext context) : 
     public async ValueTask<Unit> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
         var doesSameNameExists = await context.Products
-            .AnyAsync(p => p.Name.ToLower() == command.Name.ToLower(), cancellationToken);
+            .AsNoTracking()
+            .AnyAsync(p => EF.Functions.ILike(p.Name, command.Name), cancellationToken);
 
         if (doesSameNameExists)
         {

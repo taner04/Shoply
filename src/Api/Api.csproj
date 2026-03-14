@@ -30,6 +30,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         <PackageReference Include="Refit"/>
         <PackageReference Include="Scalar.AspNetCore"/>
+        <PackageReference Include="Stripe.net"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
         <PackageReference Include="Vogen"/>
     </ItemGroup>
@@ -40,6 +41,7 @@
 
     <ItemGroup>
         <Folder Include="Common\Infrastructure\Persistence\Migrations\"/>
+        <Folder Include="Features\Orders\Endpoints\"/>
     </ItemGroup>
 
 </Project>

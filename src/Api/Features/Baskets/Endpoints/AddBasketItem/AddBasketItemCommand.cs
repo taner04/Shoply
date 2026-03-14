@@ -1,5 +1,6 @@
+using Api.Common.Abstractions;
 using Mediator;
 
 namespace Api.Features.Baskets.Endpoints.AddBasketItem;
 
-public sealed record AddBasketItemCommand(Guid ProductId) : ICommand;
+public sealed record AddBasketItemCommand(Guid ProductId) : ICommand, IUserRequest;

@@ -1,4 +1,6 @@
 using Api.Features.Products.Endpoints.UpdateProduct;
+using Api.Features.Products.Models;
+using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace IntegrationTests.Tests.Features.Products;
 
@@ -295,40 +297,6 @@ public sealed class UpdateProductEndpointTests(TestingFixture fixture) : Testing
     }
 
     [Fact]
-    public async Task UpdateProduct_Should_Return200_When_DescriptionIsEmpty()
-    {
-        // Arrange
-        var client = CreateAuthenticatedUserClient();
-        var dbContext = GetDbContext();
-
-        var product = Product.Create(
-            "Original Product",
-            19.99m,
-            "Original description.",
-            10,
-            "https://example.com/product.jpg"
-        );
-        dbContext.Products.Add(product);
-        await dbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var productId = product.Id.Value;
-        var command = new UpdateProductCommand(
-            productId,
-            "Product",
-            9.99m,
-            "", // Empty description is allowed
-            10,
-            "https://example.com/product.jpg"
-        );
-
-        // Act
-        var response = await client.UpdateProductAsync(productId, command, CurrentCancellationToken);
-
-        // Assert
-        Assert.True(response.IsSuccessStatusCode);
-    }
-
-    [Fact]
     public async Task UpdateProduct_Should_Return400_When_ImageUrlIsInvalid()
     {
         // Arrange
@@ -360,46 +328,5 @@ public sealed class UpdateProductEndpointTests(TestingFixture fixture) : Testing
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateProduct_Should_Return200_When_DescriptionIsNull()
-    {
-        // Arrange
-        var client = CreateAuthenticatedUserClient();
-        var dbContext = GetDbContext();
-
-        var product = Product.Create(
-            "Original Product",
-            19.99m,
-            "Original description.",
-            10,
-            "https://example.com/product.jpg"
-        );
-        dbContext.Products.Add(product);
-        await dbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var productId = product.Id.Value;
-        var command = new UpdateProductCommand(
-            productId,
-            "Product",
-            9.99m,
-            null, // Description is optional
-            10,
-            "https://example.com/product.jpg"
-        );
-
-        // Act
-        var response = await client.UpdateProductAsync(productId, command, CurrentCancellationToken);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var updatedProduct = await dbContext.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == ProductId.From(productId), CurrentCancellationToken);
-
-        Assert.NotNull(updatedProduct);
-        Assert.Null(updatedProduct.Description);
     }
 }

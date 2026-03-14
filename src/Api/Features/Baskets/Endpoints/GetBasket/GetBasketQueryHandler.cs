@@ -1,6 +1,8 @@
 using Api.Common.Infrastructure.Persistence;
+using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
 using Api.Common.Shared.Exceptions;
+using Api.Features.Users.Models;
 using Mediator;
 
 namespace Api.Features.Baskets.Endpoints.GetBasket;
@@ -11,9 +13,11 @@ public sealed class GetBasketQueryHandler(ApplicationDbContext context, CurrentU
     public async ValueTask<BasketResponse> Handle(GetBasketQuery _, CancellationToken cancellationToken)
     {
         var userId = userService.GetCurrentUserId();
-        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems)
-                       .ThenInclude(bi => bi.Product).FirstOrDefaultAsync(cancellationToken) ??
-                   throw new EntityNotFoundException<User>(userId);
+        var user = await context.Users
+                       .WithBasket(userId)
+                       .AsNoTracking()
+                       .FirstOrDefaultAsync(cancellationToken)
+                   ?? throw new EntityNotFoundException<User>(userId);
 
         return BasketResponse.FromBasket(user.Basket);
     }

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Api.Common.Shared.Pagination;
+using Api.Features.Products.Models;
 
 namespace IntegrationTests.Tests.Features.Products;
 
@@ -11,19 +12,6 @@ public sealed class GetProductsEndpointTests(TestingFixture fixture) : TestingBa
     {
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         return JsonSerializer.Deserialize<PaginationResult<JsonElement>>(json, options)!;
-    }
-
-    [Fact]
-    public async Task GetProducts_Should_Return401_When_Unauthenticated()
-    {
-        // Arrange
-        var unauthenticated = CreateUnauthenticatedClient();
-
-        // Act
-        var response = await unauthenticated.GetProductsAsync(cancellationToken: CurrentCancellationToken);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]

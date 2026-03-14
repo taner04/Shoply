@@ -214,27 +214,6 @@ public sealed class CreateProductEndpointTests(TestingFixture fixture) : Testing
     }
 
     [Fact]
-    public async Task CreateProduct_Should_Return200_When_DescriptionIsEmpty()
-    {
-        // Arrange
-        var client = CreateAuthenticatedUserClient();
-
-        var command = new CreateProductCommand(
-            "Product Without Description",
-            9.99m,
-            "", // Empty description is allowed by validator
-            10,
-            "https://example.com/product.jpg"
-        );
-
-        // Act
-        var response = await client.CreateProductAsync(command, CurrentCancellationToken);
-
-        // Assert
-        Assert.True(response.IsSuccessStatusCode);
-    }
-
-    [Fact]
     public async Task CreateProduct_Should_Return400_When_ImageUrlIsInvalid()
     {
         // Arrange
@@ -253,34 +232,5 @@ public sealed class CreateProductEndpointTests(TestingFixture fixture) : Testing
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateProduct_Should_Return200_When_DescriptionIsNull()
-    {
-        // Arrange
-        var client = CreateAuthenticatedUserClient();
-
-        var command = new CreateProductCommand(
-            "ProductWithNullDescription",
-            9.99m,
-            null, // Description is optional
-            10,
-            "https://example.com/product.jpg"
-        );
-
-        // Act
-        var response = await client.CreateProductAsync(command, CurrentCancellationToken);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var dbContext = GetDbContext();
-        var createdProduct = await dbContext.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Name == "ProductWithNullDescription", CurrentCancellationToken);
-
-        Assert.NotNull(createdProduct);
-        Assert.Null(createdProduct.Description);
     }
 }

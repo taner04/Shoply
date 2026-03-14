@@ -1,3 +1,7 @@
+using Api.Features.Orders.Models;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
+
 namespace UnitTests.Domain.Users;
 
 public sealed class UserTests
@@ -127,7 +131,7 @@ public sealed class UserTests
     {
         var user = User.Create("test@example.com", "auth0|123");
         var product = CreateProduct();
-        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
 
         var order = Order.Create(user.Id, [orderItem]);
         user.AddOrder(order);
@@ -141,7 +145,7 @@ public sealed class UserTests
     {
         var user = User.Create("test@example.com", "auth0|123");
         var product = CreateProduct();
-        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
 
         var order1 = Order.Create(user.Id, [orderItem]);
         var order2 = Order.Create(user.Id, [orderItem]);

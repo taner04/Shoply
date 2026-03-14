@@ -1,3 +1,7 @@
+using Api.Features.Orders.Models;
+using Api.Features.Products.Models;
+using ProductId = Api.Features.Products.Models.ProductId;
+
 namespace UnitTests.Domain.Orders;
 
 public sealed class OrderItemTests
@@ -16,7 +20,7 @@ public sealed class OrderItemTests
     public void TotalPrice_ShouldCalculateUnitPriceTimesQuantity()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Coffee", 10.00m, 5);
+        var orderItem = new OrderItem(productId, "Coffee", "Fresh roasted", 10.00m, 5);
 
         Assert.Equal(50.00m, orderItem.TotalPrice);
     }
@@ -25,7 +29,7 @@ public sealed class OrderItemTests
     public void TotalPrice_WithDecimalPrice_ShouldCalculateCorrectly()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Coffee", 12.99m, 3);
+        var orderItem = new OrderItem(productId, "Coffee", "Fresh roasted", 12.99m, 3);
 
         Assert.Equal(38.97m, orderItem.TotalPrice);
     }
@@ -34,7 +38,7 @@ public sealed class OrderItemTests
     public void TotalPrice_WithQuantityOne_ShouldEqualUnitPrice()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Coffee", 25.50m, 1);
+        var orderItem = new OrderItem(productId, "Coffee", "Fresh roasted", 25.50m, 1);
 
         Assert.Equal(25.50m, orderItem.TotalPrice);
     }
@@ -43,7 +47,7 @@ public sealed class OrderItemTests
     public void TotalPrice_WithQuantityZero_ShouldBeZero()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Coffee", 10.00m, 0);
+        var orderItem = new OrderItem(productId, "Coffee", "Fresh roasted", 10.00m, 0);
 
         Assert.Equal(0.00m, orderItem.TotalPrice);
     }
@@ -53,13 +57,15 @@ public sealed class OrderItemTests
     {
         var productId = ProductId.From(Guid.NewGuid());
         var productName = "Test Product";
+        var productDescription = "Test Description";
         var unitPrice = 99.99m;
         var quantity = 2;
 
-        var orderItem = new OrderItem(productId, productName, unitPrice, quantity);
+        var orderItem = new OrderItem(productId, productName, productDescription, unitPrice, quantity);
 
         Assert.Equal(productId, orderItem.ProductId);
         Assert.Equal(productName, orderItem.ProductName);
+        Assert.Equal(productDescription, orderItem.ProductDescription);
         Assert.Equal(unitPrice, orderItem.UnitPrice);
         Assert.Equal(quantity, orderItem.Quantity);
     }
@@ -68,7 +74,7 @@ public sealed class OrderItemTests
     public void UnitPrice_ShouldBeReadOnly()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Test", 10.00m, 1);
+        var orderItem = new OrderItem(productId, "Test", "Test description", 10.00m, 1);
 
         // UnitPrice should be initialized but immutable - cannot be changed after creation
         Assert.Equal(10.00m, orderItem.UnitPrice);
@@ -78,8 +84,23 @@ public sealed class OrderItemTests
     public void TotalPrice_WithLargeQuantity_ShouldCalculateCorrectly()
     {
         var productId = ProductId.From(Guid.NewGuid());
-        var orderItem = new OrderItem(productId, "Bulk Item", 1.99m, 1000);
+        var orderItem = new OrderItem(productId, "Bulk Item", "Bulk description", 1.99m, 1000);
 
         Assert.Equal(1990.00m, orderItem.TotalPrice);
+    }
+
+    [Fact]
+    public void From_ShouldCreateOrderItemFromProduct()
+    {
+        var product = CreateProduct();
+        var quantity = 5;
+
+        var orderItem = OrderItem.From(product, quantity);
+
+        Assert.Equal(product.Id, orderItem.ProductId);
+        Assert.Equal(product.Name, orderItem.ProductName);
+        Assert.Equal(product.Description, orderItem.ProductDescription);
+        Assert.Equal(product.Price, orderItem.UnitPrice);
+        Assert.Equal(quantity, orderItem.Quantity);
     }
 }

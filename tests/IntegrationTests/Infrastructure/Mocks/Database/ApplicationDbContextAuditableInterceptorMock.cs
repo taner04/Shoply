@@ -1,4 +1,4 @@
-using Api.Common.Domain;
+using Api.Common.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace IntegrationTests.Infrastructure.Mocks.Database;

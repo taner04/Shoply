@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using Api.Common.Domain.Orders;
 using Api.Common.Shared.Pagination;
+using Api.Features.Orders.Endpoints.CreateOrder;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
 
 namespace IntegrationTests.Tests.Features.Orders;
 
@@ -74,6 +76,7 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
             dbContext.Products.Add(product);
             products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Create 2 orders by adding products to basket and creating orders
@@ -83,12 +86,12 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
             await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
             // Create order via API
-            var createOrderResponse = await client.CreateOrderAsync(new(), CurrentCancellationToken);
+            var createOrderResponse = await client.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
             Assert.Equal(HttpStatusCode.Created, createOrderResponse.StatusCode);
         }
 
         // Act - Get first page with 1 item per page
-        var response = await client.GetOrdersAsync(pageIndex: 1, pageSize: 1, CurrentCancellationToken);
+        var response = await client.GetOrdersAsync(1, 1, CurrentCancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -103,7 +106,7 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         Assert.Equal(2, paginationResponse.TotalPages);
 
         // Act - Get second page
-        var response2 = await client.GetOrdersAsync(pageIndex: 2, pageSize: 1, CurrentCancellationToken);
+        var response2 = await client.GetOrdersAsync(2, 1, CurrentCancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
@@ -155,7 +158,7 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         // Create order for user1
         user1.Basket!.AddProduct(product1);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
-        var response1 = await client1.CreateOrderAsync(new(), CurrentCancellationToken);
+        var response1 = await client1.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.Created, response1.StatusCode);
 
         // Create order for user2
@@ -193,25 +196,27 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         {
             var product = Product.Create(
                 $"Product {i:D3}",
-                10.00m + (i * 0.10m),
+                10.00m + i * 0.10m,
                 $"Description for product {i}.",
                 100,
                 $"https://example.com/product{i}.jpg"
             );
             dbContext.Products.Add(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Create 2 orders with multiple items each
         var allProducts = await dbContext.Products.Take(75).ToListAsync(CurrentCancellationToken);
-        
+
         // Order 1: first 75 products
         foreach (var product in allProducts.Take(50))
         {
             user.Basket!.AddProduct(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
-        var response1 = await client.CreateOrderAsync(new(), CurrentCancellationToken);
+        var response1 = await client.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.Created, response1.StatusCode);
 
         // Order 2: next 25 products
@@ -219,12 +224,13 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         {
             user.Basket!.AddProduct(product);
         }
+
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
-        var response2 = await client.CreateOrderAsync(new(), CurrentCancellationToken);
+        var response2 = await client.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.Created, response2.StatusCode);
 
         // Act - Request with PageSize = 200 (should be clamped to 100)
-        var response = await client.GetOrdersAsync(pageIndex: 1, pageSize: 200, CurrentCancellationToken);
+        var response = await client.GetOrdersAsync(1, 200, CurrentCancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

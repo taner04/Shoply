@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Api.Features.Baskets.Endpoints.GetBasket;
+using Api.Features.Products.Models;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 

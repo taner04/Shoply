@@ -1,6 +1,8 @@
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Shared.Exceptions;
+using Api.Features.Products.Models;
 using Mediator;
+using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Products.Endpoints.UpdateProduct;
 
@@ -9,7 +11,7 @@ public sealed class UpdateProductHandler(ApplicationDbContext context) : IComman
     public async ValueTask<Unit> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
         var product =
-            await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
+            await context.ProductsQuery.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
 
         product.Update(command.Name, command.Price, command.Description, command.Stock, command.ImageUrl);

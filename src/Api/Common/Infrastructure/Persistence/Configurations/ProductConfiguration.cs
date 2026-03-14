@@ -1,8 +1,10 @@
+using Api.Features.Products.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations;
 
-public sealed class ProductConfiguration : AggregateConfiguration<Product, ProductId>
+public sealed class ProductConfiguration : EntityConfiguration<Product, ProductId>
 {
     protected override void PostConfigure(EntityTypeBuilder<Product> builder)
     {
@@ -25,9 +27,12 @@ public sealed class ProductConfiguration : AggregateConfiguration<Product, Produ
 
         // Optional property
         builder.Property(p => p.Description)
+            .IsRequired()
             .HasMaxLength(ProductRules.MaxDescriptionMaxLength);
 
-        // Index for frequent access
-        builder.HasIndex(p => p.Name);
+        // Unique case-insensitive index for product names
+        builder.HasIndex(p => p.Name)
+            .IsUnique()
+            .UseCollation("POSIX");
     }
 }

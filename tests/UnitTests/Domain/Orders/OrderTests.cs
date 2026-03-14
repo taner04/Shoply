@@ -1,3 +1,7 @@
+using Api.Features.Orders.Models;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
+
 namespace UnitTests.Domain.Orders;
 
 public sealed class OrderTests
@@ -34,7 +38,7 @@ public sealed class OrderTests
     {
         var user = CreateUser();
         var product = CreateProduct();
-        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
 
         var order = Order.Create(user.Id, [orderItem]);
 
@@ -46,7 +50,7 @@ public sealed class OrderTests
     {
         var user = CreateUser();
         var product = CreateProduct();
-        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
 
         var order1 = Order.Create(user.Id, [orderItem]);
         var order2 = Order.Create(user.Id, [orderItem]);
@@ -59,7 +63,7 @@ public sealed class OrderTests
     {
         var user = CreateUser();
         var product = CreateProduct();
-        var orderItem = new OrderItem(product.Id, product.Name, product.Price, 1);
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
 
         var order = Order.Create(user.Id, [orderItem]);
 
@@ -68,5 +72,72 @@ public sealed class OrderTests
         Assert.NotEqual(Guid.Empty, order.Id.Value);
         Assert.Equal(user.Id, order.UserId);
         Assert.Single(order.OrderItems);
+    }
+
+    [Fact]
+    public void Create_ShouldInitializeWithPendingPaymentStatus()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+
+        var order = Order.Create(user.Id, [orderItem]);
+
+        Assert.Equal(OrderPaymentStatus.Pending, order.PaymentStatus);
+    }
+
+    [Fact]
+    public void TotalPrice_ShouldSumAllOrderItems()
+    {
+        var user = CreateUser();
+        var product1 = CreateProduct("Product 1", 10.00m);
+        var product2 = CreateProduct("Product 2", 20.00m);
+
+        var orderItem1 = new OrderItem(product1.Id, product1.Name, product1.Description, 10.00m, 2);
+        var orderItem2 = new OrderItem(product2.Id, product2.Name, product2.Description, 20.00m, 1);
+
+        var order = Order.Create(user.Id, [orderItem1, orderItem2]);
+
+        // (10 * 2) + (20 * 1) = 20 + 20 = 40
+        Assert.Equal(40.00m, order.TotalPrice());
+    }
+
+    [Fact]
+    public void MarkPaid_ShouldChangePaymentStatusToPaid()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+        var order = Order.Create(user.Id, [orderItem]);
+
+        order.MarkPaid();
+
+        Assert.Equal(OrderPaymentStatus.Paid, order.PaymentStatus);
+    }
+
+    [Fact]
+    public void MarkFailed_ShouldChangePaymentStatusToFailed()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+        var order = Order.Create(user.Id, [orderItem]);
+
+        order.MarkFailed();
+
+        Assert.Equal(OrderPaymentStatus.Failed, order.PaymentStatus);
+    }
+
+    [Fact]
+    public void Create_ShouldGenerateIdempotencyKey()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+
+        var order = Order.Create(user.Id, [orderItem]);
+
+        Assert.NotNull(order.IdempotencyKey);
+        Assert.Contains("order_", order.IdempotencyKey);
     }
 }

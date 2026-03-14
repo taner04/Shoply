@@ -1,4 +1,5 @@
 using Api.Common.Shared.Pagination;
+using Api.Features.Products.Models;
 
 namespace UnitTests.Common.Shared.Pagination;
 

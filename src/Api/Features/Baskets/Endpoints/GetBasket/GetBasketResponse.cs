@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Api.Common.Domain.Baskets;
+using Api.Features.Baskets.Models;
 
 namespace Api.Features.Baskets.Endpoints.GetBasket;
 

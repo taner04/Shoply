@@ -1,3 +1,5 @@
+using Api.Features.Users.Models;
+
 namespace IntegrationTests.Factories;
 
 internal static class UserFactory

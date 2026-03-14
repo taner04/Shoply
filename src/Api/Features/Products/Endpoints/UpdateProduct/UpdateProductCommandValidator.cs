@@ -1,3 +1,4 @@
+using Api.Features.Products.Models;
 using FluentValidation;
 
 namespace Api.Features.Products.Endpoints.UpdateProduct;

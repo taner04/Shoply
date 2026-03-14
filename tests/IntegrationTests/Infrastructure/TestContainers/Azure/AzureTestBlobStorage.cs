@@ -1,3 +1,4 @@
+using Api.Features.Products.Models;
 using Azure.Storage.Blobs;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Azure;

@@ -1,8 +1,10 @@
+using Api.Features.Users.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using UserId = Api.Features.Users.Models.UserId;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations;
 
-public sealed class UserConfiguration : AggregateConfiguration<User, UserId>
+public sealed class UserConfiguration : EntityConfiguration<User, UserId>
 {
     protected override void PostConfigure(EntityTypeBuilder<User> builder)
     {

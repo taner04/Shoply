@@ -9,6 +9,6 @@ public sealed class GetProductsQueryHandler(PaginationService paginationService,
     public async ValueTask<PaginationResult<GetProductsResponse>> Handle(GetProductsQuery query,
         CancellationToken cancellationToken)
     {
-        return await paginationService.GetPaginationResult(query, mapper,cancellationToken);
+        return await paginationService.GetPaginationResultAsync(query, mapper, cancellationToken);
     }
 }

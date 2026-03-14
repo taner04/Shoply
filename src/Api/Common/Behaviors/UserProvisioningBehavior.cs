@@ -1,6 +1,8 @@
 using System.Security.Claims;
+using Api.Common.Abstractions;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Services;
+using Api.Features.Users.Models;
 using Mediator;
 
 namespace Api.Common.Behaviors;
@@ -11,7 +13,7 @@ public sealed partial class UserProvisioningBehavior<TMessage, TResponse>(
     ApplicationDbContext context,
     IHttpContextAccessor accessor
 ) : IPipelineBehavior<TMessage, TResponse>
-    where TMessage : IMessage
+    where TMessage : IMessage, IUserRequest
 {
     public async ValueTask<TResponse> Handle(
         TMessage message,
@@ -20,7 +22,7 @@ public sealed partial class UserProvisioningBehavior<TMessage, TResponse>(
     {
         var auth0Id = currentUserService.GetAuth0Id();
 
-        var user = await context.Users
+        var user = await context.UsersQuery
             .AsNoTracking()
             .SingleOrDefaultAsync(u => u.Auth0Id == auth0Id, cancellationToken);
 

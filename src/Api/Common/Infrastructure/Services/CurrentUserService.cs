@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using UserId = Api.Features.Users.Models.UserId;
 
 namespace Api.Common.Infrastructure.Services;
 

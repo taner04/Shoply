@@ -1,3 +1,5 @@
+using Api.Features.Products.Models;
+
 namespace IntegrationTests.Tests.Features.Products;
 
 public sealed class DeleteProductEdnpointTests(TestingFixture fixture) : TestingBase(fixture)

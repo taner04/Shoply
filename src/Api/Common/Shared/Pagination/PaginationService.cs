@@ -9,25 +9,26 @@ namespace Api.Common.Shared.Pagination;
 public sealed class PaginationService(ApplicationDbContext context)
 {
     public const int MaxPageSize = 100;
-    
-    public async Task<PaginationResult<TTarget>> GetPaginationResult<TEntity, TTarget>(
+
+    public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,
-        IMapper<TEntity, TTarget> mapper, 
+        IMapper<TEntity, TTarget> mapper,
         CancellationToken cancellationToken) where TEntity : class
     {
-        var result = await ExecutePaginationAsync(context.Set<TEntity>(), paginationQuery, cancellationToken);
+        var result =
+            await ExecutePaginationAsync(context.Set<TEntity>().AsNoTracking(), paginationQuery, cancellationToken);
         return MapResult(result, mapper.Map);
     }
 
-    public async Task<PaginationResult<TTarget>> GetPaginationResult<TEntity, TTarget>(
+    public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,
         IMapper<TEntity, TTarget> mapper,
         Func<IQueryable<TEntity>, IQueryable<TEntity>> filter,
         CancellationToken cancellationToken) where TEntity : class
-    {        
-        IQueryable<TEntity> set = context.Set<TEntity>();
+    {
+        var set = context.Set<TEntity>().AsNoTracking();
         set = filter(set);
-        
+
         var result = await ExecutePaginationAsync(set, paginationQuery, cancellationToken);
         return MapResult(result, mapper.Map);
     }
@@ -42,7 +43,7 @@ public sealed class PaginationService(ApplicationDbContext context)
         var pageIndex = Math.Max(1, paginationQuery.PageIndex);
         var pageSize = Math.Clamp(paginationQuery.PageSize, 1, MaxPageSize);
 
-        var totalCount = await queryable.CountAsync(cancellationToken);
+        var totalCount = await queryable.AsNoTracking().CountAsync(cancellationToken);
 
         var items = await queryable
             .Skip((pageIndex - 1) * pageSize)

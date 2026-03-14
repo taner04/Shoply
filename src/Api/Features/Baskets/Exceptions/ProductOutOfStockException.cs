@@ -1,5 +1,6 @@
 using System.Net;
 using Api.Common.Shared.Exceptions;
+using Api.Features.Products.Models;
 
 namespace Api.Features.Baskets.Exceptions;
 

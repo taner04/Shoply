@@ -1,7 +1,10 @@
 using Api.Common.Infrastructure.Persistence;
+using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
 using Api.Common.Shared.Exceptions;
+using Api.Features.Users.Models;
 using Mediator;
+using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Baskets.Endpoints.DeleteBasketItem;
 
@@ -11,8 +14,10 @@ public sealed class DeleteBasketItemCommandHandler(ApplicationDbContext context,
     public async ValueTask<Unit> Handle(DeleteBasketItemCommand command, CancellationToken cancellationToken)
     {
         var userId = userService.GetCurrentUserId();
-        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems)
-            .FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException<User>(userId);
+        var user = await context.Users
+                       .WithBasket(userId)
+                       .FirstOrDefaultAsync(cancellationToken)
+                   ?? throw new EntityNotFoundException<User>(userId);
 
         var productId = ProductId.From(command.ProductId);
         user.Basket.RemoveProduct(productId);

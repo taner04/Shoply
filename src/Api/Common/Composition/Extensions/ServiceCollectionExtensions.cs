@@ -5,11 +5,14 @@ using Api.Common.Composition.Options;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
 using Api.Common.Infrastructure.Services;
+using Api.Features.Users.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using ServiceDefaults;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Api.Common.Composition.Extensions;
 
@@ -45,7 +48,7 @@ public static class ServiceCollectionExtensions
 
             return services;
         }
-        
+
         private IServiceCollection RegisterAutoServices()
         {
             var assembly = typeof(Program).Assembly;
@@ -56,7 +59,10 @@ public static class ServiceCollectionExtensions
                     .OfType<ServiceInjectionAttribute>()
                     .FirstOrDefault();
 
-                if (attr is null) continue;
+                if (attr is null)
+                {
+                    continue;
+                }
 
                 var lifetime = (ServiceLifetime)(int)attr.ServiceLifetime;
                 var serviceType = attr.GetType() == typeof(ServiceInjectionAttribute)
@@ -89,7 +95,7 @@ public static class ServiceCollectionExtensions
 
                 opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
             });
-            
+
             services.AddMediator(options =>
             {
                 options.ServiceLifetime = ServiceLifetime.Scoped;
@@ -104,7 +110,16 @@ public static class ServiceCollectionExtensions
 
             services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
-            services.RegisterAutoServices();
+            services.AddOptions<StripeConfig>()
+                .BindConfiguration(nameof(StripeConfig))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            services.PostConfigure<StripeConfig>(config => { StripeConfiguration.ApiKey = config.SecretKey; });
+            services.AddScoped<SessionService>();
+            services.AddScoped<RefundService>();
+
+            _ = services.RegisterAutoServices();
 
             return services;
         }

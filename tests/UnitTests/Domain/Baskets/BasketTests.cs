@@ -1,3 +1,7 @@
+using Api.Features.Baskets.Models;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
+
 namespace UnitTests.Domain.Baskets;
 
 public sealed class BasketTests
@@ -12,18 +16,13 @@ public sealed class BasketTests
             "https://example.com/image.jpg");
     }
 
-    private static User CreateUser()
-    {
-        return User.Create("test@example.com", "auth0|123");
-    }
-
     [Fact]
     public void CreateEmpty_ShouldCreateBasketWithoutItems()
     {
         var basket = Basket.CreateEmpty();
 
         Assert.Empty(basket.BasketItems);
-        Assert.NotNull(basket.Id);
+        Assert.NotEqual(Guid.Empty, basket.Id.Value);
     }
 
     [Fact]
@@ -116,5 +115,36 @@ public sealed class BasketTests
 
         Assert.Throws<EntityNotFoundException<BasketItem>>(() =>
             basket.RemoveProduct(product.Id));
+    }
+
+    [Fact]
+    public void IsEmpty_WithoutItems_ShouldReturnTrue()
+    {
+        var basket = Basket.CreateEmpty();
+
+        Assert.True(basket.IsEmpty());
+    }
+
+    [Fact]
+    public void IsEmpty_WithItems_ShouldReturnFalse()
+    {
+        var basket = Basket.CreateEmpty();
+        var product = CreateProduct();
+        basket.AddProduct(product);
+
+        Assert.False(basket.IsEmpty());
+    }
+
+    [Fact]
+    public void EmptyBasket_ShouldRemoveAllItems()
+    {
+        var basket = Basket.CreateEmpty();
+        var product = CreateProduct();
+        basket.AddProduct(product);
+        Assert.NotEmpty(basket.BasketItems);
+
+        basket.EmptyBasket();
+
+        Assert.Empty(basket.BasketItems);
     }
 }

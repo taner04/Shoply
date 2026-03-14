@@ -1,4 +1,5 @@
-using Api.Common.Domain;
+using Api.Common.Shared.Models;
+using Api.Features.Products.Models;
 
 namespace UnitTests.Domain.Common;
 

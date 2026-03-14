@@ -1,8 +1,12 @@
 using Api.Common.Infrastructure.Persistence;
+using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
 using Api.Common.Shared.Exceptions;
 using Api.Features.Baskets.Exceptions;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
 using Mediator;
+using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Baskets.Endpoints.AddBasketItem;
 
@@ -12,13 +16,15 @@ public sealed class AddBasketItemCommandHandler(ApplicationDbContext context, Cu
     public async ValueTask<Unit> Handle(AddBasketItemCommand command, CancellationToken cancellationToken)
     {
         var product =
-            await context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
+            await context.ProductsQuery.FirstOrDefaultAsync(p => p.Id == ProductId.From(command.ProductId),
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId);
         ProductOutOfStockException.ThrowIfOutOfStock(product);
 
         var userId = userService.GetCurrentUserId();
-        var user = await context.Users.Where(u => u.Id == userId).Include(u => u.Basket).ThenInclude(b => b.BasketItems)
-            .FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException<User>(userId);
+        var user = await context.Users
+                       .WithBasket(userId)
+                       .FirstOrDefaultAsync(cancellationToken)
+                   ?? throw new EntityNotFoundException<User>(userId);
 
         user.Basket.AddProduct(product);
         context.Update(user);

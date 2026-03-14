@@ -1,4 +1,6 @@
-using Api.Common.Domain.Baskets.Exceptions;
+using Api.Features.Baskets.Exceptions;
+using Api.Features.Baskets.Models;
+using Api.Features.Products.Models;
 
 namespace UnitTests.Domain.Baskets;
 
@@ -15,33 +17,44 @@ public sealed class BasketItemTests
     }
 
     [Fact]
-    public void ToBasketItem_ShouldCreateBasketItemFromProduct()
+    public void Create_BasketItem_WithDefaultQuantity_ShouldHaveQuantityOne()
     {
         var product = CreateProduct();
 
-        var basketItem = product.ToBasketItem();
+        var basketItem = new BasketItem(product.Id);
 
         Assert.Equal(product.Id, basketItem.ProductId);
         Assert.Equal(1, basketItem.Quantity);
     }
 
     [Fact]
-    public void IncreaseQuantity_ShouldReturnNewItemWithIncrementedQuantity()
+    public void Create_BasketItem_WithCustomQuantity_ShouldHaveProvidedQuantity()
     {
         var product = CreateProduct();
-        var basketItem = product.ToBasketItem(); // qty = 1
+        const int customQuantity = 5;
 
-        var increased = basketItem.IncreaseQuantity(); // returns new item with qty = 2
+        var basketItem = new BasketItem(product.Id, customQuantity);
 
-        Assert.Equal(1, basketItem.Quantity); // Original unchanged
+        Assert.Equal(product.Id, basketItem.ProductId);
+        Assert.Equal(customQuantity, basketItem.Quantity);
+    }
+
+    [Fact]
+    public void IncreaseQuantity_ShouldReturnNewItemWithIncrementedQuantity()
+    {
+        var basketItem = new BasketItem(ProductId.From(Guid.NewGuid()), 1);
+
+        var increased = basketItem.IncreaseQuantity();
+
+        Assert.Equal(1, basketItem.Quantity); // Original unchanged (record is immutable)
         Assert.Equal(2, increased.Quantity); // New item has incremented quantity
     }
 
     [Fact]
     public void IncreaseQuantity_MultipleTimes_ShouldAccumulate()
     {
-        var product = CreateProduct();
-        var basketItem = product.ToBasketItem();
+        var productId = ProductId.From(Guid.NewGuid());
+        var basketItem = new BasketItem(productId, 1);
 
         var qty2 = basketItem.IncreaseQuantity();
         var qty3 = qty2.IncreaseQuantity();
@@ -54,8 +67,7 @@ public sealed class BasketItemTests
     [Fact]
     public void DecreaseQuantity_WhenQuantityIsOne_ShouldThrowException()
     {
-        var product = CreateProduct();
-        var basketItem = product.ToBasketItem(); // qty = 1
+        var basketItem = new BasketItem(ProductId.From(Guid.NewGuid()), 1);
 
         var ex = Assert.Throws<BasketItemQuantityDecreaseException>(() =>
             basketItem.DecreaseQuantity());
@@ -66,8 +78,7 @@ public sealed class BasketItemTests
     [Fact]
     public void DecreaseQuantity_WhenQuantityIsTwo_ShouldReturnNewItemWithDecrementedQuantity()
     {
-        var product = CreateProduct();
-        var basketItem = product.ToBasketItem();
+        var basketItem = new BasketItem(ProductId.From(Guid.NewGuid()), 1);
         var increased = basketItem.IncreaseQuantity(); // qty = 2
 
         var decreased = increased.DecreaseQuantity();
@@ -79,8 +90,8 @@ public sealed class BasketItemTests
     [Fact]
     public void DecreaseQuantity_WhenAtMinimumQuantity_ShouldThrow()
     {
-        var product = CreateProduct();
-        var basketItem = product.ToBasketItem();
+        var productId = ProductId.From(Guid.NewGuid());
+        var basketItem = new BasketItem(productId, 1);
         var qty2 = basketItem.IncreaseQuantity();
         var qty3 = qty2.IncreaseQuantity();
         var qty2Again = qty3.DecreaseQuantity();
@@ -91,5 +102,16 @@ public sealed class BasketItemTests
             qty1.DecreaseQuantity());
 
         Assert.NotNull(ex);
+    }
+
+    [Fact]
+    public void ToBasketItem_ShouldCreateBasketItemFromProduct()
+    {
+        var product = CreateProduct();
+
+        var basketItem = product.ToBasketItem();
+
+        Assert.Equal(product.Id, basketItem.ProductId);
+        Assert.Equal(1, basketItem.Quantity);
     }
 }

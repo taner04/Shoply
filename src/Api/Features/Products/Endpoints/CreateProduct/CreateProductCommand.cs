@@ -1,3 +1,4 @@
+using Api.Common.Abstractions;
 using Mediator;
 
 namespace Api.Features.Products.Endpoints.CreateProduct;
@@ -7,4 +8,4 @@ public sealed record CreateProductCommand(
     decimal Price,
     string? Description,
     int Stock,
-    string ImageUrl) : ICommand;
+    string ImageUrl) : ICommand, IUserRequest;

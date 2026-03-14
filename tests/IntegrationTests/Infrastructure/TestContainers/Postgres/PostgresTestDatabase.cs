@@ -1,4 +1,6 @@
+using Api.Features.Users.Models;
 using Npgsql;
+using UserId = Api.Features.Users.Models.UserId;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 

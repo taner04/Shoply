@@ -1,5 +1,7 @@
-using Api.Features.Orders.Features.CreateOrder;
-using Api.Common.Domain.Orders;
+using Api.Features.Orders.Endpoints.CreateOrder;
+using Api.Features.Orders.Models;
+using Api.Features.Products.Models;
+using Api.Features.Users.Models;
 
 namespace IntegrationTests.Tests.Features.Orders;
 
@@ -70,7 +72,7 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
         // Verify order was created
-        var createdOrder = await dbContext.Orders
+        var createdOrder = await dbContext.Set<Order>()
             .AsNoTracking()
             .FirstOrDefaultAsync(o => o.UserId == userId, CurrentCancellationToken);
 
@@ -133,7 +135,7 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        var createdOrder = await dbContext.Orders
+        var createdOrder = await dbContext.Set<Order>()
             .AsNoTracking()
             .Include(o => o.OrderItems)
             .FirstOrDefaultAsync(o => o.UserId == userId, CurrentCancellationToken);
@@ -285,11 +287,11 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
         // User 1 creates order
         user1.Basket!.AddProduct(product);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
-        var response1 = await client1.CreateOrderAsync(new(), CurrentCancellationToken);
+        var response1 = await client1.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.Created, response1.StatusCode);
 
         // Verify user1 has 1 order
-        var user1Orders = await dbContext.Orders
+        var user1Orders = await dbContext.Set<Order>()
             .AsNoTracking()
             .Where(o => o.UserId == user1Id)
             .ToListAsync(CurrentCancellationToken);
@@ -297,7 +299,7 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
         Assert.Single(user1Orders);
 
         // Verify user2 has 0 orders
-        var user2Orders = await dbContext.Orders
+        var user2Orders = await dbContext.Set<Order>()
             .AsNoTracking()
             .Where(o => o.UserId == user2.Id)
             .ToListAsync(CurrentCancellationToken);

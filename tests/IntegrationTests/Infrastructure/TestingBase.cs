@@ -1,3 +1,6 @@
+using Api.Features.Users.Models;
+using UserId = Api.Features.Users.Models.UserId;
+
 namespace IntegrationTests.Infrastructure;
 
 [Collection("TestingFixtureCollection")]

@@ -34,13 +34,13 @@ APPSETTINGS_API_TEMPLATE = {
     },
     "ConnectionStrings": {
         "AzureBlobStorage": "your-azure-blob-storage-connection-string"
-    }
-}
-
-APPSETTINGS_MIGRATION_SERVICE_TEMPLATE = {
-    "Logging": LOGGING_TEMPLATE,
-    "ConnectionStrings": {
-        "DefaultConnection": "User ID=postgres;Password=postgres;Host=localhost;Port=5432;Database=shoply;"
+    },
+    "StripeConfig": {
+        "PublishableKey": "your-stripe-publishable-key",
+        "SecretKey": "your-stripe-secret-key",
+        "SuccessUrl": "your-success-url",
+        "CancelUrl": "your-cancel-url",
+        "WebhookSecret": "your-stripe-webhook-secret"
     }
 }
 
@@ -66,14 +66,6 @@ def create_appsettings_api() -> None:
     )
 
 
-def create_appsettings_migration_service() -> None:
-    """Create appsettings.json for the MigrationService project."""
-    create_appsettings(
-        project_root / "tools" / "MigrationService" / "appsettings.json",
-        APPSETTINGS_MIGRATION_SERVICE_TEMPLATE,
-    )
-
-
 # =========================================================================
 # Main Entry Point
 # =========================================================================
@@ -83,7 +75,6 @@ def main() -> None:
     """Initialize all required configuration files."""
     console_logger.info("Initializing Shoply configuration files...")
     create_appsettings_api()
-    create_appsettings_migration_service()
     console_logger.success("Initialization completed! You can now configure your values.")
 
     console_logger.info("Creating initial database migration...")

@@ -1,3 +1,4 @@
+using Api.Common.Abstractions;
 using FluentValidation;
 using Mediator;
 
@@ -5,7 +6,7 @@ namespace Api.Common.Behaviors;
 
 public sealed class FluentValidationBehaviour<TMessage, TResponse>(IEnumerable<IValidator<TMessage>> validators)
     : IPipelineBehavior<TMessage, TResponse>
-    where TMessage : IMessage, ICommand<TResponse>, ICommand
+    where TMessage : IMessage, IUserRequest
 {
     public async ValueTask<TResponse> Handle(
         TMessage message,

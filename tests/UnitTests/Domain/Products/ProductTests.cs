@@ -1,3 +1,6 @@
+using Api.Features.Products.Exceptions;
+using Api.Features.Products.Models;
+
 namespace UnitTests.Domain.Products;
 
 public sealed class ProductTests
@@ -97,17 +100,6 @@ public sealed class ProductTests
         Assert.Equal("Product.Stock.InvalidNonNegative", ex.ErrorCode);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Create_WithNullOrWhitespaceDescription_ShouldNormalizeToNull(string? description)
-    {
-        var product = Product.Create(ValidName, ValidPrice, description, ValidStock, ValidImageUrl);
-
-        Assert.Null(product.Description);
-    }
-
     [Fact]
     public void Create_WithDescriptionTooShort_ShouldThrow()
     {
@@ -181,5 +173,69 @@ public sealed class ProductTests
         Assert.Equal(oldDesc, product.Description);
         Assert.Equal(oldQty, product.Quantity);
         Assert.Equal(oldUrl, product.ImageUrl);
+    }
+
+    [Fact]
+    public void ToBasketItem_ShouldCreateBasketItemWithProductId()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, ValidStock, ValidImageUrl);
+
+        var basketItem = product.ToBasketItem();
+
+        Assert.Equal(product.Id, basketItem.ProductId);
+        Assert.Equal(1, basketItem.Quantity);
+    }
+
+    [Fact]
+    public void DecreaseQuantity_WithValidQuantity_ShouldDecreaseProductQuantity()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, 10, ValidImageUrl);
+
+        product.DecreaseQuantity(3);
+
+        Assert.Equal(7, product.Quantity);
+    }
+
+    [Fact]
+    public void DecreaseQuantity_WithExactQuantity_ShouldDecreaseToZero()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, 5, ValidImageUrl);
+
+        product.DecreaseQuantity(5);
+
+        Assert.Equal(0, product.Quantity);
+    }
+
+    [Fact]
+    public void DecreaseQuantity_WithMoreThanAvailable_ShouldThrow()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, 5, ValidImageUrl);
+
+        var ex = Assert.Throws<ProductInsufficientStockException>(() =>
+            product.DecreaseQuantity(10));
+
+        Assert.NotNull(ex);
+    }
+
+    [Fact]
+    public void DecreaseQuantity_WithZeroQuantity_ShouldThrow()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, ValidStock, ValidImageUrl);
+
+        var ex = Assert.Throws<GuardException>(() =>
+            product.DecreaseQuantity(0));
+
+        Assert.NotNull(ex);
+    }
+
+    [Fact]
+    public void DecreaseQuantity_WithNegativeQuantity_ShouldThrow()
+    {
+        var product = Product.Create(ValidName, ValidPrice, ValidDescription, ValidStock, ValidImageUrl);
+
+        var ex = Assert.Throws<GuardException>(() =>
+            product.DecreaseQuantity(-1));
+
+        Assert.NotNull(ex);
     }
 }

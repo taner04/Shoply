@@ -1,5 +1,7 @@
-using Api.Common.Domain.Baskets;
-using Api.Common.Domain.Orders;
+using BasketId = Api.Features.Baskets.Models.BasketId;
+using OrderId = Api.Features.Orders.Models.OrderId;
+using ProductId = Api.Features.Products.Models.ProductId;
+using UserId = Api.Features.Users.Models.UserId;
 
 namespace Api.Common.Infrastructure.Persistence.Configurations;
 

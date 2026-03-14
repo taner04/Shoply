@@ -1,5 +1,6 @@
 using Api.Features.Baskets.Endpoints.AddBasketItem;
 using Api.Features.Baskets.Endpoints.DeleteBasketItem;
+using Api.Features.Products.Models;
 
 namespace IntegrationTests.Tests.Features.Baskets;
 

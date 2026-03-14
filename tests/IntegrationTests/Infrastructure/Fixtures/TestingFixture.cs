@@ -1,10 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Api.Features.Users.Models;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Refit;
+using UserId = Api.Features.Users.Models.UserId;
 
 namespace IntegrationTests.Infrastructure.Fixtures;
 

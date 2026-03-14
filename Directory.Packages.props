@@ -32,6 +32,7 @@
     <PackageVersion Include="Refit" Version="10.0.1" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="10.0.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.13.1" />
+    <PackageVersion Include="Stripe.net" Version="50.4.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
     <PackageVersion Include="Testcontainers.Azurite" Version="4.10.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />

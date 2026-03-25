@@ -1,4 +1,3 @@
-using Api.Features.Users.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UserId = Api.Features.Users.Models.UserId;
 

@@ -105,6 +105,13 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         Assert.Equal(2, paginationResponse.TotalCount);
         Assert.Equal(2, paginationResponse.TotalPages);
 
+        // Verify Payment data is included in response
+        var firstOrder = paginationResponse.Items.First();
+        Assert.True(firstOrder.TryGetProperty("payment", out var payment));
+        Assert.True(payment.TryGetProperty("id", out _));
+        Assert.True(payment.TryGetProperty("amount", out _));
+        Assert.True(payment.TryGetProperty("status", out _));
+
         // Act - Get second page
         var response2 = await client.GetOrdersAsync(2, 1, CurrentCancellationToken);
 
@@ -117,6 +124,10 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         Assert.NotNull(paginationResponse2);
         Assert.Single(paginationResponse2.Items);
         Assert.Equal(2, paginationResponse2.PageIndex);
+
+        // Verify Payment data is included in second page as well
+        var secondOrder = paginationResponse2.Items.First();
+        Assert.True(secondOrder.TryGetProperty("payment", out _));
     }
 
     [Fact]
@@ -244,5 +255,60 @@ public sealed class GetOrdersEndpointTests(TestingFixture fixture) : TestingBase
         Assert.Equal(1, paginationResponse.PageIndex);
         Assert.Equal(2, paginationResponse.TotalCount);
         Assert.Equal(1, paginationResponse.TotalPages);
+    }
+
+    [Fact]
+    public async Task GetOrders_Should_Include_Payment_Data_In_Response()
+    {
+        // Arrange
+        var client = CreateAuthenticatedUserClient();
+        var dbContext = GetDbContext();
+        var userId = CurrentUserId;
+        var user = await dbContext.Users
+            .Include(u => u.Basket)
+            .FirstAsync(u => u.Id == userId, CurrentCancellationToken);
+
+        // Create product and order
+        var product = Product.Create(
+            "Test Product",
+            25.50m,
+            "Test description.",
+            100,
+            "https://example.com/product.jpg"
+        );
+        dbContext.Products.Add(product);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        user.Basket!.AddProduct(product);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        // Create order via API
+        var createOrderResponse = await client.CreateOrderAsync(new CreateOrderCommand(), CurrentCancellationToken);
+        Assert.Equal(HttpStatusCode.Created, createOrderResponse.StatusCode);
+
+        // Act
+        var response = await client.GetOrdersAsync(cancellationToken: CurrentCancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
+        var paginationResponse = DeserializePaginationResponse(content);
+
+        Assert.NotNull(paginationResponse);
+        Assert.Single(paginationResponse.Items);
+
+        var order = paginationResponse.Items.First();
+        Assert.True(order.TryGetProperty("payment", out var payment));
+
+        // Verify payment properties
+        Assert.True(payment.TryGetProperty("id", out _));
+        Assert.True(payment.TryGetProperty("amount", out var amountElement));
+        Assert.True(payment.TryGetProperty("status", out _));
+
+        // Amount should be the total price
+
+        // Verify amount value exists
+        Assert.True(amountElement.ValueKind != System.Text.Json.JsonValueKind.Null);
     }
 }

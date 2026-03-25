@@ -1,8 +1,4 @@
-using Api.Common.Abstractions;
-using Api.Common.Composition.Extensions;
 using Api.Common.Shared.Pagination;
-using Mediator;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Products.Endpoints.GetProducts;
 

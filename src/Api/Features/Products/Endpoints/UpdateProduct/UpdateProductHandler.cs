@@ -1,7 +1,3 @@
-using Api.Common.Infrastructure.Persistence;
-using Api.Common.Shared.Exceptions;
-using Api.Features.Products.Models;
-using Mediator;
 using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Products.Endpoints.UpdateProduct;

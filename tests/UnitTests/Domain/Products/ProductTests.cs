@@ -211,7 +211,7 @@ public sealed class ProductTests
     {
         var product = Product.Create(ValidName, ValidPrice, ValidDescription, 5, ValidImageUrl);
 
-        var ex = Assert.Throws<ProductInsufficientStockException>(() =>
+        var ex = Assert.Throws<InsufficientProductStockException>(() =>
             product.DecreaseQuantity(10));
 
         Assert.NotNull(ex);

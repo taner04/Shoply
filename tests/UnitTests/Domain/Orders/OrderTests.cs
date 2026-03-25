@@ -1,3 +1,4 @@
+using Api.Features.Orders.Exceptions;
 using Api.Features.Orders.Models;
 using Api.Features.Products.Models;
 using Api.Features.Users.Models;
@@ -83,7 +84,37 @@ public sealed class OrderTests
 
         var order = Order.Create(user.Id, [orderItem]);
 
-        Assert.Equal(OrderPaymentStatus.Pending, order.PaymentStatus);
+        Assert.Equal(OrderStatus.Pending, order.Status);
+    }
+
+    [Fact]
+    public void Create_ShouldCreatePaymentWithCorrectAmount()
+    {
+        var user = CreateUser();
+        var product1 = CreateProduct("Product 1", 10.00m);
+        var product2 = CreateProduct("Product 2", 20.00m);
+
+        var orderItem1 = new OrderItem(product1.Id, product1.Name, product1.Description, 10.00m, 2);
+        var orderItem2 = new OrderItem(product2.Id, product2.Name, product2.Description, 20.00m, 1);
+
+        var order = Order.Create(user.Id, [orderItem1, orderItem2]);
+
+        Assert.NotNull(order.Payment);
+        Assert.Equal(40.00m, order.Payment.Amount);
+        Assert.Equal(PaymentStatus.Pending, order.Payment.Status);
+    }
+
+    [Fact]
+    public void Create_ShouldLinkPaymentToOrder()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+
+        var order = Order.Create(user.Id, [orderItem]);
+
+        Assert.NotNull(order.Payment);
+        Assert.Equal(order.Id, order.Payment.OrderId);
     }
 
     [Fact]
@@ -103,7 +134,7 @@ public sealed class OrderTests
     }
 
     [Fact]
-    public void MarkPaid_ShouldChangePaymentStatusToPaid()
+    public void MarkPaid_ShouldChangeOrderStatusToPaid()
     {
         var user = CreateUser();
         var product = CreateProduct();
@@ -112,11 +143,24 @@ public sealed class OrderTests
 
         order.MarkPaid();
 
-        Assert.Equal(OrderPaymentStatus.Paid, order.PaymentStatus);
+        Assert.Equal(OrderStatus.Paid, order.Status);
     }
 
     [Fact]
-    public void MarkFailed_ShouldChangePaymentStatusToFailed()
+    public void MarkPaid_WhenNotPending_ShouldThrow()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+        var order = Order.Create(user.Id, [orderItem]);
+        order.MarkPaid();
+
+        var ex = Assert.Throws<InvalidOrderPaymentStatusException>(() => order.MarkPaid());
+        Assert.NotNull(ex);
+    }
+
+    [Fact]
+    public void MarkFailed_ShouldChangeOrderStatusToFailed()
     {
         var user = CreateUser();
         var product = CreateProduct();
@@ -125,7 +169,36 @@ public sealed class OrderTests
 
         order.MarkFailed();
 
-        Assert.Equal(OrderPaymentStatus.Failed, order.PaymentStatus);
+        Assert.Equal(OrderStatus.Failed, order.Status);
+    }
+
+    [Fact]
+    public void MarkCancelled_ShouldChangeOrderStatusToCancelled()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+        var order = Order.Create(user.Id, [orderItem]);
+
+        order.MarkCancelled();
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+    [Fact]
+    public void MarkCancelled_WhenPaymentSucceeded_ShouldThrow()
+    {
+        var user = CreateUser();
+        var product = CreateProduct();
+        var orderItem = new OrderItem(product.Id, product.Name, product.Description, product.Price, 1);
+        var order = Order.Create(user.Id, [orderItem]);
+
+        // Setup payment as succeeded
+        order.Payment!.MarkProcessing();
+        order.Payment.MarkSucceeded();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => order.MarkCancelled());
+        Assert.Contains("Cannot cancel an order that has already been paid.", ex.Message);
     }
 
     [Fact]

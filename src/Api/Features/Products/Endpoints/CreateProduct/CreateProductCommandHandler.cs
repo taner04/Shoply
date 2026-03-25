@@ -1,7 +1,4 @@
-using Api.Common.Infrastructure.Persistence;
 using Api.Features.Products.Exceptions;
-using Api.Features.Products.Models;
-using Mediator;
 
 namespace Api.Features.Products.Endpoints.CreateProduct;
 
@@ -15,7 +12,7 @@ public sealed class CreateProductCommandHandler(ApplicationDbContext context) : 
 
         if (doesSameNameExists)
         {
-            throw new ProductNameAlreadyExistsException(command.Name);
+            throw new DuplicateProductNameException(command.Name);
         }
 
         var product = Product.Create(

@@ -1,16 +1,22 @@
+using Api.Common.Infrastructure.Services.Emails;
 using IntegrationTests.Infrastructure.Mocks.Database;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Moq;
 using Refit;
 using ServiceDefaults;
 
 namespace IntegrationTests.Infrastructure;
 
-public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionString)
+public class WebApiFactory(DbConnection dbConnection)
     : WebApplicationFactory<Program>
 {
+    private Mock<IEmailService>? _emailServiceMock;
+    public Mock<IEmailService> EmailServiceMock => _emailServiceMock ?? throw new InvalidOperationException("Email mock not initialized");
+
     protected override void ConfigureWebHost(
         IWebHostBuilder builder)
     {
@@ -24,10 +30,18 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
         {
             services.AddMockDbContext(dbConnection);
             services.AddMockJwtBearerOptions();
+            
+            _emailServiceMock = new Mock<IEmailService>(MockBehavior.Loose);
+            _emailServiceMock
+                .Setup(x => x.SendEmailAsync(It.IsAny<IEmailTemplate>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            
+            services.RemoveAll<IEmailService>();
+            services.AddSingleton(_emailServiceMock.Object);
+            
             services.AddRefitClient<IApiClient>();
         });
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", dbConnection.ConnectionString);
-        builder.UseSetting($"ConnectionStrings:{AppHostConstants.AzureBlobStorage}", azuriteConnectionString);
     }
 }

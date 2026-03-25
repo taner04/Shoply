@@ -1,6 +1,3 @@
-using Api.Common.Abstractions;
-using Mediator;
-
 namespace Api.Features.Products.Endpoints.CreateProduct;
 
 public sealed record CreateProductCommand(

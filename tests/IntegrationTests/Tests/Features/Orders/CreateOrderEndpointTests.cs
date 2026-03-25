@@ -306,4 +306,107 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
 
         Assert.Empty(user2Orders);
     }
+
+    [Fact]
+    public async Task CreateOrder_Should_Create_Payment_With_Correct_Amount()
+    {
+        // Arrange
+        var client = CreateAuthenticatedUserClient();
+        var dbContext = GetDbContext();
+        var userId = CurrentUserId;
+
+        var user = await dbContext.Users
+            .Include(u => u.Basket)
+            .FirstAsync(u => u.Id == userId, CurrentCancellationToken);
+
+        // Create product
+        var product = Product.Create(
+            "Payment Test Product",
+            50.00m,
+            "Product for payment test",
+            10,
+            "https://example.com/payment-product.jpg"
+        );
+        dbContext.Products.Add(product);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        // Add product to basket
+        user.Basket!.AddProduct(product);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var command = new CreateOrderCommand();
+
+        // Act
+        var response = await client.CreateOrderAsync(command, CurrentCancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        // Verify order and payment were created
+        var createdOrder = await dbContext.Set<Order>()
+            .Include(o => o.Payment)
+            .FirstOrDefaultAsync(o => o.UserId == userId, CurrentCancellationToken);
+
+        Assert.NotNull(createdOrder);
+        Assert.NotNull(createdOrder.Payment);
+        Assert.Equal(50.00m, createdOrder.Payment.Amount);
+        Assert.Equal(PaymentStatus.Pending, createdOrder.Payment.Status);
+        Assert.Null(createdOrder.Payment.StripePaymentIntentId);
+        Assert.Equal(0, createdOrder.Payment.RefundedAmount);
+    }
+
+    [Fact]
+    public async Task CreateOrder_Should_Create_Payment_With_Correct_Total_For_Multiple_Items()
+    {
+        // Arrange
+        var client = CreateAuthenticatedUserClient();
+        var dbContext = GetDbContext();
+        var userId = CurrentUserId;
+
+        var user = await dbContext.Users
+            .Include(u => u.Basket)
+            .FirstAsync(u => u.Id == userId, CurrentCancellationToken);
+
+        // Create multiple products
+        var product1 = Product.Create(
+            "Product A",
+            25.00m,
+            "This is a description for Product A",
+            10,
+            "https://example.com/productA.jpg"
+        );
+        var product2 = Product.Create(
+            "Product B",
+            15.00m,
+            "This is a description for Product B",
+            10,
+            "https://example.com/productB.jpg"
+        );
+
+        dbContext.Products.Add(product1);
+        dbContext.Products.Add(product2);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        // Add to basket: product1 (qty=2) = 50.00, product2 (qty=1) = 15.00, total = 65.00
+        user.Basket!.AddProduct(product1);
+        user.Basket!.AddProduct(product1);
+        user.Basket!.AddProduct(product2);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var command = new CreateOrderCommand();
+
+        // Act
+        var response = await client.CreateOrderAsync(command, CurrentCancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var createdOrder = await dbContext.Set<Order>()
+            .Include(o => o.Payment)
+            .FirstOrDefaultAsync(o => o.UserId == userId, CurrentCancellationToken);
+
+        Assert.NotNull(createdOrder);
+        Assert.NotNull(createdOrder.Payment);
+        Assert.Equal(65.00m, createdOrder.Payment.Amount);
+    }
 }

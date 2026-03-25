@@ -1,6 +1,5 @@
 using Api.Common.Attributes;
 using Api.Common.Composition.Options;
-using Api.Features.Orders.Models;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
@@ -128,7 +127,6 @@ public sealed partial class StripePaymentProvider(
         try
         {
             var refund = await refundService.CreateAsync(refundOptions, cancellationToken: cancellationToken);
-
             LogRefundSuccess(parameters.PaymentIntentId, parameters.TotalAmountInCents);
 
             return true;

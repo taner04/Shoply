@@ -1,5 +1,4 @@
 using Api.Common.Shared.Pagination;
-using Mediator;
 
 namespace Api.Features.Products.Endpoints.GetProducts;
 

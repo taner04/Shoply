@@ -3,18 +3,14 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using Api.Features.Users.Models;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
-using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Refit;
-using UserId = Api.Features.Users.Models.UserId;
 
 namespace IntegrationTests.Infrastructure.Fixtures;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
-    private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
-
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -39,9 +35,7 @@ public sealed class TestingFixture : IAsyncLifetime
 
         await _postgresTestDatabase.InitializeContainerAsync();
 
-        await _azureTestBlobStorage.InitializeContainerAsync();
-
-        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
+        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
     }
 
@@ -54,7 +48,6 @@ public sealed class TestingFixture : IAsyncLifetime
     public async Task SetUpAsync()
     {
         await _postgresTestDatabase.ResetContainerAsync();
-        await _azureTestBlobStorage.ResetContainerAsync();
     }
 
     public async Task<UserId> CreateForeignUserAsync()

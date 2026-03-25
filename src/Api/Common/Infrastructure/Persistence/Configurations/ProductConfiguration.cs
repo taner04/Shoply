@@ -1,4 +1,3 @@
-using Api.Features.Products.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductId = Api.Features.Products.Models.ProductId;
 

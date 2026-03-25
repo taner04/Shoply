@@ -1,9 +1,5 @@
 using System.Security.Claims;
-using Api.Common.Abstractions;
-using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Services;
-using Api.Features.Users.Models;
-using Mediator;
 
 namespace Api.Common.Behaviors;
 

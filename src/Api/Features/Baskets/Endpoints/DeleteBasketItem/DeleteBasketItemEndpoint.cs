@@ -1,8 +1,3 @@
-using Api.Common.Abstractions;
-using Api.Common.Composition.Extensions;
-using Mediator;
-using Microsoft.AspNetCore.Mvc;
-
 namespace Api.Features.Baskets.Endpoints.DeleteBasketItem;
 
 public sealed class DeleteBasketItemEndpoint : IEndpoint

@@ -62,6 +62,13 @@ public sealed class Product : Entity<ProductId>
     {
         return new BasketItem(Id);
     }
+    
+    public void IncreaseQuantity(int basketQuantity)
+    {
+        Guard.Against.NegativeOrZero<Product>(basketQuantity);
+
+        Quantity += basketQuantity;
+    }
 
     public void DecreaseQuantity(int basketQuantity)
     {
@@ -69,7 +76,7 @@ public sealed class Product : Entity<ProductId>
 
         if (basketQuantity > Quantity)
         {
-            throw new ProductInsufficientStockException(Id, Quantity, basketQuantity);
+            throw new InsufficientProductStockException(Id, Quantity, basketQuantity);
         }
 
         Quantity -= basketQuantity;

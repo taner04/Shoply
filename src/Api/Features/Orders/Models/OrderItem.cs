@@ -1,4 +1,3 @@
-using Api.Features.Products.Models;
 using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Orders.Models;

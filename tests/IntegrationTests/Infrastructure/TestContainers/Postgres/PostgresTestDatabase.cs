@@ -36,6 +36,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         const string sql = """
                            DELETE FROM "OrderItems";
+                           DELETE FROM "Payments";
                            DELETE FROM "Orders";
                            DELETE FROM "BasketItems";
                            DELETE FROM "Baskets";

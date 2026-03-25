@@ -1,6 +1,5 @@
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
-using Api.Common.Shared.Exceptions;
 
 namespace Api.Common.Shared.Guards;
 

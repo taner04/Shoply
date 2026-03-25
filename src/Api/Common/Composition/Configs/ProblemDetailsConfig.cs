@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Api.Common.Shared.Exceptions;
 using FluentValidation;
 
 namespace Api.Common.Composition.Configs;

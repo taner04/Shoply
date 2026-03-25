@@ -1,7 +1,6 @@
 using Api.Common.Shared.Guards;
 using Api.Common.Shared.Models;
 using Api.Features.Baskets.Models;
-using Api.Features.Orders.Models;
 
 namespace Api.Features.Users.Models;
 

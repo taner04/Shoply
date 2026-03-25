@@ -1,6 +1,4 @@
-using Api.Common.Abstractions;
 using FluentValidation;
-using Mediator;
 
 namespace Api.Common.Behaviors;
 

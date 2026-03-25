@@ -1,5 +1,4 @@
 using System.Net;
-using Api.Common.Shared.Exceptions;
 
 namespace Api.Features.Orders.Exceptions;
 

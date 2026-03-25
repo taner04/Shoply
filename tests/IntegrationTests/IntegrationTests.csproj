@@ -8,24 +8,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs"/>
-        <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Refit"/>
-        <PackageReference Include="Refit.HttpClientFactory"/>
-        <PackageReference Include="Testcontainers.Azurite"/>
-        <PackageReference Include="Testcontainers.PostgreSql"/>
-        <PackageReference Include="xunit.runner.visualstudio"/>
-        <PackageReference Include="xunit.v3"/>
+        <PackageReference Include="Azure.Storage.Blobs" />
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Moq" />
+        <PackageReference Include="Refit" />
+        <PackageReference Include="Refit.HttpClientFactory" />
+        <PackageReference Include="Testcontainers.Azurite" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="xunit.runner.visualstudio" />
+        <PackageReference Include="xunit.v3" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Xunit"/>
+        <Using Include="Xunit" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Api\Api.csproj"/>
+        <ProjectReference Include="..\..\src\Api\Api.csproj" />
     </ItemGroup>
 
 </Project>

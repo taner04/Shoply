@@ -1,11 +1,6 @@
-using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
-using Api.Common.Shared.Exceptions;
 using Api.Features.Baskets.Exceptions;
-using Api.Features.Products.Models;
-using Api.Features.Users.Models;
-using Mediator;
 using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Baskets.Endpoints.AddBasketItem;

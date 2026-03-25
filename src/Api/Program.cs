@@ -1,6 +1,5 @@
 using Api.Common.Composition.Configs;
 using Api.Common.Composition.Configs.OpenApi;
-using Api.Common.Composition.Extensions;
 using Api.Common.Composition.Options;
 using ServiceDefaults;
 

@@ -1,9 +1,5 @@
-using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
-using Api.Common.Shared.Exceptions;
-using Api.Features.Users.Models;
-using Mediator;
 
 namespace Api.Features.Baskets.Endpoints.GetBasket;
 

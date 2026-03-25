@@ -6,5 +6,5 @@ public static class AppHostConstants
     public const string Api = "shoply-api";
     public const string MigrationService = "shoply-migrationservice";
     public const string Azure = "shoply-azure";
-    public const string AzureBlobStorage = "Shoply-Azure-Blobstorage";
+    public const string Papercut = "shoply-papercut";
 }

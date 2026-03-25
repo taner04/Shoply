@@ -1,7 +1,4 @@
 using Api.Common.Infrastructure.Persistence.Configurations;
-using Api.Features.Orders.Models;
-using Api.Features.Products.Models;
-using Api.Features.Users.Models;
 
 namespace Api.Common.Infrastructure.Persistence;
 

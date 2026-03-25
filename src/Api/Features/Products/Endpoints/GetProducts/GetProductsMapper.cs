@@ -1,6 +1,4 @@
-using Api.Common.Abstractions;
 using Api.Common.Attributes;
-using Api.Features.Products.Models;
 
 namespace Api.Features.Products.Endpoints.GetProducts;
 

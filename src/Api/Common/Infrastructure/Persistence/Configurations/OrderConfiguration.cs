@@ -1,4 +1,3 @@
-using Api.Features.Orders.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OrderId = Api.Features.Orders.Models.OrderId;
 
@@ -18,7 +17,7 @@ public sealed class OrderConfiguration : EntityConfiguration<Order, OrderId>
         builder.Property(o => o.IdempotencyKey)
             .IsRequired();
 
-        builder.Property(o => o.PaymentStatus)
+        builder.Property(o => o.Status)
             .IsRequired()
             .HasConversion<string>();
 
@@ -29,6 +28,12 @@ public sealed class OrderConfiguration : EntityConfiguration<Order, OrderId>
             nav.WithOwner().HasForeignKey("OrderId");
             nav.HasKey("OrderId", "ProductId");
         });
+
+        builder.HasOne(o => o.Payment)
+            .WithOne(p => p.Order)
+            .HasForeignKey<Payment>(p => p.OrderId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Index for user queries
         builder.HasIndex(o => o.UserId);

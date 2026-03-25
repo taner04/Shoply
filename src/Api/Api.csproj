@@ -11,6 +11,7 @@
         <PackageReference Include="FluentValidation"/>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
         <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="MailKit" />
         <PackageReference Include="Mediator.Abstractions"/>
         <PackageReference Include="Mediator.SourceGenerator">
             <PrivateAssets>all</PrivateAssets>
@@ -27,6 +28,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MimeKit" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         <PackageReference Include="Refit"/>
         <PackageReference Include="Scalar.AspNetCore"/>
@@ -41,7 +43,6 @@
 
     <ItemGroup>
         <Folder Include="Common\Infrastructure\Persistence\Migrations\"/>
-        <Folder Include="Features\Orders\Endpoints\"/>
     </ItemGroup>
 
 </Project>

@@ -69,7 +69,7 @@ public sealed class BasketItemTests
     {
         var basketItem = new BasketItem(ProductId.From(Guid.NewGuid()), 1);
 
-        var ex = Assert.Throws<BasketItemQuantityDecreaseException>(() =>
+        var ex = Assert.Throws<InvalidBasketItemQuantityException>(() =>
             basketItem.DecreaseQuantity());
 
         Assert.NotNull(ex);
@@ -98,7 +98,7 @@ public sealed class BasketItemTests
         var qty1 = qty2Again.DecreaseQuantity();
 
         // At minimum (qty=1), further decrease throws
-        var ex = Assert.Throws<BasketItemQuantityDecreaseException>(() =>
+        var ex = Assert.Throws<InvalidBasketItemQuantityException>(() =>
             qty1.DecreaseQuantity());
 
         Assert.NotNull(ex);

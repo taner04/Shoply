@@ -1,6 +1,6 @@
 using Api.Common.Infrastructure.Services;
 using Api.Common.Shared.Pagination;
-using Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Orders.Endpoints.GetOrders;
 
@@ -17,7 +17,7 @@ public sealed class GetOrdersQueryHandler(
         return await paginationService.GetPaginationResultAsync(
             query,
             mapper,
-            q => q.Where(o => o.UserId == userId),
+            q => q.Include(o => o.Payment).Where(o => o.UserId == userId),
             cancellationToken);
     }
 }

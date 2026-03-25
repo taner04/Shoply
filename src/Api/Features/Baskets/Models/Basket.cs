@@ -1,6 +1,4 @@
-using Api.Common.Shared.Exceptions;
 using Api.Common.Shared.Models;
-using Api.Features.Products.Models;
 using ProductId = Api.Features.Products.Models.ProductId;
 
 namespace Api.Features.Baskets.Models;

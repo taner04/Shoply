@@ -1,19 +1,15 @@
-using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Extensions;
 using Api.Common.Infrastructure.Services;
-using Api.Common.Shared.Exceptions;
+using Api.Common.Infrastructure.Services.Emails;
 using Api.Features.Orders.Exceptions;
-using Api.Features.Orders.Models;
-using Api.Features.Products.Models;
-using Api.Features.Users.Models;
-using Mediator;
 
 namespace Api.Features.Orders.Endpoints.CreateOrder;
 
 public sealed class CreateOrderCommandHandler(
     ApplicationDbContext context,
     CurrentUserService userService,
-    StripePaymentProvider stripePaymentProvider) : ICommandHandler<CreateOrderCommand, string>
+    StripePaymentProvider stripePaymentProvider,
+    IEmailService emailService) : ICommandHandler<CreateOrderCommand, string>
 {
     public async ValueTask<string> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
@@ -56,7 +52,8 @@ public sealed class CreateOrderCommandHandler(
 
             await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            await emailService.SendEmailAsync(new CreateOrderEmailTemplate(newOrder, user.Email), cancellationToken);
             return await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
         }
         catch

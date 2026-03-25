@@ -1,6 +1,6 @@
 using Api.Common.Shared.Guards;
 using Api.Common.Shared.Models;
-using Api.Features.Users.Models;
+using Api.Features.Orders.Exceptions;
 using UserId = Api.Features.Users.Models.UserId;
 
 namespace Api.Features.Orders.Models;
@@ -8,11 +8,12 @@ namespace Api.Features.Orders.Models;
 [ValueObject<Guid>]
 public readonly partial struct OrderId;
 
-public enum OrderPaymentStatus
+public enum OrderStatus
 {
     Pending,
     Paid,
-    Failed
+    Failed,
+    Cancelled
 }
 
 public sealed class Order : Entity<OrderId>
@@ -29,15 +30,18 @@ public sealed class Order : Entity<OrderId>
         UserId = userId;
         _orderItems = orderItems;
         IdempotencyKey = $"order_{Id.Value:N}_checkout_v1";
-        PaymentStatus = OrderPaymentStatus.Pending;
+        Status = OrderStatus.Pending;
+        Payment = Payment.Create(Id, TotalPrice());
     }
 
     public UserId UserId { get; private set; }
     public string IdempotencyKey { get; private set; }
-    public OrderPaymentStatus PaymentStatus { get; private set; }
+    public OrderStatus Status { get; private set; }
 
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
     public User User { get; private set; } = null!;
+    
+    public Payment Payment { get; private set; }
 
     public static Order Create(UserId userId, List<OrderItem> orderItems)
     {
@@ -52,11 +56,31 @@ public sealed class Order : Entity<OrderId>
 
     public void MarkPaid()
     {
-        PaymentStatus = OrderPaymentStatus.Paid;
+        if (Status != OrderStatus.Pending)
+        {
+            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Paid);
+        }
+        
+        Status = OrderStatus.Paid;
     }
 
     public void MarkFailed()
     {
-        PaymentStatus = OrderPaymentStatus.Failed;
+        if (Status != OrderStatus.Pending)
+        {
+            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Failed);
+        }
+        
+        Status = OrderStatus.Failed;
+    }
+    
+    public void MarkCancelled()
+    {
+        if (Payment?.Status == PaymentStatus.Succeeded)
+        {
+            throw new InvalidOperationException("Cannot cancel an order that has already been paid.");
+        }
+        
+        Status = OrderStatus.Cancelled;
     }
 }

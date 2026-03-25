@@ -1,4 +1,3 @@
-using Api.Common.Abstractions;
 using Api.Common.Composition.Options;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;

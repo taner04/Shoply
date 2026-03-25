@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Mediator;
 
 namespace Api.Common.Behaviors.Logger;
 

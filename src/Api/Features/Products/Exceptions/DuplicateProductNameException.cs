@@ -1,9 +1,8 @@
 using System.Net;
-using Api.Common.Shared.Exceptions;
 
 namespace Api.Features.Products.Exceptions;
 
-public sealed class ProductNameAlreadyExistsException(string name) : ApiException("Product Name Already Exists",
+public sealed class DuplicateProductNameException(string name) : ApiException("Duplicate Product Name",
     $"A product with the name '{name}' already exists. Please choose a different name.",
-    "Product.Name.AlreadyExists",
+    "Product.Name.Duplicate",
     HttpStatusCode.BadRequest);

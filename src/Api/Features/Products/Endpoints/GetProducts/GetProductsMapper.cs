@@ -11,8 +11,6 @@ public sealed class GetProductsMapper : IMapper<Product, GetProductsResponse>
             p.Id.Value,
             p.Name,
             p.Price,
-            p.Description,
-            p.Quantity,
             p.ImageUrl)).ToList();
     }
 }

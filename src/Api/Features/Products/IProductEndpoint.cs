@@ -1,4 +1,5 @@
 using Api.Features.Products.Endpoints.CreateProduct;
+using Api.Features.Products.Endpoints.GetProductDetails;
 using Api.Features.Products.Endpoints.UpdateProduct;
 using Refit;
 
@@ -16,6 +17,9 @@ public interface IProductEndpoint
     [Get("/products")]
     Task<HttpResponseMessage> GetProductsAsync([Query] int pageIndex = 1, [Query] int pageSize = 10,
         CancellationToken cancellationToken = default);
+
+    [Get("/products/{productId}")]
+    Task<HttpResponseMessage> GetProductDetailsAsync(Guid productId, CancellationToken cancellationToken);
 
     [Put("/products/{productId}")]
     Task<HttpResponseMessage> UpdateProductAsync(Guid productId, [Body] UpdateProductCommand command,

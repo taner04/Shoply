@@ -4,6 +4,4 @@ public sealed record GetProductsResponse(
     Guid Id,
     string Name,
     decimal Price,
-    string? Description,
-    int Quantity,
     string ImageUrl);

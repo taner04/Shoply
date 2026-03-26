@@ -8,41 +8,42 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation"/>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
-        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="Auth0.AspNetCore.Authentication.Api" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+        <PackageReference Include="JetBrains.Annotations" />
         <PackageReference Include="MailKit" />
-        <PackageReference Include="Mediator.Abstractions"/>
+        <PackageReference Include="Mediator.Abstractions" />
         <PackageReference Include="Mediator.SourceGenerator">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="MimeKit" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
-        <PackageReference Include="Refit"/>
-        <PackageReference Include="Scalar.AspNetCore"/>
-        <PackageReference Include="Stripe.net"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
-        <PackageReference Include="Vogen"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="Refit" />
+        <PackageReference Include="Scalar.AspNetCore" />
+        <PackageReference Include="Stripe.net" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="Vogen" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Common\Infrastructure\Persistence\Migrations\"/>
+        <Folder Include="Common\Infrastructure\Persistence\Migrations\" />
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using Api.Common.Behaviors.Logger;
 using Api.Common.Composition.Options;
 using Api.Common.Infrastructure.Persistence.Interceptors;
 using Api.Common.Infrastructure.Services;
+using Auth0.AspNetCore.Authentication.Api;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -31,18 +32,17 @@ public static class ServiceCollectionExtensions
             {
                 options.Authority = $"https://{auth0Config.Domain}";
                 options.Audience = auth0Config.Audience;
-
+            
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidAudience = auth0Config.Audience,
                     ValidIssuer = $"https://{auth0Config.Domain}/",
-                    RoleClaimType = $"{auth0Config.Audience}/roles"
                 };
             });
-
+            
             services.AddAuthorizationBuilder()
-                .AddPolicy(Policies.User, policy => policy.RequireRole(Policies.User))
-                .AddPolicy(Policies.Admin, policy => policy.RequireRole(Policies.Admin));
+                .AddPolicy(Policies.Admin, policy => policy.RequireClaim("permissions", "admin:create", "admin:read"))
+                .AddPolicy(Policies.User, policy => policy.RequireClaim("permissions", "user:create", "user:read"));
 
             return services;
         }

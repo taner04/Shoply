@@ -85,7 +85,7 @@ public sealed class TestingFixture : IAsyncLifetime
 
     private void InitilizeTokens()
     {
-        _userJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, Policies.User);
-        _adminJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, Policies.Admin);
+        _userJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, UserRole.User);
+        _adminJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, UserRole.Admin);
     }
 }

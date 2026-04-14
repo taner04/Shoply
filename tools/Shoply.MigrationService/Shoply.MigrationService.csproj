@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-MigrationService-8b4277aa-7726-4883-8807-1cae6c65e4ff</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Shoply.WebApi\Shoply.WebApi.csproj"/>
+        <ProjectReference Include="..\Shoply.ServiceDefaults\Shoply.ServiceDefaults.csproj"/>
+    </ItemGroup>
+</Project>

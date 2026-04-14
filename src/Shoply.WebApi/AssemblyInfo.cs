@@ -1,0 +1,1 @@
+[assembly: VogenDefaults(typeof(Guid))]

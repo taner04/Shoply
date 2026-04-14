@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9B7BBDE1-FE94-4658-881E-E38FCB2B3DD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B289F8BB-D671-4C06-9542-2DF90C62C4AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{3379491B-F7B2-4944-B273-D710E7FF414D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.WebApi", "src\Shoply.WebApi\Shoply.WebApi.csproj", "{A1D37C6B-B0D9-438C-8410-6E9BA376634D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.AppHost", "tools\Shoply.AppHost\Shoply.AppHost.csproj", "{D8EAF81F-271D-4638-BAFB-69020FCBED1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.ServiceDefaults", "tools\Shoply.ServiceDefaults\Shoply.ServiceDefaults.csproj", "{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.MigrationService", "tools\Shoply.MigrationService\Shoply.MigrationService.csproj", "{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.WebApi.IntegrationTests", "tests\Shoply.WebApi.IntegrationTests\Shoply.WebApi.IntegrationTests.csproj", "{7978E4EA-B0A9-4147-81CC-80C06AED529B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1D37C6B-B0D9-438C-8410-6E9BA376634D} = {9B7BBDE1-FE94-4658-881E-E38FCB2B3DD0}
+		{D8EAF81F-271D-4638-BAFB-69020FCBED1A} = {3379491B-F7B2-4944-B273-D710E7FF414D}
+		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0} = {3379491B-F7B2-4944-B273-D710E7FF414D}
+		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE} = {3379491B-F7B2-4944-B273-D710E7FF414D}
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B} = {B289F8BB-D671-4C06-9542-2DF90C62C4AE}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8EAF81F-271D-4638-BAFB-69020FCBED1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8EAF81F-271D-4638-BAFB-69020FCBED1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8EAF81F-271D-4638-BAFB-69020FCBED1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8EAF81F-271D-4638-BAFB-69020FCBED1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7978E4EA-B0A9-4147-81CC-80C06AED529B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

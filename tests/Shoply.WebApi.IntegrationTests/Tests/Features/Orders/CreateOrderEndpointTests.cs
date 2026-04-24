@@ -351,7 +351,7 @@ public sealed class CreateOrderEndpointTests(TestingFixture fixture) : TestingBa
         Assert.NotNull(createdOrder.Payment);
         Assert.Equal(50.00m, createdOrder.Payment.Amount);
         Assert.Equal(PaymentStatus.Pending, createdOrder.Payment.Status);
-        Assert.Null(createdOrder.Payment.StripePaymentIntentId);
+        Assert.Null(createdOrder.Payment.PaymentIntentId);
         Assert.Equal(0, createdOrder.Payment.RefundedAmount);
     }
 

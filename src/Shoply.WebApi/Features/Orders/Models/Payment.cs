@@ -23,12 +23,12 @@ public sealed class Payment : Entity<PaymentId>
     {
     } // For EF Core
 
-    private Payment(OrderId orderId, decimal amount)
+    private Payment(OrderId orderId, decimal amount) 
     {
         Id = PaymentId.From(Guid.CreateVersion7());
         OrderId = orderId;
         Amount = amount;
-        StripePaymentIntentId = null; // Will be set when Stripe provides the payment intent ID
+        PaymentIntentId = null; 
         Status = PaymentStatus.Pending;
     }
 
@@ -36,14 +36,14 @@ public sealed class Payment : Entity<PaymentId>
     public Order Order { get; private set; } = null!;
 
     public decimal Amount { get; }
-    public string? StripePaymentIntentId { get; private set; }
+    public string PaymentIntentId { get; private set; }
 
     public PaymentStatus Status { get; private set; }
     public string? FailureReason { get; private set; }
 
     public decimal RefundedAmount { get; private set; }
 
-    public static Payment Create(OrderId orderId, decimal amount)
+    public static Payment Create(OrderId orderId, decimal amount) 
     {
         Guard.Against.NegativeOrZero<Payment>(amount);
 
@@ -52,13 +52,13 @@ public sealed class Payment : Entity<PaymentId>
 
     public void SetStripePaymentIntentId(string paymentIntentId)
     {
-        if (StripePaymentIntentId != null)
+        if (PaymentIntentId != null)
         {
             throw new PaymentIntentIdAlreadySetException();
         }
 
         Guard.Against.NullOrEmpty<Payment>(paymentIntentId);
-        StripePaymentIntentId = paymentIntentId;
+        PaymentIntentId = paymentIntentId;
     }
 
     public void MarkProcessing()

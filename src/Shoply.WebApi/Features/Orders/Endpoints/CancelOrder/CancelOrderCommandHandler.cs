@@ -7,11 +7,13 @@ namespace Shoply.WebApi.Features.Orders.Endpoints.CancelOrder;
 public sealed class CancelOrderCommandHandler(
     ShoplyDbContext context,
     CurrentUserService userService,
+    StripePaymentProvider stripePaymentProvider,
     IEmailService emailService) : ICommandHandler<CancelOrderCommand>
 {
     public async ValueTask<Unit> Handle(CancelOrderCommand command, CancellationToken cancellationToken)
     {
         var userId = userService.GetCurrentUserId();
+        
         var user = await context.Users.WithOrders(userId).FirstOrDefaultAsync(cancellationToken) ??
                    throw new EntityNotFoundException<User>(userId.Value);
 
@@ -22,7 +24,7 @@ public sealed class CancelOrderCommandHandler(
         var products = await context.Products
             .Where(p => productIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, cancellationToken);
-
+        
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
@@ -36,11 +38,13 @@ public sealed class CancelOrderCommandHandler(
 
                 product.IncreaseQuantity(orderItem.Quantity);
             }
-
+            
+            await stripePaymentProvider.RefundOrderAsync(order, cancellationToken);
+            
             await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            await emailService.SendEmailAsync(new CancelOrderEmailTemplate(order, user.Email), cancellationToken);
+            await emailService.SendEmailAsync(new CancelOrderEmailTemplate(user.Email, order), cancellationToken);
             return Unit.Value;
         }
         catch

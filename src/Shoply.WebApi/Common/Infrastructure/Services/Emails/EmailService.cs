@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using Shoply.WebApi.Common.Attributes;
 using Shoply.WebApi.Common.Composition.Options;
+using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services.Emails;
 

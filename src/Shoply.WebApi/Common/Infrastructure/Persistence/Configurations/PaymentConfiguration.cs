@@ -10,7 +10,7 @@ public sealed class PaymentConfiguration : EntityConfiguration<Payment, PaymentI
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.Property(p => p.StripePaymentIntentId)
+        builder.Property(p => p.PaymentIntentId)
             .IsRequired(false)
             .HasMaxLength(255);
 
@@ -27,7 +27,7 @@ public sealed class PaymentConfiguration : EntityConfiguration<Payment, PaymentI
             .IsRequired();
 
         // Index for Stripe PaymentIntentId lookups (only on non-null values)
-        builder.HasIndex(p => p.StripePaymentIntentId)
+        builder.HasIndex(p => p.PaymentIntentId)
             .IsUnique()
             .HasFilter("\"StripePaymentIntentId\" IS NOT NULL");
 

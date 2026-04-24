@@ -6,6 +6,7 @@ using Moq;
 using Refit;
 using Shoply.ServiceDefaults;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails;
+using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 using Shoply.WebApi.IntegrationTests.Infrastructure.Mocks.Database;
 using Shoply.WebApi.IntegrationTests.Infrastructure.Mocks.Jwt;
 

@@ -1,4 +1,4 @@
-namespace Shoply.WebApi.Common.Infrastructure.Services.Emails;
+namespace Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 public interface IEmailTemplate
 {

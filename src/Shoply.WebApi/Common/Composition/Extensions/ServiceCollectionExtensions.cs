@@ -9,6 +9,7 @@ using Shoply.WebApi.Common.Behaviors.Logger;
 using Shoply.WebApi.Common.Composition.Options;
 using Shoply.WebApi.Common.Infrastructure.Persistence.Interceptors;
 using Shoply.WebApi.Common.Infrastructure.Services;
+using Shoply.WebApi.Common.Infrastructure.Services.Emails;
 using Stripe;
 using Stripe.Checkout;
 
@@ -117,6 +118,11 @@ public static class ServiceCollectionExtensions
             services.AddScoped<RefundService>();
 
             _ = services.RegisterAutoServices();
+            
+            services.AddScoped<IEmailService, EmailService>();
+            
+            services.AddMemoryCache();
+            services.AddDistributedMemoryCache();
 
             return services;
         }

@@ -2,7 +2,6 @@ using Microsoft.Extensions.Options;
 using Shoply.WebApi.Common.Composition.Options;
 using Shoply.WebApi.Features.Orders.WebHooks.Stripe.EventStrategies;
 using Stripe;
-using Stripe.Checkout;
 
 namespace Shoply.WebApi.Features.Orders.WebHooks.Stripe;
 
@@ -13,43 +12,42 @@ public sealed partial class StripeEventCommandHandler(
     ShoplyDbContext context,
     IEnumerable<IStripeEventStrategy> strategies) : ICommandHandler<StripeEventCommand>
 {
-    public async ValueTask<Unit> Handle(StripeEventCommand _, CancellationToken cancellationToken)
+    public async ValueTask<Unit> Handle(StripeEventCommand command, CancellationToken cancellationToken)
     {
         try
         {
-            var stripeEvent = await ReconstructStripeEventAsync(cancellationToken);
-            if (stripeEvent is null)
-            {
-                LogFailedToReconstructStripeEvent(logger);
-                return Unit.Value;
-            }
-
-            var strategy = GetStrategy(stripeEvent.Type);
+            var strategy = GetStrategy(command.EventType);
             if (strategy is null)
             {
+                LogNoStrategyFoundForStripeEvent(logger, command.EventType);
                 return Unit.Value;
             }
-
-            if (stripeEvent.Data.Object is not Session session ||
-                !session.TryExtractOrderAndUserId(out var orderId, out var userId))
+            
+            if(!command.Metadata.TryGetPaymentIntentId(out var paymentIntentId) || 
+               !command.Metadata.TryGetOrderId(out var orderId) || 
+               !command.Metadata.TryGetUserId(out var userId) || 
+               !command.Metadata.TryGetIdempotencyKey(out var idempotencyKey))
             {
-                LogMissingMetadata(logger, stripeEvent.Id);
+                LogMissingPaymentIntentId(logger,"",  command.EventType);
                 return Unit.Value;
             }
-
+            
             var order = await context.Orders
                 .Include(o => o.Payment)
-                .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
-
-            if (order is null)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Payment.PaymentIntentId == paymentIntentId &&
+                                                o.UserId == userId &&
+                                                o.Id == orderId &&
+                                                o.IdempotencyKey == idempotencyKey, cancellationToken: cancellationToken);
+            if(order is null)
             {
-                LogOrderNotFound(logger, orderId, stripeEvent.Id);
+                LogOrderNotFound(logger, OrderId.From(Guid.Empty), command.EventType);
                 return Unit.Value;
             }
+            
+            await strategy.HandleNotification(command.Metadata, order, cancellationToken);
 
-            await strategy.HandleNotification(stripeEvent, order, cancellationToken);
-
-            LogStripeEventProcessedSuccessfully(logger, stripeEvent.Id, orderId);
+            LogStripeEventProcessedSuccessfully(logger, command.EventType, order.Id);
         }
         catch (StripeException ex)
         {
@@ -78,8 +76,7 @@ public sealed partial class StripeEventCommandHandler(
         {
             return strategy;
         }
-
-        LogNoStrategyFoundForStripeEvent(logger, eventType);
+        
         return null;
     }
 
@@ -96,8 +93,29 @@ public sealed partial class StripeEventCommandHandler(
     [LoggerMessage(LogLevel.Warning, "Stripe event {eventId} missing OrderId or UserId in metadata")]
     static partial void LogMissingMetadata(ILogger<StripeEventCommandHandler> logger, string eventId);
 
+    [LoggerMessage(LogLevel.Warning, "Stripe event {eventId} of type {eventType} missing PaymentIntentId")]
+    static partial void LogMissingPaymentIntentId(
+        ILogger<StripeEventCommandHandler> logger,
+        string eventId,
+        string eventType);
+
     [LoggerMessage(LogLevel.Error, "Order with ID {orderId} not found for Stripe event {eventId}")]
     static partial void LogOrderNotFound(ILogger<StripeEventCommandHandler> logger, OrderId orderId, string eventId);
+
+    [LoggerMessage(LogLevel.Error,
+        "Order with PaymentIntentId {paymentIntentId} not found for Stripe event {eventId}")]
+    static partial void LogOrderNotFoundByPaymentIntent(
+        ILogger<StripeEventCommandHandler> logger,
+        string paymentIntentId,
+        string eventId);
+
+    [LoggerMessage(LogLevel.Warning,
+        "Unsupported Stripe data object for event {eventId} type {eventType}: {dataObjectType}")]
+    static partial void LogUnsupportedStripeDataObject(
+        ILogger<StripeEventCommandHandler> logger,
+        string eventId,
+        string eventType,
+        string dataObjectType);
 
     [LoggerMessage(LogLevel.Information, "Successfully processed Stripe event {eventId} for order {orderId}")]
     static partial void LogStripeEventProcessedSuccessfully(

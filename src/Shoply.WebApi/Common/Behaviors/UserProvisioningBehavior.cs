@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Shoply.WebApi.Common.Infrastructure.Services;
+using Shoply.WebApi.Features.Baskets.Endpoints.GetBasket;
 
 namespace Shoply.WebApi.Common.Behaviors;
 

@@ -1,17 +1,14 @@
 using System.Text;
-using Shoply.WebApi.Common.Infrastructure.Services.Emails;
+using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.CancelOrder;
 
-public sealed class CancelOrderEmailTemplate(Order order, string userEmail) : IEmailTemplate
+public sealed class CancelOrderEmailTemplate(string userEmail, Order order) : UserEmailTemplate(userEmail)
 {
-    public string To { get; } = userEmail;
-    public string Subject { get; } = $"Order canceled - Order #{order.Id}";
-    public string Body { get; } = BuildHtmlBody(order);
-
-    private static string BuildHtmlBody(Order order)
+    public override string Subject { get; } = $"Order canceled - Order #{order.Id}";
+    protected override string BuildBody()
     {
-        var sb = new StringBuilder();
+         var sb = new StringBuilder();
 
         sb.AppendLine("<!DOCTYPE html>");
         sb.AppendLine("<html lang=\"en\">");

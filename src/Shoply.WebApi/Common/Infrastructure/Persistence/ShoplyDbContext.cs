@@ -1,10 +1,13 @@
+using System.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 using Shoply.WebApi.Common.Infrastructure.Persistence.Configurations;
 
 namespace Shoply.WebApi.Common.Infrastructure.Persistence;
 
 public sealed class ShoplyDbContext(DbContextOptions<ShoplyDbContext> options) : DbContext(options)
 {
-    // Command Side - DbSet (tracked)
+    private IDbContextTransaction? _currentTransaction = null!;
+    
     public DbSet<Product> Products => Set<Product>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Order> Orders => Set<Order>();

@@ -47,14 +47,18 @@ public sealed class CreateOrderCommandHandler(
             }
 
             var newOrder = Order.Create(user.Id, orderItems);
+            
+            var stripeCheckoutSession = await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
+            newOrder.SetStripePaymentIntentId(stripeCheckoutSession.PaymentIntentId);
+            
             user.AddOrder(newOrder);
             user.Basket.Clear();
 
             await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            await emailService.SendEmailAsync(new CreateOrderEmailTemplate(newOrder, user.Email), cancellationToken);
-            return await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
+            await emailService.SendEmailAsync(new CreateOrderEmailTemplate(user.Email, newOrder), cancellationToken);
+            return stripeCheckoutSession.Url;
         }
         catch
         {

@@ -3,16 +3,8 @@ using Shoply.WebApi.Common.Attributes;
 using Shoply.WebApi.Common.Composition.Options;
 using Stripe;
 using Stripe.Checkout;
-using Models_OrderId = Shoply.WebApi.Features.Orders.Models.OrderId;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services;
-
-public readonly record struct RefundParameters(
-    long TotalAmountInCents,
-    string PaymentIntentId,
-    string Reason);
-
-public readonly record struct CheckoutSessionParameters(Order Order);
 
 [ServiceInjection(ServiceLifetime.Scoped)]
 public sealed partial class StripePaymentProvider(
@@ -23,20 +15,16 @@ public sealed partial class StripePaymentProvider(
 {
     private readonly StripeConfig _stripeConfigOptions = stripeConfigOptions.Value;
 
-    public async Task<string> CreateCheckoutSessionAsync(
+    public async Task<Session> CreateCheckoutSessionAsync(
         Order order,
         string userEmail,
         CancellationToken cancellationToken)
     {
-        var sessionLineItemOptions = new List<SessionLineItemOptions>();
-
-        foreach (var orderItem in order.OrderItems)
-        {
-            sessionLineItemOptions.Add(new SessionLineItemOptions
+        var sessionLineItemOptions = order.OrderItems.Select(orderItem => new SessionLineItemOptions
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    UnitAmountDecimal = orderItem.UnitPrice * 100, // Convert to cents
+                    UnitAmountDecimal = orderItem.TotalAmountInCents(),
                     Currency = "eur",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
@@ -45,9 +33,9 @@ public sealed partial class StripePaymentProvider(
                     }
                 },
                 Quantity = orderItem.Quantity
-            });
-        }
-
+            })
+            .ToList();
+        
         var options = new SessionCreateOptions
         {
             PaymentMethodTypes = ["card", "paypal"],
@@ -64,88 +52,41 @@ public sealed partial class StripePaymentProvider(
             },
             SubmitType = "pay",
             Locale = "auto",
-            PaymentIntentData = new SessionPaymentIntentDataOptions
-            {
-                Metadata = new Dictionary<string, string>
-                {
-                    ["OrderId"] = order.Id.ToString(),
-                    ["UserId"] = order.UserId.ToString()
-                }
-            },
-            Metadata = new Dictionary<string, string>
-            {
-                ["OrderId"] = order.Id.ToString(),
-                ["UserId"] = order.UserId.ToString()
-            },
+            PaymentIntentData = new SessionPaymentIntentDataOptions { Metadata = order.GetMetadata() },
+            Metadata = order.GetMetadata(),
             LineItems = sessionLineItemOptions
         };
 
         var requestOptions = new RequestOptions
         {
-            IdempotencyKey = order.IdempotencyKey
+            IdempotencyKey = order.IdempotencyKey.ToString()
         };
 
-        try
-        {
-            var session = await sessionService.CreateAsync(options, requestOptions, cancellationToken);
-            LogCreateSessionSuccess(order.Id, order.TotalPrice());
-            return session.Url ?? throw new InvalidOperationException("Stripe session URL missing.");
-        }
-        catch (Exception ex)
-        {
-            LogCreateSessionException(order.Id, ex);
-            throw;
-        }
+        return await sessionService.CreateAsync(options, requestOptions, cancellationToken);
     }
 
-    public async Task<bool> RefundPaymentAsync(
-        RefundParameters parameters,
+    public async Task RefundOrderAsync(
+        Order order,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(parameters.PaymentIntentId))
-        {
-            throw new ArgumentException("PaymentIntentId is required.", nameof(parameters));
-        }
-
-        if (parameters.TotalAmountInCents <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(parameters), "Refund amount must be > 0.");
-        }
-
         var refundOptions = new RefundCreateOptions
         {
-            PaymentIntent = parameters.PaymentIntentId,
-            Amount = parameters.TotalAmountInCents,
-            Reason = parameters.Reason,
-
-            Metadata = new Dictionary<string, string>
-            {
-                ["PaymentIntentId"] = parameters.PaymentIntentId
-            }
+            PaymentIntent = order.Payment.PaymentIntentId,
+            Amount = order.TotalAmountInCents(),
+            Reason = "Customer cancelled the pending order",
+            Metadata = order.GetMetadata()
         };
 
-        try
-        {
-            var refund = await refundService.CreateAsync(refundOptions, cancellationToken: cancellationToken);
-            LogRefundSuccess(parameters.PaymentIntentId, parameters.TotalAmountInCents);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            LogRefundException(parameters.PaymentIntentId, parameters.TotalAmountInCents, ex);
-            logger.LogError(ex, "Failed to refund Stripe payment.");
-            throw;
-        }
+        await refundService.CreateAsync(refundOptions, cancellationToken: cancellationToken);
     }
 
     [LoggerMessage(0, LogLevel.Information,
         "Successfully created a checkout session for order {orderId} with amount {amount} cents")]
-    private partial void LogCreateSessionSuccess(Models_OrderId orderId, decimal amount);
+    private partial void LogCreateSessionSuccess(OrderId orderId, decimal amount);
 
     [LoggerMessage(1, LogLevel.Error,
         "Failed to create a checkout session for order {orderId}")]
-    private partial void LogCreateSessionException(Models_OrderId orderId, Exception exception);
+    private partial void LogCreateSessionException(OrderId orderId, Exception exception);
 
     [LoggerMessage(2, LogLevel.Information,
         "Successfully refunded payment for paymentIntentId {paymentIntentId} with amount {amount} cents")]

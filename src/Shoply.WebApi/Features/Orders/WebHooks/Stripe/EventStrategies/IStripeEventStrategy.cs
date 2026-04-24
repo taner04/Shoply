@@ -6,5 +6,5 @@ public interface IStripeEventStrategy
 {
     string EventType { get; }
 
-    Task HandleNotification(Event stripeEvent, Order order, CancellationToken cancellationToken);
+    Task HandleNotification(IHasMetadata metadata, Order order, CancellationToken cancellationToken);
 }

@@ -18,9 +18,6 @@ public sealed class PaymentConfiguration : EntityConfiguration<Payment, PaymentI
             .IsRequired()
             .HasConversion<string>();
 
-        builder.Property(p => p.FailureReason)
-            .HasMaxLength(500);
-
         builder.Property(p => p.RefundedAmount)
             .HasPrecision(18, 2)
             .HasDefaultValue(0)
@@ -29,7 +26,7 @@ public sealed class PaymentConfiguration : EntityConfiguration<Payment, PaymentI
         // Index for Stripe PaymentIntentId lookups (only on non-null values)
         builder.HasIndex(p => p.PaymentIntentId)
             .IsUnique()
-            .HasFilter("\"StripePaymentIntentId\" IS NOT NULL");
+            .HasFilter("\"PaymentIntentId\" IS NOT NULL");
 
         // Index for OrderId lookups
         builder.HasIndex(p => p.OrderId)

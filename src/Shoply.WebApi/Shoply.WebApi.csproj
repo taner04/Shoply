@@ -42,8 +42,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Orders\WebHooks\Stripe\EmailTemplates\ChargeEvent\" />
-      <Folder Include="Features\Orders\WebHooks\Stripe\EmailTemplates\RefundSession\" />
+      <Folder Include="Features\WebHooks\Endpoints\" />
     </ItemGroup>
 
 </Project>

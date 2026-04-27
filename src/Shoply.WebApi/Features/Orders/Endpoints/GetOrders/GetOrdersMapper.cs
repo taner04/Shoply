@@ -17,8 +17,7 @@ public sealed class GetOrdersMapper : IMapper<Order, OrdersResponse>
                     order.Payment.Id.Value,
                     order.Payment.Amount,
                     order.Payment.Status.ToString(),
-                    order.Payment.RefundedAmount,
-                    order.Payment.FailureReason),
+                    order.Payment.RefundedAmount),
                 [
                     .. order.OrderItems.Select(oi => new OrderItemResponse(
                         oi.ProductId.Value,

@@ -61,8 +61,8 @@ public sealed class TestingFixture : IAsyncLifetime
 
         var token = role switch
         {
-            Policies.User => _userJwtToken,
-            Policies.Admin => _adminJwtToken,
+            Security.Policies.User => _userJwtToken,
+            Security.Policies.Admin => _adminJwtToken,
             _ => throw new ArgumentOutOfRangeException(nameof(role), "Invalid role specified.")
         };
 

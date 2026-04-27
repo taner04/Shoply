@@ -11,6 +11,8 @@ public sealed class CreateProductEndpoint : IEndpoint
             })
             .WithName("CreateProduct")
             .WithTags("Products")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status201Created)
             .ProducesApiProblemDetails();
     }

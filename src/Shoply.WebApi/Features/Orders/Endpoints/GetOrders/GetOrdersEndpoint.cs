@@ -17,6 +17,8 @@ public sealed class GetOrdersEndpoint : IEndpoint
                 })
             .WithName("GetOrders")
             .WithTags("Orders")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces<PaginationResult<OrdersResponse>>()
             .ProducesApiProblemDetails();
     }

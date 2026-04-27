@@ -1,6 +1,7 @@
 using Shoply.ServiceDefaults;
 using Shoply.WebApi.Common.Composition.Configs;
 using Shoply.WebApi.Common.Composition.Configs.OpenApi;
+using Shoply.WebApi.Common.Composition.Extensions.ServiceCollection;
 using Shoply.WebApi.Common.Composition.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +16,6 @@ builder.Services.AddOpenApi(OpenApiConfig.Config);
 
 builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
 builder.Services.RegisterServices(builder);
 
@@ -35,6 +34,12 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.MapEndpoints();
+
+app.Use((context, next) =>
+{
+    context.Request.EnableBuffering();
+    return next();
+});
 
 app.Run();
 

@@ -5,6 +5,9 @@ namespace Shoply.WebApi.Common.Infrastructure.Services;
 
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {
+    public const string SubClaim = "sub";
+    public const string RoleClaim = "permissions";
+
     private HttpContext HttpContext => httpContextAccessor.HttpContext
                                        ?? throw new InvalidOperationException("HTTP context is not available.");
 

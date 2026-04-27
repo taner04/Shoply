@@ -33,9 +33,9 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
 
     protected ShoplyDbContext GetDbContext() => _scope.ServiceProvider.GetRequiredService<ShoplyDbContext>();
 
-    protected IApiClient CreateAuthenticatedUserClient() => fixture.CreateAuthenticatedClient(Policies.User);
+    protected IApiClient CreateAuthenticatedUserClient() => fixture.CreateAuthenticatedClient(Security.Policies.User);
 
-    protected IApiClient CreateAuthenticatedAdminClient() => fixture.CreateAuthenticatedClient(Policies.Admin);
+    protected IApiClient CreateAuthenticatedAdminClient() => fixture.CreateAuthenticatedClient(Security.Policies.Admin);
 
     protected IApiClient CreateUnauthenticatedClient() => fixture.CreateUnauthenticatedClient();
 

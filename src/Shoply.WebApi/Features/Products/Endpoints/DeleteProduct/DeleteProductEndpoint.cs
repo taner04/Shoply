@@ -11,6 +11,8 @@ public sealed class DeleteProductEndpoint : IEndpoint
             })
             .WithName("DeleteProduct")
             .WithTags("Products")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesApiProblemDetails();
     }

@@ -11,6 +11,8 @@ public sealed class CreateOrderEndpoint : IEndpoint
             })
             .WithName("CreateOrder")
             .WithTags("Orders")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status201Created)
             .ProducesApiProblemDetails();
     }

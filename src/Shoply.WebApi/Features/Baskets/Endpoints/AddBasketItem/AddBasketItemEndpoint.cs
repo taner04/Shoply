@@ -12,6 +12,8 @@ public sealed class AddBasketItemEndpoint : IEndpoint
                 })
             .WithName("AddBasketItem")
             .WithTags("Baskets")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesApiProblemDetails();
     }

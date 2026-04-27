@@ -35,7 +35,7 @@ public sealed partial class StripePaymentProvider(
                 Quantity = orderItem.Quantity
             })
             .ToList();
-        
+
         var options = new SessionCreateOptions
         {
             PaymentMethodTypes = ["card", "paypal"],
@@ -52,8 +52,8 @@ public sealed partial class StripePaymentProvider(
             },
             SubmitType = "pay",
             Locale = "auto",
-            PaymentIntentData = new SessionPaymentIntentDataOptions { Metadata = order.GetMetadata() },
-            Metadata = order.GetMetadata(),
+            PaymentIntentData = new SessionPaymentIntentDataOptions { Metadata = order.ToMetadata() },
+            Metadata = order.ToMetadata(),
             LineItems = sessionLineItemOptions
         };
 
@@ -74,7 +74,7 @@ public sealed partial class StripePaymentProvider(
             PaymentIntent = order.Payment.PaymentIntentId,
             Amount = order.TotalAmountInCents(),
             Reason = "Customer cancelled the pending order",
-            Metadata = order.GetMetadata()
+            Metadata = order.ToMetadata()
         };
 
         await refundService.CreateAsync(refundOptions, cancellationToken: cancellationToken);

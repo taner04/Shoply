@@ -12,6 +12,8 @@ public sealed class DeleteBasketItemEndpoint : IEndpoint
                 })
             .WithName("DeleteBasketItem")
             .WithTags("Baskets")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesApiProblemDetails();
     }

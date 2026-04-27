@@ -14,6 +14,8 @@ public sealed class UpdateProductEndpoint : IEndpoint
             })
             .WithName("UpdateProduct")
             .WithTags("Products")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces(StatusCodes.Status200OK)
             .ProducesApiProblemDetails();
     }

@@ -11,8 +11,7 @@ public sealed record PaymentResponse(
     Guid Id,
     decimal Amount,
     string Status,
-    decimal RefundedAmount,
-    string? FailureReason);
+    decimal RefundedAmount);
 
 public sealed record OrderItemResponse(
     Guid ProductId,

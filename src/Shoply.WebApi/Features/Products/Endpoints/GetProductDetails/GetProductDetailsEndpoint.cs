@@ -12,6 +12,8 @@ public sealed class GetProductDetailsEndpoint : IEndpoint
                 })
             .WithName("GetProductDetails")
             .WithTags("Products")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces<GetProductDetailsResponse>()
             .ProducesApiProblemDetails();
     }

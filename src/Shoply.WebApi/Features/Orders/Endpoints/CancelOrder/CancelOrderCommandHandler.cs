@@ -13,7 +13,7 @@ public sealed class CancelOrderCommandHandler(
     public async ValueTask<Unit> Handle(CancelOrderCommand command, CancellationToken cancellationToken)
     {
         var userId = userService.GetCurrentUserId();
-        
+
         var user = await context.Users.WithOrders(userId).FirstOrDefaultAsync(cancellationToken) ??
                    throw new EntityNotFoundException<User>(userId.Value);
 
@@ -24,7 +24,7 @@ public sealed class CancelOrderCommandHandler(
         var products = await context.Products
             .Where(p => productIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, cancellationToken);
-        
+
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
@@ -38,9 +38,9 @@ public sealed class CancelOrderCommandHandler(
 
                 product.IncreaseQuantity(orderItem.Quantity);
             }
-            
+
             await stripePaymentProvider.RefundOrderAsync(order, cancellationToken);
-            
+
             await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 

@@ -33,7 +33,7 @@ public sealed class Order : Entity<OrderId>
         Payment = Payment.Create(Id, TotalPrice());
     }
 
-    public UserId UserId { get; private set; }
+    public UserId UserId { get; init; }
     public Guid IdempotencyKey { get; init; }
     public OrderStatus Status { get; private set; }
 
@@ -45,7 +45,7 @@ public sealed class Order : Entity<OrderId>
     public static Order Create(UserId userId, List<OrderItem> orderItems)
     {
         Guard.Against.EmptyCollection(orderItems);
-        
+
         return new Order(userId, orderItems);
     }
 
@@ -83,25 +83,20 @@ public sealed class Order : Entity<OrderId>
 
         Status = OrderStatus.Cancelled;
     }
-    
-    public long TotalAmountInCents()
-    {
-        return (long)(TotalPrice() * 100);
-    }
-    
+
+    public long TotalAmountInCents() => (long)(TotalPrice() * 100);
+
     public void SetStripePaymentIntentId(string stripePaymentIntentId)
     {
         Payment.SetStripePaymentIntentId(stripePaymentIntentId);
     }
-    
-    public Dictionary<string, string> GetMetadata()
-    {
-        return new Dictionary<string, string>()
+
+    public Dictionary<string, string> ToMetadata() =>
+        new()
         {
             ["OrderId"] = Id.Value.ToString(),
             ["UserId"] = UserId.Value.ToString(),
             ["StripePaymentIntentId"] = Payment.PaymentIntentId,
-            ["IdempotencyKey"]  = IdempotencyKey.ToString()
+            ["IdempotencyKey"] = IdempotencyKey.ToString()
         };
-    }
 }

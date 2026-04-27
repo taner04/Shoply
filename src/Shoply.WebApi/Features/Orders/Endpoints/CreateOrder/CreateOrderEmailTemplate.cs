@@ -1,5 +1,4 @@
 using System.Text;
-using Shoply.WebApi.Common.Infrastructure.Services.Emails;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.CreateOrder;

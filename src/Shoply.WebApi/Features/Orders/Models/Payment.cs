@@ -23,12 +23,12 @@ public sealed class Payment : Entity<PaymentId>
     {
     } // For EF Core
 
-    private Payment(OrderId orderId, decimal amount) 
+    private Payment(OrderId orderId, decimal amount)
     {
         Id = PaymentId.From(Guid.CreateVersion7());
         OrderId = orderId;
         Amount = amount;
-        PaymentIntentId = null; 
+        PaymentIntentId = null!;
         Status = PaymentStatus.Pending;
     }
 
@@ -39,11 +39,10 @@ public sealed class Payment : Entity<PaymentId>
     public string PaymentIntentId { get; private set; }
 
     public PaymentStatus Status { get; private set; }
-    public string? FailureReason { get; private set; }
 
     public decimal RefundedAmount { get; private set; }
 
-    public static Payment Create(OrderId orderId, decimal amount) 
+    public static Payment Create(OrderId orderId, decimal amount)
     {
         Guard.Against.NegativeOrZero<Payment>(amount);
 
@@ -81,7 +80,7 @@ public sealed class Payment : Entity<PaymentId>
         Status = PaymentStatus.Succeeded;
     }
 
-    public void MarkFailed(string reason)
+    public void MarkFailed()
     {
         if (Status is PaymentStatus.Succeeded or PaymentStatus.Refunded)
         {
@@ -89,7 +88,6 @@ public sealed class Payment : Entity<PaymentId>
         }
 
         Status = PaymentStatus.Failed;
-        FailureReason = reason;
     }
 
     public void MarkRefunded(decimal refundAmount)

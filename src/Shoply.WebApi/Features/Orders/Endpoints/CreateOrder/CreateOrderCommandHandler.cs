@@ -47,10 +47,11 @@ public sealed class CreateOrderCommandHandler(
             }
 
             var newOrder = Order.Create(user.Id, orderItems);
-            
-            var stripeCheckoutSession = await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
+
+            var stripeCheckoutSession =
+                await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
             newOrder.SetStripePaymentIntentId(stripeCheckoutSession.PaymentIntentId);
-            
+
             user.AddOrder(newOrder);
             user.Basket.Clear();
 

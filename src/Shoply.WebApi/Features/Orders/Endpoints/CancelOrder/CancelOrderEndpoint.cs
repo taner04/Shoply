@@ -12,7 +12,8 @@ public sealed class CancelOrderEndpoint : IEndpoint
                 })
             .WithName("CancelOrder")
             .WithTags("Orders")
-            .RequireAuthorization(Policies.User)
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .ProducesApiProblemDetails();
     }
 }

@@ -6,9 +6,10 @@ namespace Shoply.WebApi.Features.Orders.Endpoints.CancelOrder;
 public sealed class CancelOrderEmailTemplate(string userEmail, Order order) : UserEmailTemplate(userEmail)
 {
     public override string Subject { get; } = $"Order canceled - Order #{order.Id}";
+
     protected override string BuildBody()
     {
-         var sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         sb.AppendLine("<!DOCTYPE html>");
         sb.AppendLine("<html lang=\"en\">");

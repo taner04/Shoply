@@ -11,6 +11,8 @@ public sealed class GetBasketEndpoint : IEndpoint
             })
             .WithName("GetBasket")
             .WithTags("Baskets")
+            .RequireRateLimiting(Security.RateLimiting.Global)
+            .RequireAuthorization(Security.Policies.User)
             .Produces<BasketItemResponse>()
             .ProducesApiProblemDetails();
     }

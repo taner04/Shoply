@@ -10,7 +10,7 @@ public sealed class AddBasketItemCommandHandler(ShoplyDbContext context, Current
     public async ValueTask<Unit> Handle(AddBasketItemCommand command, CancellationToken cancellationToken)
     {
         var product =
-            await context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == command.ProductId,
+            await context.ProductsQuery.FirstOrDefaultAsync(p => p.Id == command.ProductId,
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId.Value);
         ProductOutOfStockException.ThrowIfOutOfStock(product);
 

@@ -5,7 +5,7 @@ public sealed class UpdateProductCommandHandler(ShoplyDbContext context) : IComm
     public async ValueTask<Unit> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
         var product =
-            await context.ProductsQuery.FirstOrDefaultAsync(p => p.Id == command.ProductId,
+            await context.Products.FirstOrDefaultAsync(p => p.Id == command.ProductId,
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId.Value);
 
         product.Update(command.Name, command.Price, command.Description, command.Stock, command.ImageUrl);

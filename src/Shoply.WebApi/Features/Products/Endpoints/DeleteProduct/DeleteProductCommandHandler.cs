@@ -5,7 +5,7 @@ public sealed class DeleteProductCommandHandler(ShoplyDbContext context) : IComm
     public async ValueTask<Unit> Handle(DeleteProductCommand command, CancellationToken cancellationToken)
     {
         var product =
-            await context.ProductsQuery.FirstOrDefaultAsync(p => p.Id == command.ProductId,
+            await context.Products.FirstOrDefaultAsync(p => p.Id == command.ProductId,
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId.Value);
 
         context.Products.Remove(product);

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Shoply.WebApi.Common.Behaviors.Logger;
+namespace Shoply.WebApi.Common.Behaviors;
 
 public sealed partial class LoggingBehavior<TMessage, TResponse>(
     IHttpContextAccessor httpContextAccessor,

@@ -1,6 +1,5 @@
 using FluentValidation;
 using Shoply.WebApi.Common.Behaviors;
-using Shoply.WebApi.Common.Behaviors.Logger;
 using Shoply.WebApi.Common.Infrastructure.Services;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails;
 using Shoply.WebApi.Common.Infrastructure.Services.Pagination;

@@ -1,8 +1,8 @@
 using System.Net;
 
-namespace Shoply.WebApi.Common.Shared.Exceptions;
+namespace Shoply.WebApi.Common.Shared.Guards.Exceptions;
 
-public sealed class GuardException : ApiException
+public sealed class GuardException : ShoplyException
 {
     private GuardException(string title, string message, string errorCode)
         : base(title, message, errorCode, HttpStatusCode.BadRequest)

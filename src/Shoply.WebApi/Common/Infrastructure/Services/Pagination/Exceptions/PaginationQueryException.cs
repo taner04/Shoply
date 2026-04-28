@@ -2,7 +2,7 @@ using System.Net;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services.Pagination.Exceptions;
 
-public sealed class PaginationQueryException : ApiException
+public sealed class PaginationQueryException : ShoplyException
 {
     private PaginationQueryException(string title, string message, string errorCode) : base(title, message, errorCode,
         HttpStatusCode.BadRequest)

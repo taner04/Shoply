@@ -28,7 +28,7 @@ public static class ProblemDetailsConfig
                         )
                 },
 
-                ApiException modelsException => new ApiProblemDetails
+                ShoplyException modelsException => new ApiProblemDetails
                 {
                     Status = (int)modelsException.StatusCode,
                     Title = modelsException.Title,

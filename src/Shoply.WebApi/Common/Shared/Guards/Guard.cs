@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
+using Shoply.WebApi.Common.Shared.Guards.Exceptions;
 
 namespace Shoply.WebApi.Common.Shared.Guards;
 

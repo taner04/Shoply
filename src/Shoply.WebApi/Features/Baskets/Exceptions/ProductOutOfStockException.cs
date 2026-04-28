@@ -2,7 +2,7 @@ using System.Net;
 
 namespace Shoply.WebApi.Features.Baskets.Exceptions;
 
-public class ProductOutOfStockException : ApiException
+public class ProductOutOfStockException : ShoplyException
 {
     private ProductOutOfStockException(string title, string message, string errorCode, HttpStatusCode statusCode) :
         base(title, message, errorCode, statusCode)

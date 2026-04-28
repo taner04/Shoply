@@ -12,6 +12,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.ServiceDefaults", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoply.MigrationService", "tools\Shoply.MigrationService\Shoply.MigrationService.csproj", "{B2638E40-BFFA-42D7-B86C-D1013EEB05CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "meta", "meta", "{D6F8D5C7-9AB1-4CC0-B287-91C6B91C31A4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		aspire.config.json = aspire.config.json
+		Directory.Packages.props = Directory.Packages.props
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{E8107F48-219A-49E3-ABFD-FE7F77D35C20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{126731B5-C73E-487E-8123-B30501A86188}"
+	ProjectSection(SolutionItems) = preProject
+		docs\assets\Logo-Transparent.png = docs\assets\Logo-Transparent.png
+		docs\assets\Logo.png = docs\assets\Logo.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +38,8 @@ Global
 		{D8EAF81F-271D-4638-BAFB-69020FCBED1A} = {3379491B-F7B2-4944-B273-D710E7FF414D}
 		{2EB5F95B-ACF2-47A3-81AD-D7E924ED7DA0} = {3379491B-F7B2-4944-B273-D710E7FF414D}
 		{B2638E40-BFFA-42D7-B86C-D1013EEB05CE} = {3379491B-F7B2-4944-B273-D710E7FF414D}
+		{E8107F48-219A-49E3-ABFD-FE7F77D35C20} = {D6F8D5C7-9AB1-4CC0-B287-91C6B91C31A4}
+		{126731B5-C73E-487E-8123-B30501A86188} = {E8107F48-219A-49E3-ABFD-FE7F77D35C20}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A1D37C6B-B0D9-438C-8410-6E9BA376634D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

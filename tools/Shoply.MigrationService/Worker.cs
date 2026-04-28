@@ -49,12 +49,6 @@ public class Worker(IServiceProvider serviceProvider, IHostApplicationLifetime a
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            // Check if products already exist
-            if (await dbContext.Products.AnyAsync(cancellationToken))
-            {
-                return;
-            }
-
             var products = new[]
             {
                 Product.Create(

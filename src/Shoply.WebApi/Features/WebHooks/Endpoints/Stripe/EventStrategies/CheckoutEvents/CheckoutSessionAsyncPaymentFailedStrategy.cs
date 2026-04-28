@@ -1,22 +1,23 @@
-using Shoply.WebApi.Common.Attributes;
-using Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventObjects.V1;
 using Stripe;
+using Stripe.Checkout;
 
 namespace Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventStrategies.CheckoutEvents;
 
-[ServiceInjection<CheckoutSessionAsyncPaymentFailedStrategy, IStripeEventStrategy>(ServiceLifetime.Scoped)]
-public sealed class CheckoutSessionAsyncPaymentFailedStrategy(
+public sealed partial class CheckoutSessionAsyncPaymentFailedStrategy(
     ShoplyDbContext context,
-    ILogger<CheckoutSessionAsyncPaymentFailedStrategy> logger) : IStripeEventStrategy
+    ILogger<CheckoutSessionAsyncPaymentFailedStrategy> logger) : StripeEventStrategy<Session>(context)
 {
-    public string EventType => EventTypes.CheckoutSessionAsyncPaymentFailed;
+    public override string EventType => EventTypes.CheckoutSessionAsyncPaymentFailed;
 
-    public Task HandleNotification(
-        StripeEventObjectV1 stripEventObjectV1,
+    protected override Task HandleEventAsync(
+        Session @event,
         Order order,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Checkout session completed");
+        LogPaymentFailedForOrderid(order.Id);
         return Task.CompletedTask;
     }
+
+    [LoggerMessage(LogLevel.Warning, "Payment Failed for {OrderId}")]
+    private partial void LogPaymentFailedForOrderid(OrderId orderId);
 }

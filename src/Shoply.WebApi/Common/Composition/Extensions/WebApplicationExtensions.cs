@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using Shoply.WebApi.Common.Composition.Options;
@@ -11,9 +12,7 @@ public static class WebApplicationExtensions
     {
         internal WebApplication MapScalar()
         {
-            var auth0Options = app.Services
-                .GetRequiredService<IOptions<Auth0Config>>()
-                .Value;
+            var auth0Config = app.Configuration.GetOptions<Auth0Config>();
 
             app.MapScalarApiReference(opt =>
             {
@@ -24,17 +23,17 @@ public static class WebApplicationExtensions
                     .AddOAuth2Authentication("OAuth2", scheme => scheme
                         .WithFlows(flows => flows
                             .WithAuthorizationCode(flow => flow
-                                .WithAuthorizationUrl($"https://{auth0Options.Domain}/authorize")
-                                .WithTokenUrl($"https://{auth0Options.Domain}/oauth/token")
-                                .WithClientId(auth0Options.ClientId)
-                                .WithClientSecret(auth0Options.ClientSecret)
+                                .WithAuthorizationUrl($"https://{auth0Config.Domain}/authorize")
+                                .WithTokenUrl($"https://{auth0Config.Domain}/oauth/token")
+                                .WithClientId(auth0Config.ClientId)
+                                .WithClientSecret(auth0Config.ClientSecret)
                                 .WithPkce(Pkce.Sha256)
-                                .AddQueryParameter("audience", auth0Options.Audience)
+                                .AddQueryParameter("audience", auth0Config.Audience)
                             ))
                         .WithDefaultScopes("openid", "profile", "email", "email_verified")
                     );
 
-                if (auth0Options.UsePersistentStorage)
+                if (auth0Config.UsePersistentStorage)
                 {
                     opt.EnablePersistentAuthentication();
                 }
@@ -54,6 +53,16 @@ public static class WebApplicationExtensions
             {
                 endpoint.MapEndpoint(app);
             }
+
+            return app;
+        }
+
+        internal WebApplication AddHangfireDashboard()
+        {
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                DarkModeEnabled = true
+            });
 
             return app;
         }

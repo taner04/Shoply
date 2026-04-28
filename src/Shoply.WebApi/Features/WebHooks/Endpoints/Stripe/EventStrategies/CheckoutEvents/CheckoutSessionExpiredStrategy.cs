@@ -1,18 +1,23 @@
-using Shoply.WebApi.Common.Attributes;
-using Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventObjects.V1;
 using Stripe;
+using Stripe.Checkout;
 
 namespace Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventStrategies.CheckoutEvents;
 
-[ServiceInjection<CheckoutSessionExpiredStrategy, IStripeEventStrategy>(ServiceLifetime.Scoped)]
-public sealed class CheckoutSessionExpiredStrategy(
+public sealed partial class CheckoutSessionExpiredStrategy(
     ShoplyDbContext context,
-    ILogger<CheckoutSessionExpiredStrategy> logger) : IStripeEventStrategy
+    ILogger<CheckoutSessionExpiredStrategy> logger) : StripeEventStrategy<Session>(context)
 {
-    public string EventType => EventTypes.CheckoutSessionExpired;
+    public override string EventType => EventTypes.CheckoutSessionExpired;
 
-    public Task HandleNotification(
-        StripeEventObjectV1 stripEventObjectV1,
+    protected override Task HandleEventAsync(
+        Session @event,
         Order order,
-        CancellationToken cancellationToken) => throw new NotImplementedException();
+        CancellationToken cancellationToken)
+    {
+        LogMarkedOrderOrderidAsCancelledDueToCheckoutSessionExpiration(order.Id);
+        return Task.CompletedTask;
+    }
+
+    [LoggerMessage(LogLevel.Warning, "Marked order {orderId} as cancelled due to checkout session expiration")]
+    private partial void LogMarkedOrderOrderidAsCancelledDueToCheckoutSessionExpiration(OrderId orderId);
 }

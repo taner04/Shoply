@@ -8,12 +8,12 @@ namespace Shoply.WebApi.Features.Orders.Models;
 public readonly partial struct OrderId;
 
 public enum OrderStatus
-{
-    Pending,
-    Paid,
-    Failed,
-    Cancelled
-}
+ {
+     Pending,
+     Cancelled,
+     Processing,
+     Delivered
+ }
 
 public sealed class Order : Entity<OrderId>
 {
@@ -54,36 +54,6 @@ public sealed class Order : Entity<OrderId>
         return OrderItems.Sum(orderItem => orderItem.TotalPrice);
     }
 
-    public void MarkPaid()
-    {
-        if (Status != OrderStatus.Pending)
-        {
-            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Paid);
-        }
-
-        Status = OrderStatus.Paid;
-    }
-
-    public void MarkFailed()
-    {
-        if (Status != OrderStatus.Pending)
-        {
-            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Failed);
-        }
-
-        Status = OrderStatus.Failed;
-    }
-
-    public void MarkCancelled()
-    {
-        if (Payment?.Status == PaymentStatus.Succeeded)
-        {
-            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Cancelled);
-        }
-
-        Status = OrderStatus.Cancelled;
-    }
-
     public long TotalAmountInCents() => (long)(TotalPrice() * 100);
 
     public void SetStripePaymentIntentId(string stripePaymentIntentId)
@@ -99,4 +69,24 @@ public sealed class Order : Entity<OrderId>
             ["StripePaymentIntentId"] = Payment.PaymentIntentId,
             ["IdempotencyKey"] = IdempotencyKey.ToString()
         };
+
+    public void MarkCancelled()
+    {
+        if(Status != OrderStatus.Delivered)
+        {
+            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Cancelled);
+        }
+        
+        Status = OrderStatus.Cancelled;
+    }
+
+    public void MarkProcessing()
+    {
+        if(Status != OrderStatus.Delivered)
+        {
+            throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Processing);
+        }
+        
+        Status = OrderStatus.Processing;
+    }
 }

@@ -1,12 +1,10 @@
 using Microsoft.Extensions.Options;
-using Shoply.WebApi.Common.Attributes;
 using Shoply.WebApi.Common.Composition.Options;
 using Stripe;
 using Stripe.Checkout;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services;
 
-[ServiceInjection(ServiceLifetime.Scoped)]
 public sealed partial class StripePaymentProvider(
     IOptions<StripeConfig> stripeConfigOptions,
     ILogger<StripePaymentProvider> logger,

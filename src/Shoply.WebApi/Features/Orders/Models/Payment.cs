@@ -10,10 +10,10 @@ public readonly partial struct PaymentId;
 public enum PaymentStatus
 {
     Pending,
-    Processing,
-    Succeeded,
-    Failed,
+    Paid,
+    Canceled,
     Refunded,
+    Failed,
     PartiallyRefunded
 }
 
@@ -28,7 +28,7 @@ public sealed class Payment : Entity<PaymentId>
         Id = PaymentId.From(Guid.CreateVersion7());
         OrderId = orderId;
         Amount = amount;
-        PaymentIntentId = null!;
+        PaymentIntentId = null!; // Will be set later when creating the payment intent with Stripe
         Status = PaymentStatus.Pending;
     }
 
@@ -59,42 +59,32 @@ public sealed class Payment : Entity<PaymentId>
         Guard.Against.NullOrEmpty<Payment>(paymentIntentId);
         PaymentIntentId = paymentIntentId;
     }
-
-    public void MarkProcessing()
+    
+    public void MarkPaid()
     {
-        if (Status != PaymentStatus.Pending)
+        if (Status is not PaymentStatus.Pending)
         {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Processing);
+            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Paid);
         }
 
-        Status = PaymentStatus.Processing;
+        Status = PaymentStatus.Paid;
     }
-
-    public void MarkSucceeded()
+    
+    public void MarkCanceled()
     {
-        if (Status != PaymentStatus.Processing)
+        if(Status is not PaymentStatus.Paid)
         {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Succeeded);
+            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Canceled);
         }
-
-        Status = PaymentStatus.Succeeded;
-    }
-
-    public void MarkFailed()
-    {
-        if (Status is PaymentStatus.Succeeded or PaymentStatus.Refunded)
-        {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Failed);
-        }
-
-        Status = PaymentStatus.Failed;
+        
+        Status = PaymentStatus.Canceled;
     }
 
     public void MarkRefunded(decimal refundAmount)
     {
         Guard.Against.NegativeOrZero<Payment>(refundAmount);
 
-        if (Status is not (PaymentStatus.Succeeded or PaymentStatus.PartiallyRefunded))
+        if (Status is not (PaymentStatus.Paid or PaymentStatus.PartiallyRefunded))
         {
             throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Refunded);
         }
@@ -107,5 +97,15 @@ public sealed class Payment : Entity<PaymentId>
 
         RefundedAmount += refundAmount;
         Status = RefundedAmount == Amount ? PaymentStatus.Refunded : PaymentStatus.PartiallyRefunded;
+    }
+
+    public void MarkFailed()
+    {
+        if(Status is not (PaymentStatus.Refunded or PaymentStatus.PartiallyRefunded))
+        {
+            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Failed);
+        }
+        
+        Status = PaymentStatus.Failed;
     }
 }

@@ -7,55 +7,52 @@ public sealed partial class LoggingBehavior<TMessage, TResponse>(
     ILogger<LoggingBehavior<TMessage, TResponse>> logger) : IPipelineBehavior<TMessage, TResponse>
     where TMessage : IMessage
 {
-    private readonly string _behaviorType = typeof(TMessage).FullName ?? typeof(TMessage).Name;
-    private readonly string _messageName = typeof(TMessage).Name;
+    private readonly Type _behaviorType = typeof(TMessage);
 
     public async ValueTask<TResponse> Handle(
         TMessage message,
         MessageHandlerDelegate<TMessage, TResponse> next,
         CancellationToken cancellationToken)
     {
-        var sw = Stopwatch.StartNew();
+        var properties = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["@RequestData"] = message
+        };
+
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is not null)
+        {
+            properties["User"] = httpContext.User?.Identity?.Name;
+            properties["RemoteIP"] = httpContext.Connection.RemoteIpAddress;
+
+            var httpRequest = httpContext.Request;
+            properties["ConnectingIP"] = httpRequest.Headers["CF-Connecting-IP"];
+            properties["RequestMethod"] = httpRequest.Method;
+            properties["RequestPath"] = httpRequest.Path.ToString();
+        }
 
         try
         {
-            var ctx = LoggerRequestContext.FromHttpContext(httpContextAccessor.HttpContext);
+            var sw = Stopwatch.StartNew();
+            var response = await next(message, cancellationToken);
 
-            LogBeginHandling(
-                _messageName,
-                _behaviorType,
-                ctx.ToString()
-            );
+            using var scope = logger.BeginScope(properties);
+            LogSuccess(_behaviorType, sw.Elapsed.TotalMilliseconds);
 
-            return await next(message, cancellationToken);
+            return response;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            LogOccuredError(_messageName, e);
+            using var scope = logger.BeginScope(properties);
+            LogException(_behaviorType, ex);
+
             throw;
-        }
-        finally
-        {
-            sw.Stop();
-            LogFinishedHandling(_messageName, sw.ElapsedMilliseconds);
         }
     }
 
-    [LoggerMessage(0, LogLevel.Information,
-        "Beginning {messageName} ({behaviorType}) with context {messageContext}")]
-    private partial void LogBeginHandling(
-        string messageName,
-        string behaviorType,
-        string messageContext);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Executed {Type} handler in {Elapsed} ms")] 
+    private partial void LogSuccess(Type type, double elapsed);
 
-    [LoggerMessage(1, LogLevel.Error, "Error handling {messageName}")]
-    private partial void LogOccuredError(
-        string messageName,
-        Exception exception);
-
-    [LoggerMessage(2, LogLevel.Information,
-        "Finished handling {messageName} in {elapsedMs} ms.")]
-    private partial void LogFinishedHandling(
-        string messageName,
-        long elapsedMs);
+    [LoggerMessage(Level = LogLevel.Error, Message = "Exception during {Type} handler")] 
+    private partial void LogException(Type type, Exception exception);
 }

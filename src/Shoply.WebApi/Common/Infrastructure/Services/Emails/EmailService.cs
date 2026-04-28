@@ -2,25 +2,23 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Shoply.WebApi.Common.Attributes;
 using Shoply.WebApi.Common.Composition.Options;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services.Emails;
 
-[ServiceInjection<EmailService, IEmailService>(ServiceLifetime.Scoped)]
-public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailConfig> options) : IEmailService
+public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailConfig> options) 
 {
     private const string SenderEmail = "noreply@shoply.com";
     private readonly EmailConfig _emailConfig = options.Value;
 
-    public virtual async Task SendEmailAsync(IEmailTemplate template, CancellationToken cancellationToken)
+    public async Task SendEmailAsync(IEmailTemplate template, CancellationToken cancellationToken)
     {
         using var client = new SmtpClient();
 
         try
         {
-            await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.SmtpPort, SecureSocketOptions.None,
+            await client.ConnectAsync(_emailConfig.Host, _emailConfig.Port, SecureSocketOptions.None,
                 cancellationToken);
             await client.SendAsync(
                 new MimeMessage
@@ -28,7 +26,7 @@ public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailCo
                     From = { MailboxAddress.Parse(SenderEmail) },
                     To = { MailboxAddress.Parse(template.To) },
                     Subject = template.Subject,
-                    Body = new BodyBuilder { TextBody = template.Body }.ToMessageBody()
+                    Body = new BodyBuilder { HtmlBody = template.Body }.ToMessageBody()
                 }, cancellationToken);
 
             LogEmailSentToRecipient(logger, template.To, template.Subject);
@@ -45,11 +43,11 @@ public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailCo
     }
 
     [LoggerMessage(LogLevel.Information, "Email sent to {recipient} with subject {subject}")]
-    static partial void LogEmailSentToRecipient(ILogger<EmailService> logger, string recipient, string subject);
+    private static partial void LogEmailSentToRecipient(ILogger<EmailService> logger, string recipient, string subject);
 
     [LoggerMessage(LogLevel.Error, "Error sending email")]
-    static partial void LogErrorSendingEmail(ILogger<EmailService> logger);
+    private static partial void LogErrorSendingEmail(ILogger<EmailService> logger);
 
     [LoggerMessage(LogLevel.Information, "Email Closed")]
-    static partial void LogEmailClosed(ILogger<EmailService> logger);
+    private static partial void LogEmailClosed(ILogger<EmailService> logger);
 }

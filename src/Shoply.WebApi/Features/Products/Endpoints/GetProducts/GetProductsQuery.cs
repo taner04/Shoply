@@ -1,6 +1,6 @@
-using Shoply.WebApi.Common.Shared.Pagination;
+using Shoply.WebApi.Common.Infrastructure.Services.Pagination;
 
 namespace Shoply.WebApi.Features.Products.Endpoints.GetProducts;
 
 public sealed record GetProductsQuery(int PageIndex, int PageSize)
-    : PaginationQuery(PageIndex, PageSize), IQuery<PaginationResult<GetProductsResponse>>;
+    : PaginationQuery(PageIndex, PageSize), IQuery<PaginationResult<ProductsResponse>>;

@@ -8,7 +8,7 @@ public sealed class CancelOrderCommandHandler(
     ShoplyDbContext context,
     CurrentUserService userService,
     StripePaymentProvider stripePaymentProvider,
-    IEmailService emailService) : ICommandHandler<CancelOrderCommand>
+    EmailService emailService) : ICommandHandler<CancelOrderCommand>
 {
     public async ValueTask<Unit> Handle(CancelOrderCommand command, CancellationToken cancellationToken)
     {

@@ -11,6 +11,8 @@
         <PackageReference Include="Auth0.AspNetCore.Authentication.Api"/>
         <PackageReference Include="FluentValidation"/>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        <PackageReference Include="Hangfire.AspNetCore"/>
+        <PackageReference Include="Hangfire.PostgreSql"/>
         <PackageReference Include="MailKit"/>
         <PackageReference Include="Mediator.Abstractions"/>
         <PackageReference Include="Mediator.SourceGenerator">
@@ -42,7 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\WebHooks\Endpoints\" />
+        <Folder Include="Features\WebHooks\Endpoints\"/>
     </ItemGroup>
 
 </Project>

@@ -120,11 +120,11 @@ public static class Guard
             [CallerArgumentExpression(nameof(value))]
             string? paramName = null)
         {
-            var prop = Prop(paramName);
-
             if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) ||
                 (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
+                var prop = Prop(paramName);
+                
                 GuardException.Throw(
                     Owner<TOwner>(),
                     prop,

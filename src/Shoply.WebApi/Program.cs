@@ -2,48 +2,35 @@ using Shoply.ServiceDefaults;
 using Shoply.WebApi.Common.Composition.Configs;
 using Shoply.WebApi.Common.Composition.Configs.OpenApi;
 using Shoply.WebApi.Common.Composition.Extensions.ServiceCollection;
-using Shoply.WebApi.Common.Composition.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
-
-builder.Services.AddOptions<Auth0Config>()
-    .BindConfiguration(nameof(Auth0Config))
-    .ValidateDataAnnotations();
-
-builder.Services.AddOpenApi(OpenApiConfig.Config);
-
-builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.RegisterServices(builder);
+_ = builder.AddServiceDefaults();
+_ = builder.Services.AddOpenApi(OpenApiConfig.Config);
+_ = builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
+_ = builder.Services.AddHttpContextAccessor();
+_ = builder.Services.RegisterShoplyServices(builder);
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
+_ = app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalar();
+    _ = app.MapOpenApi();
+    _ = app.MapScalar();
+    _ = app.AddHangfireDashboard();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+_ = app.UseAuthentication();
+_ = app.UseAuthorization();
+_ = app.UseHttpsRedirection();
+_ = app.MapEndpoints();
 
-app.UseHttpsRedirection();
-app.MapEndpoints();
-
-app.Use((context, next) =>
+_ = app.Use((context, next) =>
 {
-    context.Request.EnableBuffering();
+    context.Request.EnableBuffering(); // Enable buffering to allow multiple reads of the request body (StripeWebHook)
     return next();
 });
 
 app.Run();
-
-namespace Shoply.WebApi
-{
-    public class Program; // for integration testing purposes
-}

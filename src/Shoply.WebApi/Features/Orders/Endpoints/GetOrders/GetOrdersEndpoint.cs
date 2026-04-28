@@ -1,4 +1,4 @@
-using Shoply.WebApi.Common.Shared.Pagination;
+using Shoply.WebApi.Common.Infrastructure.Services.Pagination;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.GetOrders;
 

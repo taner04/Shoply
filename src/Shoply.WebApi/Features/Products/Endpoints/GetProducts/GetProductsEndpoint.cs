@@ -1,4 +1,4 @@
-using Shoply.WebApi.Common.Shared.Pagination;
+using Shoply.WebApi.Common.Infrastructure.Services.Pagination;
 
 namespace Shoply.WebApi.Features.Products.Endpoints.GetProducts;
 
@@ -18,8 +18,7 @@ public sealed class GetProductsEndpoint : IEndpoint
             .WithName("GetProducts")
             .WithTags("Products")
             .RequireRateLimiting(Security.RateLimiting.Global)
-            .RequireAuthorization(Security.Policies.User)
-            .Produces<PaginationResult<GetProductsResponse>>()
+            .Produces<PaginationResult<ProductsResponse>>()
             .ProducesApiProblemDetails();
     }
 }

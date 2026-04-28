@@ -110,8 +110,9 @@ public class CreateOrderEmailTemplate(string userEmail, Order order) : UserEmail
         // Next Steps
         sb.AppendLine("<div class=\"info-section\">");
         sb.AppendLine("<strong>What's Next?</strong><br>");
+        sb.AppendLine("Thank you for your order! Please complete your payment to finalize your purchase.<br>");
         sb.AppendLine(
-            "We're preparing your order for shipment. You'll receive a tracking number via email as soon as your package ships.");
+            "<br>Once your payment is successful and your package has been shipped, you will receive another email with tracking information and further details.");
         sb.AppendLine("</div>");
 
         // CTA

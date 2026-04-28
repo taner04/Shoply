@@ -1,8 +1,5 @@
-using Shoply.WebApi.Common.Attributes;
-
 namespace Shoply.WebApi.Features.Orders.Endpoints.GetOrders;
 
-[ServiceInjection(ServiceLifetime.Singleton)]
 public sealed class GetOrdersMapper : IMapper<Order, OrdersResponse>
 {
     public List<OrdersResponse> Map(List<Order> source)

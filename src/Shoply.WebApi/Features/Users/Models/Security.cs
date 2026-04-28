@@ -11,6 +11,5 @@ public static class Security
     public static class RateLimiting
     {
         public const string Global = "global-ratelimit";
-        public const string WebHook = "webhook-ratelimit";
     }
 }

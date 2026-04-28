@@ -11,7 +11,7 @@ internal static class AuthenticationServiceCollection
     {
         public IServiceCollection AddShoplyAuthentication(IConfiguration configuration)
         {
-            var auth0Config = configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
+            var auth0Config = configuration.GetOptions<Auth0Config>();
             ArgumentNullException.ThrowIfNull(auth0Config);
 
             services.AddAuthentication(options =>

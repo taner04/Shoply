@@ -1,18 +1,22 @@
-using Shoply.WebApi.Common.Attributes;
-using Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventObjects.V1;
 using Stripe;
 
 namespace Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventStrategies.RefundEvents;
 
-[ServiceInjection<RefundCreatedStrategy, IStripeEventStrategy>(ServiceLifetime.Scoped)]
-public sealed class RefundCreatedStrategy(
+public sealed partial class RefundCreatedStrategy(
     ShoplyDbContext context,
-    ILogger<RefundCreatedStrategy> logger) : IStripeEventStrategy
+    ILogger<RefundCreatedStrategy> logger) : StripeEventStrategy<Refund>(context)
 {
-    public string EventType => EventTypes.RefundCreated;
+    public override string EventType => EventTypes.RefundCreated;
 
-    public Task HandleNotification(
-        StripeEventObjectV1 stripEventObjectV1,
+    protected override Task HandleEventAsync(
+        Refund @event,
         Order order,
-        CancellationToken cancellationToken) => throw new NotImplementedException();
+        CancellationToken cancellationToken)
+    {
+        LogHandlingRefundCreatedEventForOrderOrderidWithRefundAmountRefundamount(order.Id, @event.Amount);
+        return Task.CompletedTask;
+    }
+
+    [LoggerMessage(LogLevel.Information, "Handling refund created event for order {OrderId} with refund amount {RefundAmount}")]
+    private partial void LogHandlingRefundCreatedEventForOrderOrderidWithRefundAmountRefundamount(OrderId orderId, long refundAmount);
 }

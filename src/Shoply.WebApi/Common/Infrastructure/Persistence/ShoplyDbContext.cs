@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage;
 using Shoply.WebApi.Common.Infrastructure.Persistence.Configurations;
 using Shoply.WebApi.Features.WebHooks.Models;
 

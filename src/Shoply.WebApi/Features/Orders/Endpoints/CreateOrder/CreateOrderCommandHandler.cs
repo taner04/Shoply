@@ -9,7 +9,7 @@ public sealed class CreateOrderCommandHandler(
     ShoplyDbContext context,
     CurrentUserService userService,
     StripePaymentProvider stripePaymentProvider,
-    IEmailService emailService) : ICommandHandler<CreateOrderCommand, string>
+    EmailService emailService) : ICommandHandler<CreateOrderCommand, string>
 {
     public async ValueTask<string> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {

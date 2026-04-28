@@ -1,11 +1,11 @@
 using Shoply.WebApi.Common.Infrastructure.Services;
-using Shoply.WebApi.Common.Shared.Pagination;
+using Shoply.WebApi.Common.Infrastructure.Services.Pagination;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.GetOrders;
 
 public sealed class GetOrdersQueryHandler(
     PaginationService paginationService,
-    GetOrdersMapper mapper,
+    IMapper<Order, OrdersResponse> mapper,
     CurrentUserService currentUserService)
     : IQueryHandler<GetOrdersQuery, PaginationResult<OrdersResponse>>
 {

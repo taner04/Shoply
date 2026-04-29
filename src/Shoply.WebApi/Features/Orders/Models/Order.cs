@@ -1,25 +1,24 @@
 using Shoply.WebApi.Common.Shared.Guards;
 using Shoply.WebApi.Common.Shared.Models;
+using Shoply.WebApi.Features.Orders.Enums;
 using Shoply.WebApi.Features.Orders.Exceptions;
 
 namespace Shoply.WebApi.Features.Orders.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct OrderId;
-
-public enum OrderStatus
- {
-     Pending,
-     Cancelled,
-     Processing,
-     Delivered
- }
+public readonly partial struct OrderId
+{
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("OrderId must set to non-default value.");
+}
 
 public sealed class Order : Entity<OrderId>
 {
     private readonly List<OrderItem> _orderItems = [];
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Order()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     } // For EF Core
 

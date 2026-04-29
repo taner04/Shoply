@@ -1,4 +1,5 @@
 using System.Net;
+using Shoply.WebApi.Features.Orders.Enums;
 
 namespace Shoply.WebApi.Features.Orders.Exceptions;
 

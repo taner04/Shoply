@@ -3,7 +3,11 @@ using Shoply.WebApi.Common.Shared.Models;
 namespace Shoply.WebApi.Features.Baskets.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct BasketId;
+public readonly partial struct BasketId
+{
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("BasketId must set to non-default value.");
+}
 
 public sealed class Basket : Entity<BasketId>
 {
@@ -11,11 +15,12 @@ public sealed class Basket : Entity<BasketId>
 
     private Basket()
     {
+        Id = BasketId.From(Guid.CreateVersion7());
     } // For EF Core
 
     public IReadOnlyCollection<BasketItem> BasketItems => _basketItems.AsReadOnly();
 
-    public static Basket CreateEmpty() => new() { Id = BasketId.From(Guid.CreateVersion7()) };
+    public static Basket CreateEmpty() => new();
 
     public void AddProduct(Product product)
     {

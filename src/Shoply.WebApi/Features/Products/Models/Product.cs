@@ -6,13 +6,17 @@ using Shoply.WebApi.Features.Products.Exceptions;
 namespace Shoply.WebApi.Features.Products.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct ProductId;
+public readonly partial struct ProductId
+{
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("ProductId must set to non-default value.");
+}
 
 public sealed class Product : Entity<ProductId>
 {
-    public const string DefaultContainer = "product-images";
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Product()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     } // EF
 

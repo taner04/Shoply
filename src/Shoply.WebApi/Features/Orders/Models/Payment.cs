@@ -1,20 +1,15 @@
 using Shoply.WebApi.Common.Shared.Guards;
 using Shoply.WebApi.Common.Shared.Models;
+using Shoply.WebApi.Features.Orders.Enums;
 using Shoply.WebApi.Features.Orders.Exceptions;
 
 namespace Shoply.WebApi.Features.Orders.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct PaymentId;
-
-public enum PaymentStatus
+public readonly partial struct PaymentId
 {
-    Pending,
-    Paid,
-    Canceled,
-    Refunded,
-    Failed,
-    PartiallyRefunded
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("PaymentId must set to non-default value.");
 }
 
 public sealed class Payment : Entity<PaymentId>

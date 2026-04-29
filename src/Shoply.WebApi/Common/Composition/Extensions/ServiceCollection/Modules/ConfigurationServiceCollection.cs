@@ -11,9 +11,9 @@ internal static class ConfigurationServiceCollection
             var isTestEnv = builder.Environment.IsEnvironment("Testing");
             var configuration = builder.Configuration;
 
-            services.AddConfig<StripeConfig>(configuration, isTestEnv);
-            services.AddConfig<Auth0Config>(configuration, isTestEnv);
-            services.AddConfig<EmailConfig>(configuration, isTestEnv);
+            _ = services.AddConfig<StripeConfig>(configuration, isTestEnv);
+            _ = services.AddConfig<Auth0Config>(configuration, isTestEnv);
+            _ = services.AddConfig<EmailConfig>(configuration, isTestEnv);
 
             return services;
         }

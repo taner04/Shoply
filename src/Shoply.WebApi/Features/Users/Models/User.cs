@@ -5,12 +5,23 @@ using Shoply.WebApi.Features.Baskets.Models;
 namespace Shoply.WebApi.Features.Users.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct UserId;
+public readonly partial struct UserId
+{
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("ProductId must set to non-default value.");
+}
 
 public sealed class User : Entity<UserId>
 {
     private readonly List<Order> _orders = [];
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    private User()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    {
+        
+    } // For EF Core
+    
     private User(string email, string auth0Id)
     {
         Id = UserId.From(Guid.CreateVersion7());

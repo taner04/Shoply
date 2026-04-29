@@ -1,5 +1,4 @@
 using Shoply.WebApi.Common.Composition.Extensions.ServiceCollection.Modules;
-using Shoply.WebApi.Common.Composition.Options;
 
 namespace Shoply.WebApi.Common.Composition.Extensions.ServiceCollection;
 
@@ -17,7 +16,7 @@ public static class ServiceCollectionExtensions
                 .AddShoplyHangfire(builder)
                 .AddShoplyApplicationServices()
                 .AddShoplyRateLimiting();
-            
+
             return services;
         }
     }

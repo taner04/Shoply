@@ -7,7 +7,9 @@ public sealed class SearchProductQueryHandler(
     IMapper<Product, ProductsResponse> mapper,
     PaginationService paginationService) : IQueryHandler<SearchProductQuery, PaginationResult<ProductsResponse>>
 {
-    public async ValueTask<PaginationResult<ProductsResponse>> Handle(SearchProductQuery query, CancellationToken cancellationToken)
+    public async ValueTask<PaginationResult<ProductsResponse>> Handle(
+        SearchProductQuery query,
+        CancellationToken cancellationToken)
     {
         return await paginationService.GetPaginationResultAsync(
             query,

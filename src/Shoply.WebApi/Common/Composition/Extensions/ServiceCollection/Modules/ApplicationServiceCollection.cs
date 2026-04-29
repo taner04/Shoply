@@ -33,7 +33,7 @@ internal static class ApplicationServiceCollection
             services.AddSingleton<IMapper<Product, ProductsResponse>, ProductsMapper>();
             services.AddSingleton<IMapper<Order, OrdersResponse>, GetOrdersMapper>();
             services.AddScoped<PaginationService>();
-            
+
             return services;
         }
     }

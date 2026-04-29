@@ -17,14 +17,14 @@ internal static class StripeServiceCollection
         internal IServiceCollection AddShoplyStripe(IConfiguration configuration)
         {
             services.PostConfigure<StripeConfig>(config => { StripeConfiguration.ApiKey = config.SecretKey; });
-           
+
             services.AddScoped<SessionService>();
             services.AddScoped<RefundService>();
-            
+
             services.AddScoped<StripeEventProcessor>();
             services.AddSingleton<StripeIdempotencyService>();
             services.AddScoped<StripePaymentProvider>();
-            
+
             services.AddScoped<IStripeEventStrategy, CheckoutSessionAsyncPaymentFailedStrategy>();
             services.AddScoped<IStripeEventStrategy, CheckoutSessionAsyncPaymentSucceededStrategy>();
             services.AddScoped<IStripeEventStrategy, CheckoutSessionCompletedStrategy>();

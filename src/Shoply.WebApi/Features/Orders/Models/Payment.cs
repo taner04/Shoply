@@ -54,7 +54,7 @@ public sealed class Payment : Entity<PaymentId>
         Guard.Against.NullOrEmpty<Payment>(paymentIntentId);
         PaymentIntentId = paymentIntentId;
     }
-    
+
     public void MarkPaid()
     {
         if (Status is not PaymentStatus.Pending)
@@ -64,14 +64,14 @@ public sealed class Payment : Entity<PaymentId>
 
         Status = PaymentStatus.Paid;
     }
-    
+
     public void MarkCanceled()
     {
-        if(Status is not PaymentStatus.Paid)
+        if (Status is not PaymentStatus.Paid)
         {
             throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Canceled);
         }
-        
+
         Status = PaymentStatus.Canceled;
     }
 
@@ -96,11 +96,11 @@ public sealed class Payment : Entity<PaymentId>
 
     public void MarkFailed()
     {
-        if(Status is not (PaymentStatus.Refunded or PaymentStatus.PartiallyRefunded))
+        if (Status is not (PaymentStatus.Refunded or PaymentStatus.PartiallyRefunded))
         {
             throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Failed);
         }
-        
+
         Status = PaymentStatus.Failed;
     }
 }

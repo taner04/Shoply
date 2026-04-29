@@ -50,9 +50,9 @@ public sealed partial class LoggingBehavior<TMessage, TResponse>(
         }
     }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Executed {Type} handler in {Elapsed} ms")] 
+    [LoggerMessage(Level = LogLevel.Information, Message = "Executed {Type} handler in {Elapsed} ms")]
     private partial void LogSuccess(Type type, double elapsed);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Exception during {Type} handler")] 
+    [LoggerMessage(Level = LogLevel.Error, Message = "Exception during {Type} handler")]
     private partial void LogException(Type type, Exception exception);
 }

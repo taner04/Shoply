@@ -7,7 +7,7 @@ using Shoply.WebApi.Common.Infrastructure.Services.Emails.Templates;
 
 namespace Shoply.WebApi.Common.Infrastructure.Services.Emails;
 
-public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailConfig> options) 
+public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailConfig> options)
 {
     private const string SenderEmail = "noreply@shoply.com";
     private readonly EmailConfig _emailConfig = options.Value;

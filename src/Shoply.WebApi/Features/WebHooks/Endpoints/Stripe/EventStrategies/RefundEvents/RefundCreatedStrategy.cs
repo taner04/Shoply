@@ -13,10 +13,13 @@ public sealed partial class RefundCreatedStrategy(
         Order order,
         CancellationToken cancellationToken)
     {
-        LogHandlingRefundCreatedEventForOrderOrderidWithRefundAmountRefundamount(order.Id, @event.Amount);
+        LogRefundCreatedForOrder(order.Id, @event.Amount);
         return Task.CompletedTask;
     }
 
-    [LoggerMessage(LogLevel.Information, "Handling refund created event for order {OrderId} with refund amount {RefundAmount}")]
-    private partial void LogHandlingRefundCreatedEventForOrderOrderidWithRefundAmountRefundamount(OrderId orderId, long refundAmount);
+    [LoggerMessage(LogLevel.Information,
+        "Handling refund created event for order {OrderId} with refund amount {RefundAmount}")]
+    private partial void LogRefundCreatedForOrder(
+        OrderId orderId,
+        long refundAmount);
 }

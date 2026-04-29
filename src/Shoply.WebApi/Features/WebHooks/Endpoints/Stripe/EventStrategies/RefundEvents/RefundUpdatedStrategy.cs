@@ -14,18 +14,27 @@ public sealed partial class RefundUpdatedStrategy(
         {
             order.Payment.MarkRefunded(@event.Amount);
             await Context.SaveChangesAsync(cancellationToken);
-            
-            LogRefundForOrderOrderidUpdatedWithStatusRefundstatusAndAmountRefundamountMarkedAs(order.Id, @event.Status, @event.Amount);
+
+            LogRefundStatusChangedForOrder(order.Id, @event.Status,
+                @event.Amount);
         }
         else
         {
-            LogRefundForOrderOrderidUpdatedWithStatusRefundstatusAndAmountRefundamount(order.Id, @event.Status, @event.Amount);
+            LogRefundUpdatedForOrder(order.Id, @event.Status, @event.Amount);
         }
     }
 
-    [LoggerMessage(LogLevel.Information, "Refund for order {OrderId} updated with status {RefundStatus} and amount {RefundAmount}, marked as refunded")]
-    private partial void LogRefundForOrderOrderidUpdatedWithStatusRefundstatusAndAmountRefundamountMarkedAs(OrderId orderId, string refundStatus, long refundAmount);
-    
-    [LoggerMessage(LogLevel.Warning, "Refund for order {OrderId} updated with status {RefundStatus} and amount {RefundAmount}")]
-    private partial void LogRefundForOrderOrderidUpdatedWithStatusRefundstatusAndAmountRefundamount(OrderId orderId, string refundStatus, long refundAmount);
+    [LoggerMessage(LogLevel.Information,
+        "Refund for order {OrderId} updated with status {RefundStatus} and amount {RefundAmount}, marked as refunded")]
+    private partial void LogRefundStatusChangedForOrder(
+        OrderId orderId,
+        string refundStatus,
+        long refundAmount);
+
+    [LoggerMessage(LogLevel.Warning,
+        "Refund for order {OrderId} updated with status {RefundStatus} and amount {RefundAmount}")]
+    private partial void LogRefundUpdatedForOrder(
+        OrderId orderId,
+        string refundStatus,
+        long refundAmount);
 }

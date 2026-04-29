@@ -1,5 +1,4 @@
 using Hangfire;
-using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using Shoply.WebApi.Common.Composition.Options;
 

@@ -71,21 +71,21 @@ public sealed class Order : Entity<OrderId>
 
     public void MarkCancelled()
     {
-        if(Status != OrderStatus.Delivered)
+        if (Status != OrderStatus.Delivered)
         {
             throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Cancelled);
         }
-        
+
         Status = OrderStatus.Cancelled;
     }
 
     public void MarkProcessing()
     {
-        if(Status != OrderStatus.Delivered)
+        if (Status != OrderStatus.Delivered)
         {
             throw new InvalidOrderPaymentStatusException(Status, OrderStatus.Processing);
         }
-        
+
         Status = OrderStatus.Processing;
     }
 }

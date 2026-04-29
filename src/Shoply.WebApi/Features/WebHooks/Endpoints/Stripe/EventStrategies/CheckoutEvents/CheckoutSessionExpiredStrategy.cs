@@ -14,10 +14,10 @@ public sealed partial class CheckoutSessionExpiredStrategy(
         Order order,
         CancellationToken cancellationToken)
     {
-        LogMarkedOrderOrderidAsCancelledDueToCheckoutSessionExpiration(order.Id);
+        LogOrderCancelledDueToCheckoutExpiration(order.Id);
         return Task.CompletedTask;
     }
 
     [LoggerMessage(LogLevel.Warning, "Marked order {orderId} as cancelled due to checkout session expiration")]
-    private partial void LogMarkedOrderOrderidAsCancelledDueToCheckoutSessionExpiration(OrderId orderId);
+    private partial void LogOrderCancelledDueToCheckoutExpiration(OrderId orderId);
 }

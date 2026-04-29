@@ -17,7 +17,7 @@ internal static class ConfigurationServiceCollection
 
             return services;
         }
-        
+
         private IServiceCollection AddConfig<TOptions>(IConfiguration configuration, bool isTestingEnv)
             where TOptions : class
         {

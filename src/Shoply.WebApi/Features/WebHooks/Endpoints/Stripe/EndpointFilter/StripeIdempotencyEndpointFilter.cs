@@ -18,7 +18,7 @@ internal sealed class StripeIdempotencyEndpointFilter(
 
         using var bodyReader = new StreamReader(body);
         var rawBody = await bodyReader.ReadToEndAsync();
-        
+
         var stripeEvent = EventUtility.ConstructEvent(
             rawBody,
             context.HttpContext.Request.Headers["Stripe-Signature"],

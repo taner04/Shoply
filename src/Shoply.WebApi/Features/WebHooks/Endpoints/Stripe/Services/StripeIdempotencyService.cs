@@ -5,6 +5,7 @@ using Shoply.WebApi.Features.WebHooks.Models;
 using Stripe;
 
 namespace Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.Services;
+
 internal sealed class StripeIdempotencyService(
     IBackgroundJobClient backgroundJobClient,
     IServiceScopeFactory scopeFactory)

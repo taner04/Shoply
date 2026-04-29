@@ -125,7 +125,7 @@ public static class Guard
                 (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 var prop = Prop(paramName);
-                
+
                 GuardException.Throw(
                     Owner<TOwner>(),
                     prop,

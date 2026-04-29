@@ -3,7 +3,11 @@
 namespace Shoply.WebApi.Features.WebHooks.Models;
 
 [ValueObject<Guid>]
-public readonly partial struct WebHookEventId;
+public readonly partial struct WebHookEventId
+{
+    private static Validation Validate(Guid value)
+        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("WebHookEventId must set to non-default value.");
+}
 
 public sealed class WebHookEvent : Entity<WebHookEventId>
 {

@@ -1,6 +1,9 @@
 using Shoply.WebApi.Common.Infrastructure.Persistence.Extensions;
 using Shoply.WebApi.Common.Infrastructure.Services;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails;
+using Shoply.WebApi.Common.Shared.Guards;
+using Shoply.WebApi.Features.Orders.Enums;
+using Shoply.WebApi.Features.Orders.Exceptions;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.CancelOrder;
 
@@ -28,7 +31,12 @@ public sealed class CancelOrderCommandHandler(
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            order.MarkCancelled();
+            if (order.Status != OrderStatus.Delivered)
+            {
+                throw new InvalidOrderPaymentStatusException(order.Status, OrderStatus.Cancelled);
+            }
+
+            order.Status = OrderStatus.Cancelled;
             foreach (var orderItem in order.OrderItems)
             {
                 if (!products.TryGetValue(orderItem.ProductId, out var product))
@@ -36,7 +44,9 @@ public sealed class CancelOrderCommandHandler(
                     throw new EntityNotFoundException<Product>(orderItem.ProductId.Value);
                 }
 
-                product.IncreaseQuantity(orderItem.Quantity);
+                Guard.Against.NegativeOrZero<Product>(orderItem.Quantity);
+
+                product.Quantity += orderItem.Quantity;
             }
 
             await stripePaymentProvider.RefundOrderAsync(order, cancellationToken);

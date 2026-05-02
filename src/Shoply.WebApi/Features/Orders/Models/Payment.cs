@@ -1,7 +1,6 @@
 using Shoply.WebApi.Common.Shared.Guards;
 using Shoply.WebApi.Common.Shared.Models;
 using Shoply.WebApi.Features.Orders.Enums;
-using Shoply.WebApi.Features.Orders.Exceptions;
 
 namespace Shoply.WebApi.Features.Orders.Models;
 
@@ -9,98 +8,37 @@ namespace Shoply.WebApi.Features.Orders.Models;
 public readonly partial struct PaymentId
 {
     private static Validation Validate(Guid value)
-        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("PaymentId must set to non-default value.");
+    {
+        return value != Guid.Empty ? Validation.Ok : Validation.Invalid("PaymentId must set to non-default value.");
+    }
 }
 
 public sealed class Payment : Entity<PaymentId>
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Payment()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     } // For EF Core
 
-    private Payment(OrderId orderId, decimal amount)
-    {
-        Id = PaymentId.From(Guid.CreateVersion7());
-        OrderId = orderId;
-        Amount = amount;
-        PaymentIntentId = null!; // Will be set later when creating the payment intent with Stripe
-        Status = PaymentStatus.Pending;
-    }
-
-    public OrderId OrderId { get; private set; }
-    public Order Order { get; private set; } = null!;
-
-    public decimal Amount { get; }
-    public string PaymentIntentId { get; private set; }
-
-    public PaymentStatus Status { get; private set; }
-
-    public decimal RefundedAmount { get; private set; }
-
-    public static Payment Create(OrderId orderId, decimal amount)
+    public Payment(OrderId orderId, decimal amount)
     {
         Guard.Against.NegativeOrZero<Payment>(amount);
 
-        return new Payment(orderId, amount);
+        Id = PaymentId.From(Guid.CreateVersion7());
+        OrderId = orderId;
+        Amount = amount;
+        Status = PaymentStatus.Pending;
+        PaymentIntentId = null!; // Will be set later when creating the payment intent with Stripe
     }
 
-    public void SetStripePaymentIntentId(string paymentIntentId)
-    {
-        if (PaymentIntentId != null)
-        {
-            throw new PaymentIntentIdAlreadySetException();
-        }
+    public OrderId OrderId { get; init; }
+    public Order Order { get; init; } = null!;
 
-        Guard.Against.NullOrEmpty<Payment>(paymentIntentId);
-        PaymentIntentId = paymentIntentId;
-    }
+    public decimal Amount { get; }
+    public string PaymentIntentId { get; set; }
 
-    public void MarkPaid()
-    {
-        if (Status is not PaymentStatus.Pending)
-        {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Paid);
-        }
+    public PaymentStatus Status { get; set; }
 
-        Status = PaymentStatus.Paid;
-    }
-
-    public void MarkCanceled()
-    {
-        if (Status is not PaymentStatus.Paid)
-        {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Canceled);
-        }
-
-        Status = PaymentStatus.Canceled;
-    }
-
-    public void MarkRefunded(decimal refundAmount)
-    {
-        Guard.Against.NegativeOrZero<Payment>(refundAmount);
-
-        if (Status is not (PaymentStatus.Paid or PaymentStatus.PartiallyRefunded))
-        {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Refunded);
-        }
-
-        var availableBalance = Amount - RefundedAmount;
-        if (refundAmount > availableBalance)
-        {
-            throw new PaymentRefundExceedsBalanceException(refundAmount, availableBalance);
-        }
-
-        RefundedAmount += refundAmount;
-        Status = RefundedAmount == Amount ? PaymentStatus.Refunded : PaymentStatus.PartiallyRefunded;
-    }
-
-    public void MarkFailed()
-    {
-        if (Status is not (PaymentStatus.Refunded or PaymentStatus.PartiallyRefunded))
-        {
-            throw new InvalidPaymentStatusTransitionException(Status, PaymentStatus.Failed);
-        }
-
-        Status = PaymentStatus.Failed;
-    }
+    public decimal RefundedAmount { get; set; }
 }

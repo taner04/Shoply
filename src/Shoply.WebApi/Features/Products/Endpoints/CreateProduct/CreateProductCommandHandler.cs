@@ -15,7 +15,7 @@ public sealed class CreateProductCommandHandler(ShoplyDbContext context) : IComm
             throw new DuplicateProductNameException(command.Name);
         }
 
-        var product = Product.Create(
+        var product = new Product(
             command.Name,
             command.Price,
             command.Description,

@@ -6,7 +6,11 @@ namespace Shoply.WebApi.Features.WebHooks.Models;
 public readonly partial struct WebHookEventId
 {
     private static Validation Validate(Guid value)
-        => value != Guid.Empty ? Validation.Ok : Validation.Invalid("WebHookEventId must set to non-default value.");
+    {
+        return value != Guid.Empty
+            ? Validation.Ok
+            : Validation.Invalid("WebHookEventId must set to non-default value.");
+    }
 }
 
 public sealed class WebHookEvent : Entity<WebHookEventId>
@@ -28,23 +32,8 @@ public sealed class WebHookEvent : Entity<WebHookEventId>
     }
 
     public WebHookEventType EventType { get; init; }
-    public WebHookEventStatus Status { get; private set; }
+    public WebHookEventStatus Status { get; set; }
     public string EventId { get; init; }
     public string Payload { get; init; }
-    public int RetryCount { get; private set; }
-
-    public void IncrementRetryCount()
-    {
-        RetryCount++;
-    }
-
-    public void MarkFailed()
-    {
-        Status = WebHookEventStatus.Failed;
-    }
-
-    public void MarkHandled()
-    {
-        Status = WebHookEventStatus.Handled;
-    }
+    public int RetryCount { get; set; }
 }

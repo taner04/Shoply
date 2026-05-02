@@ -27,7 +27,9 @@ public sealed class CreateProductCommandValidator : AbstractValidator<CreateProd
             .Must(IsValidHttpUrl);
     }
 
-    private static bool IsValidHttpUrl(string url) =>
-        Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    private static bool IsValidHttpUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    }
 }

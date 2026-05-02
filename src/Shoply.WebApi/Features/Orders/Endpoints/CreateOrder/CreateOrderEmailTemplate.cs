@@ -94,7 +94,7 @@ public class CreateOrderEmailTemplate(string userEmail, Order order) : UserEmail
         // Order Summary
         sb.AppendLine("<div class=\"summary\">");
         sb.AppendLine("<div class=\"summary-row\">");
-        sb.AppendLine($"<span>Subtotal:</span><span>{order.TotalPrice():C}</span>");
+        sb.AppendLine($"<span>Subtotal:</span><span>{order.Payment.Amount:C}</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("<div class=\"summary-row\">");
         sb.AppendLine("<span>Shipping:</span><span>FREE</span>");
@@ -103,7 +103,7 @@ public class CreateOrderEmailTemplate(string userEmail, Order order) : UserEmail
         sb.AppendLine("<span>Tax:</span><span>Included</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("<div class=\"summary-row total\">");
-        sb.AppendLine($"<span>Total:</span><span>{order.TotalPrice():C}</span>");
+        sb.AppendLine($"<span>Total:</span><span>{order.Payment.Amount:C}</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("</div>");
 

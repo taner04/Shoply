@@ -22,7 +22,7 @@ public sealed partial class StripePaymentProvider(
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    UnitAmountDecimal = orderItem.TotalAmountInCents(),
+                    UnitAmountDecimal = (long)(orderItem.TotalPrice * 100),
                     Currency = "eur",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
@@ -50,8 +50,8 @@ public sealed partial class StripePaymentProvider(
             },
             SubmitType = "pay",
             Locale = "auto",
-            PaymentIntentData = new SessionPaymentIntentDataOptions { Metadata = order.ToMetadata() },
-            Metadata = order.ToMetadata(),
+            PaymentIntentData = new SessionPaymentIntentDataOptions { Metadata = ToMetadata(order) },
+            Metadata = ToMetadata(order),
             LineItems = sessionLineItemOptions
         };
 
@@ -70,12 +70,23 @@ public sealed partial class StripePaymentProvider(
         var refundOptions = new RefundCreateOptions
         {
             PaymentIntent = order.Payment.PaymentIntentId,
-            Amount = order.TotalAmountInCents(),
+            Amount = (long)(order.Payment.Amount * 100),
             Reason = "Customer cancelled the pending order",
-            Metadata = order.ToMetadata()
+            Metadata = ToMetadata(order)
         };
 
         await refundService.CreateAsync(refundOptions, cancellationToken: cancellationToken);
+    }
+
+    private static Dictionary<string, string> ToMetadata(Order order)
+    {
+        return new Dictionary<string, string>
+        {
+            ["OrderId"] = order.Id.Value.ToString(),
+            ["UserId"] = order.UserId.Value.ToString(),
+            ["StripePaymentIntentId"] = order.Payment.PaymentIntentId,
+            ["IdempotencyKey"] = order.IdempotencyKey.ToString()
+        };
     }
 
     [LoggerMessage(0, LogLevel.Information,

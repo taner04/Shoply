@@ -1,7 +1,9 @@
 using Shoply.WebApi.Common.Infrastructure.Persistence.Extensions;
 using Shoply.WebApi.Common.Infrastructure.Services;
 using Shoply.WebApi.Common.Infrastructure.Services.Emails;
+using Shoply.WebApi.Common.Shared.Guards;
 using Shoply.WebApi.Features.Orders.Exceptions;
+using Shoply.WebApi.Features.Products.Exceptions;
 
 namespace Shoply.WebApi.Features.Orders.Endpoints.CreateOrder;
 
@@ -20,7 +22,7 @@ public sealed class CreateOrderCommandHandler(
                        .FirstOrDefaultAsync(cancellationToken)
                    ?? throw new EntityNotFoundException<User>(userId.Value);
 
-        if (user.Basket.IsEmpty())
+        if (user.Basket.BasketItems.Count == 0)
         {
             throw new OrderBasketEmptyException();
         }
@@ -42,18 +44,26 @@ public sealed class CreateOrderCommandHandler(
                     throw new EntityNotFoundException<Product>(basketItem.ProductId.Value);
                 }
 
-                product.DecreaseQuantity(basketItem.Quantity);
-                orderItems.Add(OrderItem.From(product, basketItem.Quantity));
+                Guard.Against.NegativeOrZero<Product>(basketItem.Quantity);
+                if (basketItem.Quantity > product.Quantity)
+                {
+                    throw new InsufficientProductStockException(product.Id, product.Quantity, basketItem.Quantity);
+                }
+
+                product.Quantity -= basketItem.Quantity;
+                orderItems.Add(new OrderItem(product.Id, product.Name, product.Description, product.Price,
+                    basketItem.Quantity));
             }
 
-            var newOrder = Order.Create(user.Id, orderItems);
+            var newOrder = new Order(user.Id, orderItems);
 
             var stripeCheckoutSession =
                 await stripePaymentProvider.CreateCheckoutSessionAsync(newOrder, user.Email, cancellationToken);
-            newOrder.SetStripePaymentIntentId(stripeCheckoutSession.PaymentIntentId);
 
-            user.AddOrder(newOrder);
-            user.Basket.Clear();
+            newOrder.Payment.PaymentIntentId = stripeCheckoutSession.PaymentIntentId;
+
+            user.Orders.Add(newOrder);
+            user.Basket.BasketItems.Clear();
 
             await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);

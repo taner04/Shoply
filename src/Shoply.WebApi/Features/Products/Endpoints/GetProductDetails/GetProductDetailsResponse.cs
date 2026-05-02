@@ -8,12 +8,14 @@ public sealed record GetProductDetailsResponse(
     int Quantity,
     string ImageUrl)
 {
-    public static GetProductDetailsResponse FromProduct(Product product) =>
-        new(
+    public static GetProductDetailsResponse FromProduct(Product product)
+    {
+        return new GetProductDetailsResponse(
             product.Id.Value,
             product.Name,
             product.Price,
             product.Description,
             product.Quantity,
             product.ImageUrl);
+    }
 }

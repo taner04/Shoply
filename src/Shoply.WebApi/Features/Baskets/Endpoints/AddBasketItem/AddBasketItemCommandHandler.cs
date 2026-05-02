@@ -1,6 +1,7 @@
 using Shoply.WebApi.Common.Infrastructure.Persistence.Extensions;
 using Shoply.WebApi.Common.Infrastructure.Services;
 using Shoply.WebApi.Features.Baskets.Exceptions;
+using Shoply.WebApi.Features.Baskets.Models;
 
 namespace Shoply.WebApi.Features.Baskets.Endpoints.AddBasketItem;
 
@@ -20,7 +21,16 @@ public sealed class AddBasketItemCommandHandler(ShoplyDbContext context, Current
                        .FirstOrDefaultAsync(cancellationToken)
                    ?? throw new EntityNotFoundException<User>(userId.Value);
 
-        user.Basket.AddProduct(product);
+        var basketItem = user.Basket.BasketItems.FirstOrDefault(p => p.ProductId == product.Id);
+        if (basketItem is null)
+        {
+            user.Basket.BasketItems.Add(new BasketItem(product.Id));
+        }
+        else
+        {
+            basketItem.Quantity++;
+        }
+
         context.Update(user);
         await context.SaveChangesAsync(cancellationToken);
 

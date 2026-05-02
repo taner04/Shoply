@@ -1,3 +1,6 @@
+using Shoply.WebApi.Common.Shared.Guards;
+using Shoply.WebApi.Features.Orders.Enums;
+using Shoply.WebApi.Features.Orders.Exceptions;
 using Stripe;
 
 namespace Shoply.WebApi.Features.WebHooks.Endpoints.Stripe.EventStrategies.RefundEvents;
@@ -12,7 +15,23 @@ public sealed partial class RefundUpdatedStrategy(
     {
         if (@event.Status.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
         {
-            order.Payment.MarkRefunded(@event.Amount);
+            Guard.Against.NegativeOrZero<Payment>(@event.Amount);
+
+            if (order.Payment.Status is not (PaymentStatus.Paid or PaymentStatus.PartiallyRefunded))
+            {
+                throw new InvalidPaymentStatusTransitionException(order.Payment.Status, PaymentStatus.Refunded);
+            }
+
+            var availableBalance = order.Payment.Amount - @event.Amount;
+            if (@event.Amount > availableBalance)
+            {
+                throw new PaymentRefundExceedsBalanceException(@event.Amount, availableBalance);
+            }
+
+            order.Payment.RefundedAmount += @event.Amount;
+            order.Payment.Status = order.Payment.RefundedAmount == order.Payment.Amount
+                ? PaymentStatus.Refunded
+                : PaymentStatus.PartiallyRefunded;
             await Context.SaveChangesAsync(cancellationToken);
 
             LogRefundStatusChangedForOrder(order.Id, @event.Status,

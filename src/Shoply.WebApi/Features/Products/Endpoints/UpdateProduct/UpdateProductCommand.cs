@@ -5,5 +5,5 @@ public sealed record UpdateProductCommand(
     string Name,
     decimal Price,
     string Description,
-    int Stock,
+    int Quantity,
     string ImageUrl) : ICommand, IUserRequest;

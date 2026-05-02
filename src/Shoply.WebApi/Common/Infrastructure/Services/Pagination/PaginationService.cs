@@ -53,10 +53,12 @@ public sealed class PaginationService(ShoplyDbContext context)
 
     private static PaginationResult<TTarget> MapResult<TSource, TTarget>(
         PaginationResult<TSource> source,
-        Func<List<TSource>, List<TTarget>> mapFunc) =>
-        new(
+        Func<List<TSource>, List<TTarget>> mapFunc)
+    {
+        return new PaginationResult<TTarget>(
             mapFunc(source.Items),
             source.PageIndex,
             source.TotalPages,
             source.TotalCount);
+    }
 }

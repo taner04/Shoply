@@ -8,7 +8,11 @@ public sealed class UpdateProductCommandHandler(ShoplyDbContext context) : IComm
             await context.Products.FirstOrDefaultAsync(p => p.Id == command.ProductId,
                 cancellationToken) ?? throw new EntityNotFoundException<Product>(command.ProductId.Value);
 
-        product.Update(command.Name, command.Price, command.Description, command.Stock, command.ImageUrl);
+        product.Price = command.Price;
+        product.Quantity = command.Quantity;
+        product.Name = command.Name;
+        product.Description = command.Description;
+        product.ImageUrl = command.ImageUrl;
 
         context.Update(product);
         await context.SaveChangesAsync(cancellationToken);

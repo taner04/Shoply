@@ -20,7 +20,8 @@ public sealed partial class StripeEventProcessor(
             return;
         }
 
-        webHookEvent.IncrementRetryCount();
+        webHookEvent.RetryCount++;
+
         var stripeEvent = EventUtility.ParseEvent(webHookEvent.Payload);
         if (stripeEvent is null)
         {
@@ -38,11 +39,11 @@ public sealed partial class StripeEventProcessor(
         try
         {
             await strategy.HandleEventAsync(stripeEvent.Data, cancellationToken);
-            webHookEvent.MarkHandled();
+            webHookEvent.Status = WebHookEventStatus.Handled;
         }
         catch (Exception e)
         {
-            webHookEvent.MarkFailed();
+            webHookEvent.Status = WebHookEventStatus.Failed;
             LogFailedToHandleWebhookEventEventid(eventId, e);
             throw;
         }

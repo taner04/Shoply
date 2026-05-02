@@ -81,7 +81,7 @@ public sealed class CancelOrderEmailTemplate(string userEmail, Order order) : Us
         // Refund Information
         sb.AppendLine("<div class=\"refund-info\">");
         sb.AppendLine("<strong>Refund Status</strong><br>");
-        sb.AppendLine($"Your refund of <strong>{order.TotalPrice():C}</strong> has been initiated. ");
+        sb.AppendLine($"Your refund of <strong>{order.Payment.Amount:C}</strong> has been initiated. ");
         sb.AppendLine("The funds should appear in your account within 5-7 business days, depending on your bank.");
         sb.AppendLine("</div>");
 
@@ -103,13 +103,13 @@ public sealed class CancelOrderEmailTemplate(string userEmail, Order order) : Us
         // Order Summary
         sb.AppendLine("<div class=\"summary\">");
         sb.AppendLine("<div class=\"summary-row\">");
-        sb.AppendLine($"<span>Subtotal:</span><span>{order.TotalPrice():C}</span>");
+        sb.AppendLine($"<span>Subtotal:</span><span>{order.Payment.Amount:C}</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("<div class=\"summary-row\">");
         sb.AppendLine("<span>Shipping:</span><span>-</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("<div class=\"summary-row total\">");
-        sb.AppendLine($"<span>Refund Amount:</span><span>{order.TotalPrice():C}</span>");
+        sb.AppendLine($"<span>Refund Amount:</span><span>{order.Payment.Amount:C}</span>");
         sb.AppendLine("</div>");
         sb.AppendLine("</div>");
 

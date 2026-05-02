@@ -1,3 +1,5 @@
+using Shoply.WebApi.Features.Orders.Enums;
+using Shoply.WebApi.Features.Orders.Exceptions;
 using Stripe;
 using Stripe.Checkout;
 
@@ -17,15 +19,36 @@ public sealed partial class CheckoutSessionCompletedStrategy(
     {
         if (!@event.PaymentStatus.Equals("unpaid", StringComparison.OrdinalIgnoreCase))
         {
-            order.MarkProcessing();
-            order.Payment.MarkPaid();
+            if (order.Status != OrderStatus.Delivered)
+            {
+                throw new InvalidOrderPaymentStatusException(order.Status, OrderStatus.Processing);
+            }
+
+            if (order.Payment.Status is not PaymentStatus.Pending)
+            {
+                throw new InvalidPaymentStatusTransitionException(order.Payment.Status, PaymentStatus.Paid);
+            }
+
+            order.Payment.Status = PaymentStatus.Paid;
+            order.Status = OrderStatus.Processing;
 
             LogCheckoutSessionCompletedAndPaid(order.Id);
         }
         else
         {
-            order.MarkCancelled();
-            order.Payment.MarkCanceled();
+            if (order.Status != OrderStatus.Delivered)
+            {
+                throw new InvalidOrderPaymentStatusException(order.Status, OrderStatus.Cancelled);
+            }
+
+            order.Status = OrderStatus.Cancelled;
+
+            if (order.Payment.Status is not PaymentStatus.Paid)
+            {
+                throw new InvalidPaymentStatusTransitionException(order.Payment.Status, PaymentStatus.Canceled);
+            }
+
+            order.Payment.Status = PaymentStatus.Canceled;
 
             LogCheckoutSessionCompletedButUnpaid(order.Id);
         }

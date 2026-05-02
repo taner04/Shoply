@@ -17,7 +17,7 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
         RuleFor(x => x.Description)
             .MaximumLength(ProductRules.MaxDescriptionMaxLength);
 
-        RuleFor(x => x.Stock)
+        RuleFor(x => x.Quantity)
             .GreaterThanOrEqualTo(0);
 
         RuleFor(x => x.ImageUrl)
@@ -26,7 +26,9 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
             .Must(IsValidHttpUrl);
     }
 
-    private static bool IsValidHttpUrl(string url) =>
-        Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    private static bool IsValidHttpUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    }
 }

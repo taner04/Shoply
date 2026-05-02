@@ -25,7 +25,7 @@ public sealed partial class UserProvisioningBehavior<TMessage, TResponse>(
         {
             LogUserNotFound(auth0Id);
 
-            user = User.Create(
+            user = new User(
                 currentUserService.GetClaimValue<string>(ClaimTypes.Email),
                 auth0Id
             );

@@ -31,7 +31,7 @@ public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailCo
 
             LogEmailSentToRecipient(logger, template.To, template.Subject);
         }
-        catch (Exception e)
+        catch
         {
             LogErrorSendingEmail(logger);
         }
